@@ -328,7 +328,7 @@ module _ {A : Set} {_∼_ : A → A → Set} where
 
 module WeakPartiality {A : Set} {_∼_ : A → A → Set} where
 
-  open Equality _∼_ using (_≅_; _≈_)
+  open Equality _∼_ using (_≈_)
   open Equality.Rel
   open Equivalence using (refl)
   open import myMonad {A}
@@ -356,7 +356,7 @@ module WeakPartiality {A : Set} {_∼_ : A → A → Set} where
 
 module StrongPartiality {A : Set} {_∼_ : A → A → Set} where
 
-  open Equality _∼_ using (_≅_; _≈_)
+  open Equality _∼_ using (_≅_)
   open Equality.Rel
   open Equivalence using (refl)
   open import myMonad {A}
