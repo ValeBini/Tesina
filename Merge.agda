@@ -2,6 +2,8 @@ open import Data.Product as Prod
 open import Codata.Musical.Notation
 open import Data.Bool.Base
 open import Relation.Binary as B hiding (Rel)
+open import Data.Unit
+open import Relation.Binary.PropositionalEquality using (_≡_) renaming (refl to prefl)
 
 open import Partiality
 
@@ -20,39 +22,36 @@ norm-prod⊥ (now ((a , b) , c)) = now (a , b , c)
 norm-prod⊥ (later x) = later (♯ (norm-prod⊥ (♭ x)))
 
 
-module ProdEquality {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} {_∼C_ : C → C → Set} where
+module ProdEquality {A B : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} where
 
-  data Rel : A × B × C → A × B × C → Set where
-      assoc≡ : ∀ {a₁ a₂ b₁ b₂ c₁ c₂} (a₁∼a₂ : a₁ ∼A a₂) (b₁∼b₂ : b₁ ∼B b₂) (c₁∼c₂ : c₁ ∼C c₂) →
-                Rel (a₁ , b₁ , c₁) (a₂ , b₂ , c₂) 
+  data Rel : A × B → A × B → Set where
+      prod≡ : ∀ {a₁ a₂ b₁ b₂} (a₁∼a₂ : a₁ ∼A a₂) (b₁∼b₂ : b₁ ∼B b₂) →
+                Rel (a₁ , b₁) (a₂ , b₂) 
 
-  _assoc×-≡_ :  A × B × C → A × B × C → Set
-  _assoc×-≡_ = Rel
+  _×-≡_ :  A × B → A × B → Set
+  _×-≡_ = Rel
 
-  refl : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_ → Reflexive _assoc×-≡_ 
-  refl ra rb rc = assoc≡ ra rb rc 
+  refl : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _×-≡_ 
+  refl ra rb = prod≡ ra rb 
 
-  sym : Symmetric _∼A_ → Symmetric _∼B_ → Symmetric _∼C_ → Symmetric _assoc×-≡_ 
-  sym sa sb sc (assoc≡ a₁∼a₂ b₁∼b₂ c₁∼c₂) = assoc≡ (sa a₁∼a₂) (sb b₁∼b₂) (sc c₁∼c₂)
+  sym : Symmetric _∼A_ → Symmetric _∼B_ → Symmetric _×-≡_ 
+  sym sa sb (prod≡ a₁∼a₂ b₁∼b₂) = prod≡ (sa a₁∼a₂) (sb b₁∼b₂)
 
-  trans : Transitive _∼A_ → Transitive _∼B_ → Transitive _∼C_ → Transitive _assoc×-≡_ 
-  trans ta tb tc (assoc≡ a₁∼a₂ b₁∼b₂ c₁∼c₂) (assoc≡ a₂∼a₃ b₂∼b₃ c₂∼c₃) = 
-                  assoc≡ (ta a₁∼a₂ a₂∼a₃) (tb b₁∼b₂ b₂∼b₃) (tc c₁∼c₂ c₂∼c₃)
+  trans : Transitive _∼A_ → Transitive _∼B_ → Transitive _×-≡_ 
+  trans ta tb (prod≡ a₁∼a₂ b₁∼b₂) (prod≡ a₂∼a₃ b₂∼b₃) = prod≡ (ta a₁∼a₂ a₂∼a₃) (tb b₁∼b₂ b₂∼b₃) 
+
 
 module WeakMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} {_∼C_ : C → C → Set} where
 
-  open ProdEquality {A} {B} {C} {_∼A_} {_∼B_} {_∼C_}
-  open Equality {A × B × C} _assoc×-≡_ using (_≈_)
+  open ProdEquality {B} {C} {_∼B_} {_∼C_} renaming (_×-≡_ to _b×c-≡_ ; refl to b×c-refl)
+  open ProdEquality {A} {B × C} {_∼A_} {_b×c-≡_} 
+  open Equality {A × B × C} _×-≡_ using (_≈_)
   open Equality.Rel
-
-  rec : ∀ {A} → A ⊥ → A ⊥
-  rec (now x) = now x
-  rec (later x) = ♭ x
 
   associative : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_ 
                                → (a : A ⊥) (b : B ⊥) (c : C ⊥) 
                                → (norm-prod⊥ (merge (merge a b) c)) ≈ (merge a (merge b c))
-  associative ra rb rc (now a)   (now b)   (now c)   = now (refl ra rb rc)
+  associative ra rb rc (now a)   (now b)   (now c)   = now (refl ra (b×c-refl rb rc))
   associative ra rb rc (now a)   (now b)   (later c) = later (♯ (associative ra rb rc (now a) (now b) (♭ c)))
   associative ra rb rc (now a)   (later b) (now c)   = later (♯ (associative ra rb rc (now a) (♭ b) (now c)))
   associative ra rb rc (now a)   (later b) (later c) = later (♯ (associative ra rb rc (now a) (♭ b) (♭ c)))
@@ -60,3 +59,52 @@ module WeakMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B
   associative ra rb rc (later a) (now b)   (later c) = later (♯ (associative ra rb rc (♭ a) (now b) (♭ c)))
   associative ra rb rc (later a) (later b) (now c)   = later (♯ (associative ra rb rc (♭ a) (♭ b) (now c)))
   associative ra rb rc (later a) (later b) (later c) = later (♯ (associative ra rb rc (♭ a) (♭ b) (♭ c))) 
+
+
+module StrongMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} {_∼C_ : C → C → Set} where
+
+  open ProdEquality {B} {C} {_∼B_} {_∼C_} renaming (_×-≡_ to _b×c-≡_ ; refl to b×c-refl)
+  open ProdEquality {A} {B × C} {_∼A_} {_b×c-≡_} 
+  open Equality {A × B × C} _×-≡_ using (_≅_)
+  open Equality.Rel
+
+  associative : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_ 
+                               → (a : A ⊥) (b : B ⊥) (c : C ⊥) 
+                               → (norm-prod⊥ (merge (merge a b) c)) ≅ (merge a (merge b c))
+  associative ra rb rc (now a)   (now b)   (now c)   = now (refl ra (b×c-refl rb rc))
+  associative ra rb rc (now a)   (now b)   (later c) = later (♯ (associative ra rb rc (now a) (now b) (♭ c)))
+  associative ra rb rc (now a)   (later b) (now c)   = later (♯ (associative ra rb rc (now a) (♭ b) (now c)))
+  associative ra rb rc (now a)   (later b) (later c) = later (♯ (associative ra rb rc (now a) (♭ b) (♭ c)))
+  associative ra rb rc (later a) (now b)   (now c)   = later (♯ (associative ra rb rc (♭ a) (now b) (now c)))
+  associative ra rb rc (later a) (now b)   (later c) = later (♯ (associative ra rb rc (♭ a) (now b) (♭ c)))
+  associative ra rb rc (later a) (later b) (now c)   = later (♯ (associative ra rb rc (♭ a) (♭ b) (now c)))
+  associative ra rb rc (later a) (later b) (later c) = later (♯ (associative ra rb rc (♭ a) (♭ b) (♭ c))) 
+
+
+unit : ⊤ ⊥
+unit = now tt
+
+fmap : ∀ {A B : Set} → (A → B) → (A ⊥ → B ⊥)
+fmap f (now x) = now (f x)
+fmap f (later x) = later (♯ (fmap f (♭ x))) 
+
+
+module WeakUnitMerge {A : Set} {_∼_ : A → A → Set} where
+
+  open ProdEquality {A} {⊤} {_∼_} {_≡_}
+  open Equality {A × ⊤} _×-≡_ using (_≈_)
+  open Equality.Rel 
+
+  merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≈ (fmap (λ a → (a , tt)) a) 
+  merge-unit ra (now x)   = now (refl ra prefl)
+  merge-unit ra (later x) = later (♯ (merge-unit ra (♭ x)))
+
+module StrongUnitMerge {A : Set} {_∼_ : A → A → Set} where
+
+  open ProdEquality {A} {⊤} {_∼_} {_≡_}
+  open Equality {A × ⊤} _×-≡_ using (_≅_)
+  open Equality.Rel 
+
+  merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≅ (fmap (λ a → (a , tt)) a) 
+  merge-unit ra (now x)   = now (refl ra prefl)
+  merge-unit ra (later x) = later (♯ (merge-unit ra (♭ x)))
