@@ -1,3 +1,5 @@
+{-# OPTIONS --guardedness #-}
+
 open import Data.Bool.Base using (Bool; false; true)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Product as Prod hiding (map)
@@ -17,7 +19,7 @@ open import Codata.Musical.Notation
 private
   variable
     A B C : Set
-    
+
 data _⊥ (A : Set) : Set where
   now   : (x : A) → A ⊥
   later : (x : ∞ (A ⊥)) → A ⊥
@@ -295,7 +297,7 @@ module _ {A : Set} {_∼_ : A → A → Set} where
     antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
     antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
 
- -- Equational reasoning.
+-- Equational reasoning.
 
   module Reasoning (isEquivalence : IsEquivalence _∼_) where
 
@@ -326,60 +328,72 @@ module _ {A : Set} {_∼_ : A → A → Set} where
     _∎ : ∀ {k} (x : A ⊥) → Rel k x x
     x ∎ = Pre.refl
 
-module WeakPartiality {A : Set} {_∼_ : A → A → Set} where
 
-  open Equality _∼_ using (_≈_)
-  open Equality.Rel
-  open Equivalence using (refl)
-  open import myMonad {A}
+module WeakPartiality (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
-  left-identity : Reflexive _∼_ → (x : B) (f : B → A ⊥) → bind (now x) f ≈ f x
-  left-identity refl∼ x f = refl refl∼
- 
-  right-identity : Reflexive _∼_ → (t : A ⊥) → bind t now ≈ t
-  right-identity refl∼ (now   x) = refl refl∼ 
-  right-identity refl∼ (later x) = later (♯ (right-identity refl∼ (♭ x))) 
+  module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
 
-  associative : Reflexive _∼_ → (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥) 
-                              → bind (bind x f) g ≈ bind x (λ y → bind (f y) g)
-  associative refl∼ (now   x) f g = refl refl∼ 
-  associative refl∼ (later x) f g = later (♯ associative refl∼ (♭ x) f g) 
+    open Equality _∼_ using (_≈_)
+    open Equality.Rel
+    open Equivalence using (refl)
 
-  partiality : Reflexive _∼_ → MyMonad _⊥
-  partiality refl∼ = makeMonad 
-                      _≈_
-                      now
-                      bind
-                      (left-identity refl∼)
-                      (right-identity refl∼)
-                      (associative refl∼)
+    left-identity : (x : B) (f : B → A ⊥) → bind (now x) f ≈ f x
+    left-identity x f = refl refl∼
 
-module StrongPartiality {A : Set} {_∼_ : A → A → Set} where
+    right-identity : (t : A ⊥) → bind t now ≈ t
+    right-identity (now   x) = refl refl∼
+    right-identity (later x) = later (♯ (right-identity (♭ x)))
 
-  open Equality _∼_ using (_≅_)
-  open Equality.Rel
-  open Equivalence using (refl)
-  open import myMonad {A}
+    associative : (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥)
+                  → bind (bind x f) g ≈ bind x (λ y → bind (f y) g)
+    associative (now   x) f g = refl refl∼
+    associative (later x) f g = later (♯ associative (♭ x) f g)
 
-  left-identity : Reflexive _∼_ → (x : B) (f : B → A ⊥) → bind (now x) f ≅ f x
-  left-identity refl∼ x f = refl refl∼
+  _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
+  _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
 
-  right-identity : Reflexive _∼_ → (t : A ⊥) → bind t now ≅ t
-  right-identity refl∼ (now   x) = refl refl∼
-  right-identity refl∼ (later x) = later (♯ (right-identity refl∼ (♭ x)))
+  open import myMonad
 
-  associative : Reflexive _∼_ → (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥) 
-                              → bind (bind x f) g ≅ bind x (λ y → bind (f y) g)
-  associative refl∼ (now x)   f g = refl refl∼ 
-  associative refl∼ (later x) f g = later (♯ (associative refl∼ (♭ x) f g))
+  partiality : MyMonad _⊥
+  partiality = makeMonad 
+                _≈⊥_ 
+                now 
+                bind 
+                (left-identity refl∼) 
+                (right-identity refl∼) 
+                (associative refl∼)
 
-  partiality : Reflexive _∼_ → MyMonad _⊥
-  partiality refl∼ = makeMonad 
-                      _≅_ 
-                      now 
-                      bind 
-                      (left-identity refl∼)
-                      (right-identity refl∼) 
-                      (associative refl∼)    
 
-  
+module StrongPartiality (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+
+  module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
+
+    open Equality _∼_ using (_≅_)
+    open Equality.Rel
+    open Equivalence using (refl)
+
+    left-identity : (x : B) (f : B → A ⊥) → bind (now x) f ≅ f x
+    left-identity x f = refl refl∼
+
+    right-identity : (t : A ⊥) → bind t now ≅ t
+    right-identity (now   x) = refl refl∼
+    right-identity (later x) = later (♯ (right-identity (♭ x)))
+
+    associative : (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥)
+                  → bind (bind x f) g ≅ bind x (λ y → bind (f y) g)
+    associative (now x)   f g = refl refl∼
+    associative (later x) f g = later (♯ (associative (♭ x) f g))
+
+  open import myMonad
+
+  _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
+  _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
+
+  partiality : MyMonad _⊥
+  partiality = makeMonad 
+                _≅⊥_ 
+                now 
+                bind 
+                (left-identity refl∼) 
+                (right-identity refl∼) 
+                (associative refl∼)

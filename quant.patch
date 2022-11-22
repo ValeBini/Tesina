@@ -1,0 +1,300 @@
+diff --git a/Merge.agda b/Merge.agda
+index 65873ac..065384d 100644
+--- a/Merge.agda
++++ b/Merge.agda
+@@ -1,4 +1,6 @@
+-open import Data.Product as Prod 
++{-# OPTIONS --guardedness #-}
++
++open import Data.Product as Prod
+ open import Codata.Musical.Notation
+ open import Data.Bool.Base
+ open import Relation.Binary as B hiding (Rel)
+@@ -17,7 +19,7 @@ merge (now a)   (later b) = later (♯ (merge (now a) (♭ b)))
+ merge (later a) (now b)   = later (♯ (merge (♭ a) (now b)))
+ merge (later a) (later b) = later (♯ (merge (♭ a) (♭ b)))
+ 
+-norm-prod⊥ : ((A × B) × C) ⊥ → (A × B × C) ⊥ 
++norm-prod⊥ : ((A × B) × C) ⊥ → (A × B × C) ⊥
+ norm-prod⊥ (now ((a , b) , c)) = now (a , b , c)
+ norm-prod⊥ (later x) = later (♯ (norm-prod⊥ (♭ x)))
+ 
+@@ -26,30 +28,30 @@ module ProdEquality {A B : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B →
+ 
+   data Rel : A × B → A × B → Set where
+       prod≡ : ∀ {a₁ a₂ b₁ b₂} (a₁∼a₂ : a₁ ∼A a₂) (b₁∼b₂ : b₁ ∼B b₂) →
+-                Rel (a₁ , b₁) (a₂ , b₂) 
++                Rel (a₁ , b₁) (a₂ , b₂)
+ 
+   _×-≡_ :  A × B → A × B → Set
+   _×-≡_ = Rel
+ 
+-  refl : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _×-≡_ 
+-  refl ra rb = prod≡ ra rb 
++  refl : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _×-≡_
++  refl ra rb = prod≡ ra rb
+ 
+-  sym : Symmetric _∼A_ → Symmetric _∼B_ → Symmetric _×-≡_ 
++  sym : Symmetric _∼A_ → Symmetric _∼B_ → Symmetric _×-≡_
+   sym sa sb (prod≡ a₁∼a₂ b₁∼b₂) = prod≡ (sa a₁∼a₂) (sb b₁∼b₂)
+ 
+-  trans : Transitive _∼A_ → Transitive _∼B_ → Transitive _×-≡_ 
+-  trans ta tb (prod≡ a₁∼a₂ b₁∼b₂) (prod≡ a₂∼a₃ b₂∼b₃) = prod≡ (ta a₁∼a₂ a₂∼a₃) (tb b₁∼b₂ b₂∼b₃) 
++  trans : Transitive _∼A_ → Transitive _∼B_ → Transitive _×-≡_
++  trans ta tb (prod≡ a₁∼a₂ b₁∼b₂) (prod≡ a₂∼a₃ b₂∼b₃) = prod≡ (ta a₁∼a₂ a₂∼a₃) (tb b₁∼b₂ b₂∼b₃)
+ 
+ 
+ module WeakMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} {_∼C_ : C → C → Set} where
+ 
+   open ProdEquality {B} {C} {_∼B_} {_∼C_} renaming (_×-≡_ to _b×c-≡_ ; refl to b×c-refl)
+-  open ProdEquality {A} {B × C} {_∼A_} {_b×c-≡_} 
++  open ProdEquality {A} {B × C} {_∼A_} {_b×c-≡_}
+   open Equality {A × B × C} _×-≡_ using (_≈_)
+   open Equality.Rel
+ 
+-  associative : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_ 
+-                               → (a : A ⊥) (b : B ⊥) (c : C ⊥) 
++  associative : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_
++                               → (a : A ⊥) (b : B ⊥) (c : C ⊥)
+                                → (norm-prod⊥ (merge (merge a b) c)) ≈ (merge a (merge b c))
+   associative ra rb rc (now a)   (now b)   (now c)   = now (refl ra (b×c-refl rb rc))
+   associative ra rb rc (now a)   (now b)   (later c) = later (♯ (associative ra rb rc (now a) (now b) (♭ c)))
+@@ -58,18 +60,18 @@ module WeakMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B
+   associative ra rb rc (later a) (now b)   (now c)   = later (♯ (associative ra rb rc (♭ a) (now b) (now c)))
+   associative ra rb rc (later a) (now b)   (later c) = later (♯ (associative ra rb rc (♭ a) (now b) (♭ c)))
+   associative ra rb rc (later a) (later b) (now c)   = later (♯ (associative ra rb rc (♭ a) (♭ b) (now c)))
+-  associative ra rb rc (later a) (later b) (later c) = later (♯ (associative ra rb rc (♭ a) (♭ b) (♭ c))) 
++  associative ra rb rc (later a) (later b) (later c) = later (♯ (associative ra rb rc (♭ a) (♭ b) (♭ c)))
+ 
+ 
+ module StrongMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} {_∼C_ : C → C → Set} where
+ 
+   open ProdEquality {B} {C} {_∼B_} {_∼C_} renaming (_×-≡_ to _b×c-≡_ ; refl to b×c-refl)
+-  open ProdEquality {A} {B × C} {_∼A_} {_b×c-≡_} 
++  open ProdEquality {A} {B × C} {_∼A_} {_b×c-≡_}
+   open Equality {A × B × C} _×-≡_ using (_≅_)
+   open Equality.Rel
+ 
+-  associative : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_ 
+-                               → (a : A ⊥) (b : B ⊥) (c : C ⊥) 
++  associative : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _∼C_
++                               → (a : A ⊥) (b : B ⊥) (c : C ⊥)
+                                → (norm-prod⊥ (merge (merge a b) c)) ≅ (merge a (merge b c))
+   associative ra rb rc (now a)   (now b)   (now c)   = now (refl ra (b×c-refl rb rc))
+   associative ra rb rc (now a)   (now b)   (later c) = later (♯ (associative ra rb rc (now a) (now b) (♭ c)))
+@@ -78,7 +80,7 @@ module StrongMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B →
+   associative ra rb rc (later a) (now b)   (now c)   = later (♯ (associative ra rb rc (♭ a) (now b) (now c)))
+   associative ra rb rc (later a) (now b)   (later c) = later (♯ (associative ra rb rc (♭ a) (now b) (♭ c)))
+   associative ra rb rc (later a) (later b) (now c)   = later (♯ (associative ra rb rc (♭ a) (♭ b) (now c)))
+-  associative ra rb rc (later a) (later b) (later c) = later (♯ (associative ra rb rc (♭ a) (♭ b) (♭ c))) 
++  associative ra rb rc (later a) (later b) (later c) = later (♯ (associative ra rb rc (♭ a) (♭ b) (♭ c)))
+ 
+ 
+ unit : ⊤ ⊥
+@@ -86,16 +88,16 @@ unit = now tt
+ 
+ fmap : ∀ {A B : Set} → (A → B) → (A ⊥ → B ⊥)
+ fmap f (now x) = now (f x)
+-fmap f (later x) = later (♯ (fmap f (♭ x))) 
++fmap f (later x) = later (♯ (fmap f (♭ x)))
+ 
+ 
+ module WeakUnitMerge {A : Set} {_∼_ : A → A → Set} where
+ 
+   open ProdEquality {A} {⊤} {_∼_} {_≡_}
+   open Equality {A × ⊤} _×-≡_ using (_≈_)
+-  open Equality.Rel 
++  open Equality.Rel
+ 
+-  merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≈ (fmap (λ a → (a , tt)) a) 
++  merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≈ (fmap (λ a → (a , tt)) a)
+   merge-unit ra (now x)   = now (refl ra prefl)
+   merge-unit ra (later x) = later (♯ (merge-unit ra (♭ x)))
+ 
+@@ -103,8 +105,8 @@ module StrongUnitMerge {A : Set} {_∼_ : A → A → Set} where
+ 
+   open ProdEquality {A} {⊤} {_∼_} {_≡_}
+   open Equality {A × ⊤} _×-≡_ using (_≅_)
+-  open Equality.Rel 
++  open Equality.Rel
+ 
+-  merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≅ (fmap (λ a → (a , tt)) a) 
++  merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≅ (fmap (λ a → (a , tt)) a)
+   merge-unit ra (now x)   = now (refl ra prefl)
+-  merge-unit ra (later x) = later (♯ (merge-unit ra (♭ x)))
+\ No newline at end of file
++  merge-unit ra (later x) = later (♯ (merge-unit ra (♭ x)))
+diff --git a/Partiality.agda b/Partiality.agda
+index 3048778..8e2f968 100644
+--- a/Partiality.agda
++++ b/Partiality.agda
+@@ -1,3 +1,5 @@
++{-# OPTIONS --guardedness #-}
++
+ open import Data.Bool.Base using (Bool; false; true)
+ open import Data.Nat using (ℕ; zero; suc; _+_)
+ open import Data.Product as Prod hiding (map)
+@@ -17,7 +19,7 @@ open import Codata.Musical.Notation
+ private
+   variable
+     A B C : Set
+-    
++
+ data _⊥ (A : Set) : Set where
+   now   : (x : A) → A ⊥
+   later : (x : ∞ (A ⊥)) → A ⊥
+@@ -295,7 +297,7 @@ module _ {A : Set} {_∼_ : A → A → Set} where
+     antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
+     antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
+ 
+- -- Equational reasoning.
++-- Equational reasoning.
+ 
+   module Reasoning (isEquivalence : IsEquivalence _∼_) where
+ 
+@@ -326,60 +328,57 @@ module _ {A : Set} {_∼_ : A → A → Set} where
+     _∎ : ∀ {k} (x : A ⊥) → Rel k x x
+     x ∎ = Pre.refl
+ 
+-module WeakPartiality {A : Set} {_∼_ : A → A → Set} where
+ 
+-  open Equality _∼_ using (_≈_)
+-  open Equality.Rel
+-  open Equivalence using (refl)
+-  open import myMonad {A}
+-
+-  left-identity : Reflexive _∼_ → (x : B) (f : B → A ⊥) → bind (now x) f ≈ f x
+-  left-identity refl∼ x f = refl refl∼
+- 
+-  right-identity : Reflexive _∼_ → (t : A ⊥) → bind t now ≈ t
+-  right-identity refl∼ (now   x) = refl refl∼ 
+-  right-identity refl∼ (later x) = later (♯ (right-identity refl∼ (♭ x))) 
+-
+-  associative : Reflexive _∼_ → (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥) 
+-                              → bind (bind x f) g ≈ bind x (λ y → bind (f y) g)
+-  associative refl∼ (now   x) f g = refl refl∼ 
+-  associative refl∼ (later x) f g = later (♯ associative refl∼ (♭ x) f g) 
+-
+-  partiality : Reflexive _∼_ → MyMonad _⊥
+-  partiality refl∼ = makeMonad 
+-                      _≈_
+-                      now
+-                      bind
+-                      (left-identity refl∼)
+-                      (right-identity refl∼)
+-                      (associative refl∼)
+-
+-module StrongPartiality {A : Set} {_∼_ : A → A → Set} where
+-
+-  open Equality _∼_ using (_≅_)
+-  open Equality.Rel
+-  open Equivalence using (refl)
+-  open import myMonad {A}
+-
+-  left-identity : Reflexive _∼_ → (x : B) (f : B → A ⊥) → bind (now x) f ≅ f x
+-  left-identity refl∼ x f = refl refl∼
+-
+-  right-identity : Reflexive _∼_ → (t : A ⊥) → bind t now ≅ t
+-  right-identity refl∼ (now   x) = refl refl∼
+-  right-identity refl∼ (later x) = later (♯ (right-identity refl∼ (♭ x)))
+-
+-  associative : Reflexive _∼_ → (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥) 
+-                              → bind (bind x f) g ≅ bind x (λ y → bind (f y) g)
+-  associative refl∼ (now x)   f g = refl refl∼ 
+-  associative refl∼ (later x) f g = later (♯ (associative refl∼ (♭ x) f g))
+-
+-  partiality : Reflexive _∼_ → MyMonad _⊥
+-  partiality refl∼ = makeMonad 
+-                      _≅_ 
+-                      now 
+-                      bind 
+-                      (left-identity refl∼)
+-                      (right-identity refl∼) 
+-                      (associative refl∼)    
+-
+-  
+\ No newline at end of file
++module WeakPartiality (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
++  module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
++    open Equality _∼_ using (_≅_; _≈_)
++    open Equality.Rel
++    open Equivalence using (refl)
++
++    left-identity : (x : B) (f : B → A ⊥) → bind (now x) f ≈ f x
++    left-identity x f = refl refl∼
++
++    right-identity : (t : A ⊥) → bind t now ≈ t
++    right-identity (now   x) = refl refl∼
++    right-identity (later x) = later (♯ (right-identity (♭ x)))
++
++    associative : (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥)
++                  → bind (bind x f) g ≈ bind x (λ y → bind (f y) g)
++    associative (now   x) f g = refl refl∼
++    associative (later x) f g = later (♯ associative (♭ x) f g)
++
++  _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
++  _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
++
++  open import myMonad
++  partiality : MyMonad _⊥
++  partiality =
++    makeMonad _≈⊥_ now bind (left-identity refl∼) (right-identity refl∼) (associative refl∼)
++
++
++module StrongPartiality (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
++  module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
++    open Equality _∼_ using (_≅_)
++    open Equality.Rel
++    open Equivalence using (refl)
++
++    left-identity : (x : B) (f : B → A ⊥) → bind (now x) f ≅ f x
++    left-identity x f = refl refl∼
++
++    right-identity : (t : A ⊥) → bind t now ≅ t
++    right-identity (now   x) = refl refl∼
++    right-identity (later x) = later (♯ (right-identity (♭ x)))
++
++    associative : (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥)
++                  → bind (bind x f) g ≅ bind x (λ y → bind (f y) g)
++    associative (now x)   f g = refl refl∼
++    associative (later x) f g = later (♯ (associative (♭ x) f g))
++
++  open import myMonad
++
++  _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
++  _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
++
++  partiality : MyMonad _⊥
++  partiality =
++    makeMonad _≅⊥_ now bind (left-identity refl∼) (right-identity refl∼) (associative refl∼)
+diff --git a/myMonad.agda b/myMonad.agda
+index 6d5a577..26bbad4 100644
+--- a/myMonad.agda
++++ b/myMonad.agda
+@@ -1,18 +1,16 @@
+-module myMonad {A : Set} where
++module myMonad where
+ 
+   record MyMonad (M : Set → Set) : Set₁ where
+     constructor
+       makeMonad
+     field
+-      _≅ₘ_   : M A → M A → Set
+-      return : ∀ {A : Set} → A → M A 
+-      _>>=_  : ∀ {A B : Set} → M B → (B → M A) → M A 
+-      law₁   : ∀ {B : Set} → (x : B) (f : B → M A) 
++      _≅ₘ_   : ∀ {A} → M A → M A → Set
++      return : ∀ {A : Set} → A → M A
++      _>>=_  : ∀ {A B : Set} → M B → (B → M A) → M A
++      law₁   : ∀ {A B : Set} → (x : B) (f : B → M A)
+                              → (((return x) >>= f) ≅ₘ (f x))
+-      law₂   : (t : M A) → (t >>= return) ≅ₘ t
+-      law₃   : ∀ {B C : Set} → (t : M C) (f : C → M B) (g : B → M A) 
++      law₂   : ∀ {A} → (t : M A) → (t >>= return) ≅ₘ t
++      law₃   : ∀ {A B C : Set} → (t : M C) (f : C → M B) (g : B → M A)
+                              → ((t >>= f) >>= g) ≅ₘ (t >>= (λ x → f x >>= g))
+ 
+   open MyMonad public
+-
+- 
+\ No newline at end of file
