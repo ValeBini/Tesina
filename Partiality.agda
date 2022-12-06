@@ -24,11 +24,6 @@ data _⊥ (A : Set) : Set where
   now   : (x : A) → A ⊥
   later : (x : ∞ (A ⊥)) → A ⊥
 
-
-bind : A ⊥ → (A → B ⊥) → B ⊥
-bind (now x)   f = f x
-bind (later x) f = later (♯ (bind (♭ x) f))
-
 never : A ⊥
 never = later (♯ never)
 
@@ -328,72 +323,3 @@ module _ {A : Set} {_∼_ : A → A → Set} where
     _∎ : ∀ {k} (x : A ⊥) → Rel k x x
     x ∎ = Pre.refl
 
-
-module WeakPartiality (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
-
-  module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
-
-    open Equality _∼_ using (_≈_)
-    open Equality.Rel
-    open Equivalence using (refl)
-
-    left-identity : (x : B) (f : B → A ⊥) → bind (now x) f ≈ f x
-    left-identity x f = refl refl∼
-
-    right-identity : (t : A ⊥) → bind t now ≈ t
-    right-identity (now   x) = refl refl∼
-    right-identity (later x) = later (♯ (right-identity (♭ x)))
-
-    associative : (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥)
-                  → bind (bind x f) g ≈ bind x (λ y → bind (f y) g)
-    associative (now   x) f g = refl refl∼
-    associative (later x) f g = later (♯ associative (♭ x) f g)
-
-  _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
-  _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
-
-  open import myMonad
-
-  partiality : MyMonad _⊥
-  partiality = makeMonad 
-                _≈⊥_ 
-                now 
-                bind 
-                (left-identity refl∼) 
-                (right-identity refl∼) 
-                (associative refl∼)
-
-
-module StrongPartiality (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
-
-  module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
-
-    open Equality _∼_ using (_≅_)
-    open Equality.Rel
-    open Equivalence using (refl)
-
-    left-identity : (x : B) (f : B → A ⊥) → bind (now x) f ≅ f x
-    left-identity x f = refl refl∼
-
-    right-identity : (t : A ⊥) → bind t now ≅ t
-    right-identity (now   x) = refl refl∼
-    right-identity (later x) = later (♯ (right-identity (♭ x)))
-
-    associative : (x : C ⊥) (f : C → B ⊥) (g : B → A ⊥)
-                  → bind (bind x f) g ≅ bind x (λ y → bind (f y) g)
-    associative (now x)   f g = refl refl∼
-    associative (later x) f g = later (♯ (associative (♭ x) f g))
-
-  open import myMonad
-
-  _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
-  _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
-
-  partiality : MyMonad _⊥
-  partiality = makeMonad 
-                _≅⊥_ 
-                now 
-                bind 
-                (left-identity refl∼) 
-                (right-identity refl∼) 
-                (associative refl∼)
