@@ -2,7 +2,9 @@
 
 ## Situación del postulante
 
-??
+Al día 10/12/2022 tengo aprobadas 33 materias de la carrera y sólo tengo pendiente realizar la tesina
+para finalizar la carrera de Licenciatura en Ciencias de la Computación. Me encuentro trabajando como
+docente en la Facultad de Ciencias Exactas, Ingeniería y Agrimensura (UNR) 20 horas semanales (2 cargos simples).
 
 ## Título
 
