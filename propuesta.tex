@@ -1,6 +1,16 @@
-# Propuesta de tesina
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
 
-## Situación del postulante
+\title{\textbf{Propuesta de tesina}}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Situación del postulante}
 
 Al día 10/12/2022 tengo aprobadas 33 materias de la carrera y sólo
 tengo pendiente realizar la tesina para finalizar la carrera de
@@ -8,11 +18,11 @@ Licenciatura en Ciencias de la Computación. Me encuentro trabajando
 como docente en la Facultad de Ciencias Exactas, Ingeniería y
 Agrimensura (UNR) 20 horas semanales (2 cargos simples).
 
-## Título
+\section{Título}
 
 ??
 
-## Motivación y objetivo general
+\section{Motivación y objetivo general}
 
 La ley de Moore postulaba que el número de transistores que se pueden
 poner un chip de computadora dobla (de manera aproximada) cada un par
@@ -67,42 +77,51 @@ mónada concurrente en el ámbito del lenguaje de pruebas Agda, y con el
 objetivo principal de probar o refutar la hipótesis de que a la mónada
 Delay se le puede dar una estructura de mónada concurrente.
 
-## Fundamentos y estado de conocimiento sobre el tema
+\section{Fundamentos y estado de conocimiento sobre el tema}
 
 El uso de mónadas para estructuras semánticas de lenguajes con efectos
-fue desarrollado originalmente por E. Moggi. Poco más tarde, P. Wadler
-adaptó el concepto de manera interna en los lenguajes de programación
-funcional, dando origen a la programación con mónadas. Existe una gran
-variedad de efectos que pueden ser capturados usando mónadas internas,
-por ejejmplo, estado, excepciones, entornos, continuaciones, etc.
+fue desarrollado originalmente por E. Moggi~\cite{Mog:CLM,
+  Mog:NCM}. Poco más tarde, P. Wadler~\cite{Wad:EFP} adaptó el
+concepto de manera interna en los lenguajes de programación funcional,
+dando origen a la programación con mónadas. Existe una gran variedad
+de efectos que pueden ser capturados usando mónadas internas, por
+ejejmplo, estado, excepciones, entornos, continuaciones, etc.
 
-La mónada Delay fue introducida por Capretta et al. con el objetivo de
-capturar el efecto de no terminación de manera explícita y
+La mónada Delay fue introducida por Capretta~\cite{Cap:GRCT} con el
+objetivo de capturar el efecto de no terminación de manera explícita y
 uniforme. Su estructura fue estudiada en varios artículos, entre los
 que podemos mencionar la tesis de N. Veltri.
 
 Las mónadas concurrentes fueron recientemente introducidas en una
-pre-impresión por M. Jaskelioff y E. Rivas. Esta definición surge de
-categorificar la noción de monoide concurrente, definido por
-C. A. R. Hoare et al. recientemente.
+pre-impresión por M. Jaskelioff y E. Rivas~\cite{RJ:MM}. Esta
+definición surge de categorificar la noción de monoide concurrente,
+definido por C. A. R. Hoare et al.~\cite{HHMOHPS:concmonoid} hace unos
+años.
 
 Agda es un asistente de pruebas basado en teoría de tipos, con soporte
 induction-recursion, y que ya ha sido utilizado para estudiar la
 mónada Delay.
 
-## Metodología y plan de trabajo
+\section{Metodología y plan de trabajo}
 
-1 - Estudio de la estructura de mónada concurrente.
+\begin{enumerate}
 
-2 - Introducción de la clase de mónada concurrente en Agda.
+\item Estudio de la estructura de mónada concurrente.
 
-3 - Estudio de la mónada Delay y su implementación en Agda.
+\item Introducción de la clase de mónada concurrente en Agda.
 
-4 - Adaptación de las operaciones de la mónada Delay en el contexto de
+\item Estudio de la mónada Delay y su implementación en Agda.
+
+\item Adaptación de las operaciones de la mónada Delay en el contexto de
 2, y las pruebas de estructura de mónada y functor monoidal.
 
-5 - Prueba del axioma de intercambio de mónada concurrente en Agda
+\item Prueba del axioma de intercambio de mónada concurrente en Agda
 para la mónada Delay.
 
-## Referencias
+\end{enumerate}
+
+\bibliographystyle{plain}
+\bibliography{referencias.bib}
+
+\end{document}
 
