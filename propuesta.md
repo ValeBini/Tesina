@@ -46,7 +46,7 @@ funcionales, sobre todo cuando se intenta escribir programas con
 efectos. Los programas con efectos suelen representarse utilizando
 mónadas, de manera que los programas funcionales toman una apariencia
 fundamentalmente imperativa. Al igual que lo que sucede en la
-programación imperativa, al considerar concurrencia de los efectos, la
+programación imperativa, al considerar la concurrencia de los efectos, la
 manera usual de propuesta es mediante llamadas a funciones ad-hoc, y
 no usando primitivas bien fundadas que deriven de alguna estructura
 matemática, así como lo hacen las operaciones de las mónadas.
@@ -67,12 +67,12 @@ Delay se le puede dar una estructura de mónada concurrente.
 
 ## Fundamentos y estado de conocimiento sobre el tema
 
-El uso de mónadas para estructuras semántica de lenguajes con efectos
-fue desarrollado originalmente por E. Moggi. Poco más tarde P. Wadler
+El uso de mónadas para estructuras semánticas de lenguajes con efectos
+fue desarrollado originalmente por E. Moggi. Poco más tarde, P. Wadler
 adaptó el concepto de manera interna en los lenguajes de programación
 funcional, dando origen a la programación con mónadas. Existe una gran
 variedad de efectos que pueden ser capturados usando mónadas internas,
-por ej. estado, excepciones, entornos, continuaciones, etc.
+por ejejmplo, estado, excepciones, entornos, continuaciones, etc.
 
 La mónada Delay fue introducida por Capretta et al. con el objetivo de
 capturar el efecto de no terminación de manera explícita y
