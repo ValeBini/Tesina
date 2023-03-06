@@ -20,7 +20,7 @@ merge (later a) (now b)   = later (♯ (merge (♭ a) (now b)))
 merge (later a) (later b) = later (♯ (merge (♭ a) (♭ b)))
 
 fmap : ∀ {A B : Set} → (A → B) → (A ⊥ → B ⊥)
-fmap f (now x) = now (f x)
+fmap f (now x)   = now (f x)
 fmap f (later x) = later (♯ (fmap f (♭ x)))
 
 unit : ⊤ ⊥

@@ -10,10 +10,10 @@ module Concurrent where
       _≅ₘ_   : ∀ {A} → M A → M A → Set
       return : ∀ {A : Set} → A → M A
       _>>=_  : ∀ {A B : Set} → M B → (B → M A) → M A
-      law₁   : ∀ {A B : Set} → (x : B) (f : B → M A)
+      monad₁ : ∀ {A B : Set} → (x : B) (f : B → M A)
                              → (((return x) >>= f) ≅ₘ (f x))
-      law₂   : ∀ {A} → (t : M A) → (t >>= return) ≅ₘ t
-      law₃   : ∀ {A B C : Set} → (t : M C) (f : C → M B) (g : B → M A)
+      monad₂ : ∀ {A} → (t : M A) → (t >>= return) ≅ₘ t
+      monad₃ : ∀ {A B C : Set} → (t : M C) (f : C → M B) (g : B → M A)
                              → ((t >>= f) >>= g) ≅ₘ (t >>= (λ x → f x >>= g))
       unit   : M ⊤
       merge  : ∀ {A B : Set} → M A → M B → M (A × B)
