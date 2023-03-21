@@ -1,5 +1,7 @@
 {-# OPTIONS --guardedness #-}
 
+module Instances.Monoidal where
+
 open import Data.Product as Prod
 open import Codata.Musical.Notation
 open import Data.Bool.Base
@@ -27,7 +29,7 @@ unit : ⊤ ⊥
 unit = now tt
 
 
-module WeakMonoidal (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
     module _ {A B C : Set} {_∼_ : A × B × C → A × B × C → Set} (reflABC : Reflexive _∼_) where
 
@@ -64,7 +66,7 @@ module WeakMonoidal (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} →
       lid (now x)   = now refl⊤×A
       lid (later x) = later (♯ (lid (♭ x)))
 
-    open import Monoidal hiding (unit; merge; fmap)
+    open import Records.Monoidal hiding (unit; merge; fmap)
 
     _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
@@ -80,7 +82,7 @@ module WeakMonoidal (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} →
                           (associative refl∼)
 
 
-module StrongMonoidal (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
     module _ {A B C : Set} {_∼_ : A × B × C → A × B × C → Set} (reflABC : Reflexive _∼_) where
 
@@ -117,7 +119,7 @@ module StrongMonoidal (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} �
       lid (now x)   = now refl⊤×A
       lid (later x) = later (♯ (lid (♭ x)))
 
-    open import Monoidal hiding (unit; merge; fmap)
+    open import Records.Monoidal hiding (unit; merge; fmap)
 
     _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
@@ -133,7 +135,7 @@ module StrongMonoidal (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} �
                           (associative refl∼)
 
 
-
+{-
 module ProdEquality {A B : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} where
 
   data Rel : A × B → A × B → Set where
@@ -151,8 +153,8 @@ module ProdEquality {A B : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B →
 
   trans : Transitive _∼A_ → Transitive _∼B_ → Transitive _×-≡_
   trans ta tb (prod≡ a₁∼a₂ b₁∼b₂) (prod≡ a₂∼a₃ b₂∼b₃) = prod≡ (ta a₁∼a₂ a₂∼a₃) (tb b₁∼b₂ b₂∼b₃)
-
-
+-}
+{-}
 module WeakMergeAssoc {A B C : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} {_∼C_ : C → C → Set} where
 
   open ProdEquality {B} {C} {_∼B_} {_∼C_} renaming (_×-≡_ to _b×c-≡_ ; refl to b×c-refl)
@@ -212,3 +214,4 @@ module StrongUnitMerge {A : Set} {_∼_ : A → A → Set} where
   merge-unit : Reflexive _∼_ → (a : A ⊥) → (merge a unit) ≅ (fmap (λ a → (a , tt)) a)
   merge-unit ra (now x)   = now (refl ra prefl)
   merge-unit ra (later x) = later (♯ (merge-unit ra (♭ x)))
+-}

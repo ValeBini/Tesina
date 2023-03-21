@@ -1,5 +1,7 @@
 {-# OPTIONS --guardedness #-}
 
+module Instances.Concurrent where
+
 open import Data.Product as Prod
 open import Codata.Musical.Notation
 open import Data.Bool.Base
@@ -27,7 +29,7 @@ unit : ⊤ ⊥
 unit = now tt
 
 
-module WeakConcurrent (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
     module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
 
@@ -86,7 +88,7 @@ module WeakConcurrent (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} �
     _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
 
-    open import Concurrent hiding (unit; merge)
+    open import Records.Concurrent hiding (unit; merge)
 
     partiality : Concurrent _⊥
     partiality = makeConcurrent 
@@ -103,7 +105,7 @@ module WeakConcurrent (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} �
                     (merge-associative refl∼)
 
     
-module StrongConcurrent (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
     module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
 
@@ -162,7 +164,7 @@ module StrongConcurrent (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A}
     _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
 
-    open import Concurrent hiding (unit; merge)
+    open import Records.Concurrent hiding (unit; merge)
 
     partiality : Concurrent _⊥
     partiality = makeConcurrent 

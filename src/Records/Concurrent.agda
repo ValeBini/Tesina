@@ -1,7 +1,7 @@
 open import Data.Product as Prod
 open import Data.Unit
 
-module Concurrent where
+module Records.Concurrent where
 
   record Concurrent (M : Set → Set) : Set₁ where
     constructor
