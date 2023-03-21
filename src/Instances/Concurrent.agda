@@ -5,6 +5,7 @@ module Instances.Concurrent where
 open import Data.Product as Prod
 open import Codata.Musical.Notation
 open import Data.Bool.Base
+open import Function.Base
 open import Relation.Binary as B hiding (Rel)
 open import Data.Unit
 open import Relation.Binary.PropositionalEquality using (_≡_) renaming (refl to prefl)
@@ -85,14 +86,42 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       lid (now x)   = now refl⊤×A
       lid (later x) = later (♯ (lid (♭ x)))
 
+    module _ {A B C D : Set} {_∼_ : C × D → C × D → Set} (reflCD : Reflexive _∼_) where
+
+      open Equality {C × D} _∼_ using (_≲_; _≳_)
+      open Equality.Rel
+
+      interchange : (a : A ⊥) (b : B ⊥) (c : C ⊥) (d : D ⊥)
+                    → (merge (bind a (λ _ → c)) (bind b (λ _ → d))) ≳ (bind (merge a b) (λ _ → (merge c d)))
+      interchange (now a)   (now b)   (now c)   (now d)   = now reflCD
+      interchange (now a)   (now b)   (now c)   (later d) = later (♯ (interchange (now a) (now b) (now c) (♭ d)))
+      interchange (now a)   (now b)   (later c) (now d)   = later (♯ (interchange (now a) (now b) (♭ c) (now d)))
+      interchange (now a)   (now b)   (later c) (later d) = later (♯ (interchange (now a) (now b) (♭ c) (♭ d)))
+      interchange (now a)   (later b) (now c)   (now d)   = later (♯ (interchange (now a) (♭ b) (now c) (now d)))
+      interchange (now a)   (later b) (now c)   (later d) = later (♯ (interchange (now a) (♭ b) (now c) (later d)))
+      interchange (now a)   (later b) (later c) (now d)   = later (♯ {!   !})
+      interchange (now a)   (later b) (later c) (later d) = later (♯ {!   !})
+      interchange (later a) (now b)   (now c)   (now d)   = later (♯ (interchange (♭ a) (now b) (now c) (now d)))
+      interchange (later a) (now b)   (now c)   (later d) = later (♯ {!   !})
+      interchange (later a) (now b)   (later c) (now d)   = later (♯ (interchange (♭ a) (now b) (later c) (now d)))
+      interchange (later a) (now b)   (later c) (later d) = later (♯ {!   !})
+      interchange (later a) (later b) (now c)   (now d)   = later (♯ (interchange (♭ a) (♭ b) (now c) (now d)))
+      interchange (later a) (later b) (now c)   (later d) = later (♯ (interchange (♭ a) (♭ b) (now c) (later d)))
+      interchange (later a) (later b) (later c) (now d)   = later (♯ (interchange (♭ a) (♭ b) (later c) (now d)))
+      interchange (later a) (later b) (later c) (later d) = later (♯ (interchange (♭ a) (♭ b) (later c) (later d)))
+
     _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
+
+    _≲⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set 
+    _≲⊥_ {A} = Equality._≲_ {A} (_∼_ {A})
 
     open import Records.Concurrent hiding (unit; merge)
 
     partiality : Concurrent _⊥
     partiality = makeConcurrent 
-                    _≈⊥_ 
+                    _≈⊥_
+                    _≲⊥_ 
                     now 
                     bind 
                     (left-identity refl∼) 
@@ -103,7 +132,7 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
                     (rid refl∼)
                     (lid refl∼)
                     (merge-associative refl∼)
-
+                    {!   !}
     
 module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
@@ -164,11 +193,15 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
     _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
 
+    _≲⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set 
+    _≲⊥_ {A} = Equality._≲_ {A} (_∼_ {A})
+
     open import Records.Concurrent hiding (unit; merge)
 
     partiality : Concurrent _⊥
     partiality = makeConcurrent 
                     _≅⊥_ 
+                    _≲⊥_
                     now 
                     bind 
                     (left-identity refl∼) 
@@ -179,3 +212,4 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
                     (rid refl∼)
                     (lid refl∼)
                     (merge-associative refl∼)
+                    {!   !}
