@@ -116,7 +116,7 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
     _≲⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set 
     _≲⊥_ {A} = Equality._≲_ {A} (_∼_ {A})
 
-    open import Records.Concurrent hiding (unit; merge)
+    open import Structures.Concurrent hiding (unit; merge)
 
     partiality : Concurrent _⊥
     partiality = makeConcurrent 
@@ -196,7 +196,7 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
     _≲⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set 
     _≲⊥_ {A} = Equality._≲_ {A} (_∼_ {A})
 
-    open import Records.Concurrent hiding (unit; merge)
+    open import Structures.Concurrent hiding (unit; merge)
 
     partiality : Concurrent _⊥
     partiality = makeConcurrent 

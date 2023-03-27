@@ -1,4 +1,4 @@
-module Records.Monad where
+module Structures.Monad where
 
   record Monad (M : Set → Set) : Set₁ where
     constructor

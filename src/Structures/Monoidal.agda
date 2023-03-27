@@ -1,7 +1,7 @@
 open import Data.Product as Prod
 open import Data.Unit
 
-module Records.Monoidal where
+module Structures.Monoidal where
 
   record Monoidal (M : Set → Set) : Set₁ where
     constructor

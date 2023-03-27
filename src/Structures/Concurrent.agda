@@ -1,7 +1,7 @@
 open import Data.Product as Prod
 open import Data.Unit
 
-module Records.Concurrent where
+module Structures.Concurrent where
 
   record Concurrent (M : Set → Set) : Set₁ where
     constructor
@@ -22,7 +22,7 @@ module Records.Concurrent where
       idl     : ∀ {B : Set} → (b : M B) → (merge unit b) ≅ₘ (b >>= (λ b → return (tt , b)))
       assoc   : ∀ {A B C : Set} → (a : M A) (b : M B) (c : M C) 
                  → ((merge (merge a b) c) >>= (λ {((a , b) , c) → return (a , (b , c))})) ≅ₘ (merge a (merge b c))
-      ichange : ∀ {A B C D : Set} → (a : M A) (b : M B) (c : M C) (d : M D) 
-                 → ((merge a b) >>= (λ _ → (merge c d))) ≲ₘ (merge (a >>= (λ _ → c)) (b >>= (λ _ → d)))
+      ichange : ∀ {A B C D : Set} → (a : M A) (b : M B) (f : A → M C) (g : B → M D) 
+                 → ((merge a b) >>= (λ { (a , b) → (merge (f a) (g b)) })) ≲ₘ (merge (a >>= f) (b >>= g))
 
   open Concurrent public

@@ -35,7 +35,7 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
   _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
   _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
 
-  open import Records.Monad
+  open import Structures.Monad
 
   partiality : Monad _⊥
   partiality = makeMonad 
@@ -67,7 +67,7 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
     associative (now x)   f g = refl refl∼
     associative (later x) f g = later (♯ (associative (♭ x) f g))
 
-  open import Records.Monad
+  open import Structures.Monad
 
   _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
   _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})

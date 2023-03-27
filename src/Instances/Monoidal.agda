@@ -66,7 +66,7 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       lid (now x)   = now refl⊤×A
       lid (later x) = later (♯ (lid (♭ x)))
 
-    open import Records.Monoidal hiding (unit; merge; fmap)
+    open import Structures.Monoidal hiding (unit; merge; fmap)
 
     _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
@@ -119,7 +119,7 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
       lid (now x)   = now refl⊤×A
       lid (later x) = later (♯ (lid (♭ x)))
 
-    open import Records.Monoidal hiding (unit; merge; fmap)
+    open import Structures.Monoidal hiding (unit; merge; fmap)
 
     _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
