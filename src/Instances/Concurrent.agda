@@ -91,24 +91,22 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       open Equality {C × D} _∼_ using (_≲_; _≳_)
       open Equality.Rel
 
-      interchange : (a : A ⊥) (b : B ⊥) (c : C ⊥) (d : D ⊥)
-                    → (merge (bind a (λ _ → c)) (bind b (λ _ → d))) ≳ (bind (merge a b) (λ _ → (merge c d)))
-      interchange (now a)   (now b)   (now c)   (now d)   = now reflCD
-      interchange (now a)   (now b)   (now c)   (later d) = later (♯ (interchange (now a) (now b) (now c) (♭ d)))
-      interchange (now a)   (now b)   (later c) (now d)   = later (♯ (interchange (now a) (now b) (♭ c) (now d)))
-      interchange (now a)   (now b)   (later c) (later d) = later (♯ (interchange (now a) (now b) (♭ c) (♭ d)))
-      interchange (now a)   (later b) (now c)   (now d)   = later (♯ (interchange (now a) (♭ b) (now c) (now d)))
-      interchange (now a)   (later b) (now c)   (later d) = later (♯ (interchange (now a) (♭ b) (now c) (later d)))
-      interchange (now a)   (later b) (later c) (now d)   = laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (♭ c) (now d))))
-      interchange (now a)   (later b) (later c) (later d) = laterʳ⁻¹ (later (♯ interchange (now a) (♭ b) (♭ c) (later d)))
-      interchange (later a) (now b)   (now c)   (now d)   = later (♯ (interchange (♭ a) (now b) (now c) (now d)))
-      interchange (later a) (now b)   (now c)   (later d) = laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) (now c) (♭ d))))
-      interchange (later a) (now b)   (later c) (now d)   = later (♯ (interchange (♭ a) (now b) (later c) (now d)))
-      interchange (later a) (now b)   (later c) (later d) = laterʳ⁻¹ (later (♯ interchange (♭ a) (now b) (later c) (♭ d)))
-      interchange (later a) (later b) (now c)   (now d)   = later (♯ (interchange (♭ a) (♭ b) (now c) (now d)))
-      interchange (later a) (later b) (now c)   (later d) = later (♯ (interchange (♭ a) (♭ b) (now c) (later d)))
-      interchange (later a) (later b) (later c) (now d)   = later (♯ (interchange (♭ a) (♭ b) (later c) (now d)))
-      interchange (later a) (later b) (later c) (later d) = later (♯ (interchange (♭ a) (♭ b) (later c) (later d)))
+      interchange : (a : A ⊥) (b : B ⊥) (f : A → C ⊥) (g : B → D ⊥)
+                    → (merge (bind a f) (bind b g)) ≳ (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } ))
+      interchange (now a)   (now b)   f g  with f a 
+      ...                                     | now c    with g b 
+      ...                                                   | now d    = now reflCD
+      ...                                                   | later d₁ = later (♯ {!   !})
+      interchange (now a)   (now b)   f g     | later c₁ with g b 
+      ...                                                   | now d    = later (♯ {!   !})
+      ...                                                   | later d₁ = later (♯ {!   !})
+      interchange (now a)   (later b) f g  with f a 
+      ...                                     | now c                  = laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → now c) g)))
+      ...                                     | later c₁               = laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → ♭ c₁) g)))
+      interchange (later a) (now b)   f g  with g b 
+      ...                                     | now d                  = laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → now d))))
+      ...                                     | later d₁               = laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → ♭ d₁))))
+      interchange (later a) (later b) f g = laterʳ⁻¹ (later (♯ (interchange (♭ a) (♭ b) f g)))
 
     _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
@@ -212,4 +210,4 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
                     (rid refl∼)
                     (lid refl∼)
                     (merge-associative refl∼)
-                    {!   !}
+                    {!   !} 

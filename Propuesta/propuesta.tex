@@ -112,7 +112,7 @@ Formalización de mónadas concurrentes en Agda: el caso de la mónada Delay
 \section{Motivación y objetivo general}
 
 La ley de Moore postulaba que el número de transistores que se pueden
-poner un chip de computadora dobla (de manera aproximada) cada un par
+poner en un chip de computadora dobla (de manera aproximada) cada un par
 de años. De manera práctica, esto significaba que para obtener
 mejorías en la velocidad de ejecución de un programa simplemente había
 que esperar: después de un par de años, los programas que escribiríamos
@@ -125,7 +125,7 @@ programadores se ven obligados a encontrar otras maneras de mejorar el
 desempeño de sus programas, y una de las maneras más naturales que
 surgió fue pensar que podemos resolver varias tareas al mismo tiempo,
 y de esa manera evitar puntos ociosos donde solo estamos esperando el
-entorno (por ej. I/O bloqueante). En los últimos años, con la
+entorno (por ejemplo, I/O bloqueante). En los últimos años, con la
 masificación de los microprocesadores con múltiples core, se hace aún
 más evidente la necesidad de proveer al programador con la capacidad
 de concurrencia.
@@ -160,7 +160,7 @@ esta estructura.
 Una hipótesis particular es que la mónada de Delay, utilizada para
 modelizar el efecto de no terminación, puede ser dotada de estructura
 de mónada concurrente. En esta tesina desarrollaremos el concepto de
-mónada concurrente en el ámbito del lenguaje de pruebas Agda, y con el
+mónada concurrente en el ámbito del lenguaje de pruebas Agda, con el
 objetivo principal de probar o refutar la hipótesis de que a la mónada
 Delay se le puede dar una estructura de mónada concurrente.
 
@@ -172,7 +172,7 @@ fue desarrollado originalmente por E. Moggi~\cite{Mog:CLM,
 concepto de manera interna en los lenguajes de programación funcional,
 dando origen a la programación con mónadas. Existe una gran variedad
 de efectos que pueden ser capturados usando mónadas internas, por
-ejejmplo, estado, excepciones, entornos, continuaciones, etc.
+ejemplo, estado, excepciones, entornos, continuaciones, etc.
 
 La mónada Delay fue introducida por Capretta~\cite{Cap:GRCT} con el
 objetivo de capturar el efecto de no terminación de manera explícita y
@@ -199,8 +199,7 @@ mónada Delay.
 
 \item Estudio de la mónada Delay y su implementación en Agda (2 meses).
 
-\item Adaptación de las operaciones de la mónada Delay en el contexto de
-2, y las pruebas de estructura de mónada y functor monoidal (1 mes).
+\item Adaptación de las operaciones de la mónada Delay en el contexto del ítem 2, y las pruebas de estructura de mónada y functor monoidal (1 mes).
 
 \item Prueba del axioma de intercambio de mónada concurrente en Agda
 para la mónada Delay (2 meses).
