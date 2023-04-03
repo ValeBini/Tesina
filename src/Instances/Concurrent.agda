@@ -29,7 +29,6 @@ merge (later a) (later b) = later (♯ (merge (♭ a) (♭ b)))
 unit : ⊤ ⊥
 unit = now tt
 
-
 module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
     module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
@@ -86,27 +85,45 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       lid (now x)   = now refl⊤×A
       lid (later x) = later (♯ (lid (♭ x)))
 
-    module _ {A B C D : Set} {_∼_ : C × D → C × D → Set} (reflCD : Reflexive _∼_) where
+    
+    module _ {A B C D : Set} {_∼ᵣ_ : C × D → C × D → Set} (reflCD : Reflexive _∼ᵣ_) where
 
-      open Equality {C × D} _∼_ using (_≲_; _≳_)
+      open Equality {C × D} _∼ᵣ_ using (_≲_; _≳_)
       open Equality.Rel
 
+{-}
+      merge-ext : (c₁ c₂ : C ⊥) (d₁ d₂ : D ⊥) → (c₁ ∼ c₂) → (d₁ ∼ d₂) → merge c₁ d₁ ≳ merge c₂ d₂ 
+      merge-ext (now c₁) (now c₂) (now d₁) (now d₂)   pc pd = now {!   !}
+      merge-ext (now c₁) (now c₂) (now d₁) (later d₂) pc pd = {!   !}
+      merge-ext (now c₁) (now c₂) (later d₁) d₂ pc pd = {!   !}
+      merge-ext (now c₁) (later c₂) d₁ d₂ pc pd = {!   !}
+      merge-ext (later c₁) c₂ d₁ d₂ pc pd = {!   !}
+-}
+
+      merge-refl : (c : C ⊥) (d : D ⊥) → merge c d ≳ merge c d 
+      merge-refl (now c)   (now d)   = now reflCD
+      merge-refl (now c)   (later d) = later (♯ (merge-refl (now c) (♭ d)))
+      merge-refl (later c) (now d)   = later (♯ (merge-refl (♭ c) (now d)))
+      merge-refl (later c) (later d) = later (♯ (merge-refl (♭ c) (♭ d)))
+{-}
+      lema₁ : (a : A) (b : ∞ (B ⊥)) (c : C) (f : A → C ⊥) (g : B → D ⊥) → (p : (f a) ∼ (now c))
+              → (merge (now c) (bind (♭ b) g)) ≳ (bind (merge (now a) (♭ b)) (λ { (a , b) → merge (f a) (g b)}))
+      lema₁ a b c f g p  with ♭ b
+      ...                   | now b₁   = {!   !}
+      ...                   | later b₂ = {!   !}
+-}
       interchange : (a : A ⊥) (b : B ⊥) (f : A → C ⊥) (g : B → D ⊥)
                     → (merge (bind a f) (bind b g)) ≳ (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } ))
-      interchange (now a)   (now b)   f g  with f a 
-      ...                                     | now c    with g b 
-      ...                                                   | now d    = now reflCD
-      ...                                                   | later d₁ = later (♯ {!   !})
-      interchange (now a)   (now b)   f g     | later c₁ with g b 
-      ...                                                   | now d    = later (♯ {!   !})
-      ...                                                   | later d₁ = later (♯ {!   !})
-      interchange (now a)   (later b) f g  with f a 
-      ...                                     | now c                  = laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → now c) g)))
-      ...                                     | later c₁               = laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → ♭ c₁) g)))
+      interchange (now a)   (now b)   f g  = merge-refl (f a) (g b) 
+      interchange (now a)   (later b) f g  with f a      | ♭ b 
+      ...                                     | now c    | now b₁   = later (♯ {!   !})
+      ...                                     | now c    | later b₂ = later (♯ {!   !}) 
+      ...                                     | later c₁ | now b₁   = {!   !} -- laterʳ⁻¹ {C × D} {_∼_} {geq} {(merge (bind (now a) (λ _ → now c)) (bind (later b) g))} {♯ (bind (merge (now a) (later b)) (λ { (a , b) → merge (f a) (g b)}))} (later (♯ (interchange (now a) {! !} (λ _ → now c) g))) --(later (♯ (interchange (now a) (♭ b) (λ _ → now c) g)))
+      ...                                     | later c₁ | later b₂ = later (♯ {!   !}) -- laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → ♭ c₁) g)))
       interchange (later a) (now b)   f g  with g b 
-      ...                                     | now d                  = laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → now d))))
-      ...                                     | later d₁               = laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → ♭ d₁))))
-      interchange (later a) (later b) f g = laterʳ⁻¹ (later (♯ (interchange (♭ a) (♭ b) f g)))
+      ...                                     | now d    = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → now d))))
+      ...                                     | later d₁ = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → ♭ d₁))))
+      interchange (later a) (later b) f g = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (♭ b) f g)))
 
     _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
     _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
@@ -210,4 +227,4 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
                     (rid refl∼)
                     (lid refl∼)
                     (merge-associative refl∼)
-                    {!   !} 
+                    {!   !}   
