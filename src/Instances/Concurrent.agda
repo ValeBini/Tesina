@@ -8,8 +8,7 @@ open import Data.Bool.Base
 open import Function.Base
 open import Relation.Binary as B hiding (Rel)
 open import Data.Unit
-open import Relation.Binary.PropositionalEquality using (_≡_) renaming (refl to prefl)
-
+open import Relation.Binary.PropositionalEquality using (_≡_ ; inspect) renaming (refl to prefl)
 open import Partiality
 
 private
@@ -28,6 +27,25 @@ merge (later a) (later b) = later (♯ (merge (♭ a) (♭ b)))
 
 unit : ⊤ ⊥
 unit = now tt
+
+module ProdEquality {A B : Set} {_∼A_ : A → A → Set} {_∼B_ : B → B → Set} where
+
+  data Rel : A × B → A × B → Set where
+      prod≡ : ∀ {a₁ a₂ b₁ b₂} (a₁∼a₂ : a₁ ∼A a₂) (b₁∼b₂ : b₁ ∼B b₂) →
+                Rel (a₁ , b₁) (a₂ , b₂)
+
+  _×-≡_ :  A × B → A × B → Set
+  _×-≡_ = Rel
+
+  refl : Reflexive _∼A_ → Reflexive _∼B_ → Reflexive _×-≡_
+  refl ra rb = prod≡ ra rb
+
+  sym : Symmetric _∼A_ → Symmetric _∼B_ → Symmetric _×-≡_
+  sym sa sb (prod≡ a₁∼a₂ b₁∼b₂) = prod≡ (sa a₁∼a₂) (sb b₁∼b₂)
+
+  trans : Transitive _∼A_ → Transitive _∼B_ → Transitive _×-≡_
+  trans ta tb (prod≡ a₁∼a₂ b₁∼b₂) (prod≡ a₂∼a₃ b₂∼b₃) = prod≡ (ta a₁∼a₂ a₂∼a₃) (tb b₁∼b₂ b₂∼b₃)
+
 
 module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
 
@@ -86,40 +104,45 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       lid (later x) = later (♯ (lid (♭ x)))
 
     
-    module _ {A B C D : Set} {_∼ᵣ_ : C × D → C × D → Set} (reflCD : Reflexive _∼ᵣ_) where
+    module _ {A B C D : Set} {_∼C_ : C → C → Set} {_∼D_ : D → D → Set} (reflC : Reflexive _∼C_) (reflD : Reflexive _∼D_) where
 
-      open Equality {C × D} _∼ᵣ_ using (_≲_; _≳_)
+      open ProdEquality {C} {D} {_∼C_} {_∼D_} renaming (_×-≡_ to _c×d-≡_ ; refl to reflCD) using (prod≡)
+      open Equality {C} _∼C_ renaming (_≅_ to _≅C_; _≳_ to _≳C_; now to nowC; later to laterC) 
+      open Equality {D} _∼D_ renaming (_≅_ to _≅D_; _≳_ to _≳D_; now to nowD; later to laterD) 
+      open Equality {C × D} _c×d-≡_ using (_≳_)
       open Equality.Rel
 
-{-}
-      merge-ext : (c₁ c₂ : C ⊥) (d₁ d₂ : D ⊥) → (c₁ ∼ c₂) → (d₁ ∼ d₂) → merge c₁ d₁ ≳ merge c₂ d₂ 
-      merge-ext (now c₁) (now c₂) (now d₁) (now d₂)   pc pd = now {!   !}
-      merge-ext (now c₁) (now c₂) (now d₁) (later d₂) pc pd = {!   !}
-      merge-ext (now c₁) (now c₂) (later d₁) d₂ pc pd = {!   !}
-      merge-ext (now c₁) (later c₂) d₁ d₂ pc pd = {!   !}
-      merge-ext (later c₁) c₂ d₁ d₂ pc pd = {!   !}
--}
+      merge-ext : (c₁ c₂ : C ⊥) (d₁ d₂ : D ⊥) → (c₁ ≅C c₂) → (d₁ ≅D d₂) → merge c₁ d₁ ≳ merge c₂ d₂ 
+      merge-ext (now c₁)   (now c₂)   (now d₁)   (now d₂)   (now c₁∼c₂)   (now d₁∼d₂)   = now (prod≡ c₁∼c₂ d₁∼d₂)
+      merge-ext (now c₁)   (now c₂)   (later d₁) (later d₂) pc            (later d₁∼d₂) = later (♯ (merge-ext (now c₁) (now c₂) (♭ d₁) (♭ d₂) pc (♭ d₁∼d₂)))
+      merge-ext (later c₁) (later c₂) (now d₁)   (now d₂)   (later c₁∼c₂) pd            = later (♯ (merge-ext (♭ c₁) (♭ c₂) (now d₁) (now d₂) (♭ c₁∼c₂) pd))
+      merge-ext (later c₁) (later c₂) (later d₁) (later d₂) (later c₁∼c₂) (later d₁∼d₂) = later (♯ (merge-ext (♭ c₁) (♭ c₂) (♭ d₁) (♭ d₂) (♭ c₁∼c₂) (♭ d₁∼d₂)))
+
 
       merge-refl : (c : C ⊥) (d : D ⊥) → merge c d ≳ merge c d 
-      merge-refl (now c)   (now d)   = now reflCD
-      merge-refl (now c)   (later d) = later (♯ (merge-refl (now c) (♭ d)))
-      merge-refl (later c) (now d)   = later (♯ (merge-refl (♭ c) (now d)))
-      merge-refl (later c) (later d) = later (♯ (merge-refl (♭ c) (♭ d)))
-{-}
+      merge-refl (now c)   (now d)   = {!   !}
+      merge-refl (now c)   (later d) = {!   !} --later (♯ (merge-refl (now c) (♭ d)))
+      merge-refl (later c) (now d)   = {!   !} --later (♯ (merge-refl (♭ c) (now d)))
+      merge-refl (later c) (later d) = {!   !} --later (♯ (merge-refl (♭ c) (♭ d)))
+
       lema₁ : (a : A) (b : ∞ (B ⊥)) (c : C) (f : A → C ⊥) (g : B → D ⊥) → (p : (f a) ∼ (now c))
               → (merge (now c) (bind (♭ b) g)) ≳ (bind (merge (now a) (♭ b)) (λ { (a , b) → merge (f a) (g b)}))
       lema₁ a b c f g p  with ♭ b
       ...                   | now b₁   = {!   !}
       ...                   | later b₂ = {!   !}
--}
+
       interchange : (a : A ⊥) (b : B ⊥) (f : A → C ⊥) (g : B → D ⊥)
                     → (merge (bind a f) (bind b g)) ≳ (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } ))
       interchange (now a)   (now b)   f g  = merge-refl (f a) (g b) 
-      interchange (now a)   (later b) f g  with f a      | ♭ b 
-      ...                                     | now c    | now b₁   = later (♯ {!   !})
+      interchange (now a)   (later b) f g  with f a | inspect f a
+      ... | now x | Relation.Binary.PropositionalEquality.[ eq ] = {! eq  !}
+      ... | later x | y = {!   !}
+      -- ...                                     | later c₁ = {!   !}
+      {-with f a      | ♭ b 
+      ...                                     | now c    | now b₁   = later (♯ {!  !})
       ...                                     | now c    | later b₂ = later (♯ {!   !}) 
       ...                                     | later c₁ | now b₁   = {!   !} -- laterʳ⁻¹ {C × D} {_∼_} {geq} {(merge (bind (now a) (λ _ → now c)) (bind (later b) g))} {♯ (bind (merge (now a) (later b)) (λ { (a , b) → merge (f a) (g b)}))} (later (♯ (interchange (now a) {! !} (λ _ → now c) g))) --(later (♯ (interchange (now a) (♭ b) (λ _ → now c) g)))
-      ...                                     | later c₁ | later b₂ = later (♯ {!   !}) -- laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → ♭ c₁) g)))
+      ...                                     | later c₁ | later b₂ = later (♯ {!   !}) -- laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → ♭ c₁) g)))-}
       interchange (later a) (now b)   f g  with g b 
       ...                                     | now d    = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → now d))))
       ...                                     | later d₁ = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → ♭ d₁))))
@@ -227,4 +250,4 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
                     (rid refl∼)
                     (lid refl∼)
                     (merge-associative refl∼)
-                    {!   !}   
+                    {!   !}    
