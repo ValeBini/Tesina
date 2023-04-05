@@ -118,18 +118,25 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       merge-ext (later c₁) (later c₂) (now d₁)   (now d₂)   (later c₁∼c₂) pd            = later (♯ (merge-ext (♭ c₁) (♭ c₂) (now d₁) (now d₂) (♭ c₁∼c₂) pd))
       merge-ext (later c₁) (later c₂) (later d₁) (later d₂) (later c₁∼c₂) (later d₁∼d₂) = later (♯ (merge-ext (♭ c₁) (♭ c₂) (♭ d₁) (♭ d₂) (♭ c₁∼c₂) (♭ d₁∼d₂)))
 
-
       merge-refl : (c : C ⊥) (d : D ⊥) → merge c d ≳ merge c d 
-      merge-refl (now c)   (now d)   = {!   !}
-      merge-refl (now c)   (later d) = {!   !} --later (♯ (merge-refl (now c) (♭ d)))
-      merge-refl (later c) (now d)   = {!   !} --later (♯ (merge-refl (♭ c) (now d)))
-      merge-refl (later c) (later d) = {!   !} --later (♯ (merge-refl (♭ c) (♭ d)))
+      merge-refl (now c)   (now d)   = now (reflCD reflC reflD)
+      merge-refl (now c)   (later d) = later (♯ (merge-refl (now c) (♭ d)))
+      merge-refl (later c) (now d)   = later (♯ (merge-refl (♭ c) (now d)))
+      merge-refl (later c) (later d) = later (♯ (merge-refl (♭ c) (♭ d)))
 
-      lema₁ : (a : A) (b : ∞ (B ⊥)) (c : C) (f : A → C ⊥) (g : B → D ⊥) → (p : (f a) ∼ (now c))
+      ≡⇒≅C : (c₁ c₂ : C ⊥) → (c₁ ≡ c₂) → c₁ ≅C c₂
+      ≡⇒≅C (now c₁)   (now .c₁)   prefl = now reflC
+      ≡⇒≅C (later c₁) (later .c₁) prefl = later (♯ (≡⇒≅C (♭ c₁) (♭ c₁) prefl))
+
+      ≡⇒≅D : (d₁ d₂ : D ⊥) → (d₁ ≡ d₂) → d₁ ≅D d₂
+      ≡⇒≅D (now d₁)   (now .d₁)   prefl = now reflD
+      ≡⇒≅D (later d₁) (later .d₁) prefl = later (♯ (≡⇒≅D (♭ d₁) (♭ d₁) prefl))
+
+      lema₁ : (a : A) (b : ∞ (B ⊥)) (c : C) (f : A → C ⊥) (g : B → D ⊥) → (p : (now c) ≡ (f a))
               → (merge (now c) (bind (♭ b) g)) ≳ (bind (merge (now a) (♭ b)) (λ { (a , b) → merge (f a) (g b)}))
       lema₁ a b c f g p  with ♭ b
-      ...                   | now b₁   = {!   !}
-      ...                   | later b₂ = {!   !}
+      ...                   | now b₁   = merge-ext (now c) (f a) (g b₁) (g b₁) (≡⇒≅C (now c) (f a) p) (≡⇒≅D (g b₁) (g b₁) prefl)
+      ...                   | later b₂ = later (♯ {!   !})
 
       interchange : (a : A ⊥) (b : B ⊥) (f : A → C ⊥) (g : B → D ⊥)
                     → (merge (bind a f) (bind b g)) ≳ (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } ))
