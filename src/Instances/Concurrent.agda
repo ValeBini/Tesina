@@ -8,7 +8,7 @@ open import Data.Bool.Base
 open import Function.Base
 open import Relation.Binary as B hiding (Rel)
 open import Data.Unit
-open import Relation.Binary.PropositionalEquality using (_≡_ ; inspect) renaming (refl to prefl)
+open import Relation.Binary.PropositionalEquality using (_≡_ ; inspect) renaming (refl to prefl; sym to psym)
 open import Partiality
 
 private
@@ -136,20 +136,14 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
               → (merge (now c) (bind (♭ b) g)) ≳ (bind (merge (now a) (♭ b)) (λ { (a , b) → merge (f a) (g b)}))
       lema₁ a b c f g p  with ♭ b
       ...                   | now b₁   = merge-ext (now c) (f a) (g b₁) (g b₁) (≡⇒≅C (now c) (f a) p) (≡⇒≅D (g b₁) (g b₁) prefl)
-      ...                   | later b₂ = later (♯ {!   !})
+      ...                   | later b₂ = later (♯ lema₁ a b₂ c f g p)
 
       interchange : (a : A ⊥) (b : B ⊥) (f : A → C ⊥) (g : B → D ⊥)
                     → (merge (bind a f) (bind b g)) ≳ (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } ))
       interchange (now a)   (now b)   f g  = merge-refl (f a) (g b) 
       interchange (now a)   (later b) f g  with f a | inspect f a
-      ... | now x | Relation.Binary.PropositionalEquality.[ eq ] = {! eq  !}
-      ... | later x | y = {!   !}
-      -- ...                                     | later c₁ = {!   !}
-      {-with f a      | ♭ b 
-      ...                                     | now c    | now b₁   = later (♯ {!  !})
-      ...                                     | now c    | later b₂ = later (♯ {!   !}) 
-      ...                                     | later c₁ | now b₁   = {!   !} -- laterʳ⁻¹ {C × D} {_∼_} {geq} {(merge (bind (now a) (λ _ → now c)) (bind (later b) g))} {♯ (bind (merge (now a) (later b)) (λ { (a , b) → merge (f a) (g b)}))} (later (♯ (interchange (now a) {! !} (λ _ → now c) g))) --(later (♯ (interchange (now a) (♭ b) (λ _ → now c) g)))
-      ...                                     | later c₁ | later b₂ = later (♯ {!   !}) -- laterʳ⁻¹ (later (♯ (interchange (now a) (♭ b) (λ _ → ♭ c₁) g)))-}
+      ... | now c | Relation.Binary.PropositionalEquality.[ eq ] = later (♯ (lema₁ a b c f g (psym eq)))
+      ... | later c | Relation.Binary.PropositionalEquality.[ eq ] = {!   !}
       interchange (later a) (now b)   f g  with g b 
       ...                                     | now d    = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → now d))))
       ...                                     | later d₁ = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → ♭ d₁))))
