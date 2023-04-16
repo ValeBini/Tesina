@@ -132,18 +132,18 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
       ≡⇒≅D (now d₁)   (now .d₁)   prefl = now reflD
       ≡⇒≅D (later d₁) (later .d₁) prefl = later (♯ (≡⇒≅D (♭ d₁) (♭ d₁) prefl))
 
-      lema₁ : (a : A) (b : ∞ (B ⊥)) (c : C) (f : A → C ⊥) (g : B → D ⊥) → (p : (now c) ≡ (f a))
-              → (merge (now c) (bind (♭ b) g)) ≳ (bind (merge (now a) (♭ b)) (λ { (a , b) → merge (f a) (g b)}))
+      lema₁ : (a : A) (b : ∞ (B ⊥)) (c : C) (f : A → C ⊥) (g : B → D ⊥) → (p : (f a) ≡ (now c))
+              → (bind (merge (now a) (♭ b)) (λ { (a , b) → merge (f a) (g b)})) ≳ (merge (now c) (bind (♭ b) g))
       lema₁ a b c f g p  with ♭ b
-      ...                   | now b₁   = merge-ext (now c) (f a) (g b₁) (g b₁) (≡⇒≅C (now c) (f a) p) (≡⇒≅D (g b₁) (g b₁) prefl)
+      ...                   | now b₁   = merge-ext (f a) (now c) (g b₁) (g b₁) ((≡⇒≅C (f a) (now c) p)) ((≡⇒≅D (g b₁) (g b₁) prefl)) 
       ...                   | later b₂ = later (♯ lema₁ a b₂ c f g p)
 
       interchange : (a : A ⊥) (b : B ⊥) (f : A → C ⊥) (g : B → D ⊥)
-                    → (merge (bind a f) (bind b g)) ≳ (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } ))
+                    → (bind (merge a b) (λ { (a , b) → merge (f a) (g b) } )) ≳ (merge (bind a f) (bind b g))
       interchange (now a)   (now b)   f g  = merge-refl (f a) (g b) 
       interchange (now a)   (later b) f g  with f a | inspect f a
-      ... | now c | Relation.Binary.PropositionalEquality.[ eq ] = later (♯ (lema₁ a b c f g (psym eq)))
-      ... | later c | Relation.Binary.PropositionalEquality.[ eq ] = {!   !}
+      ... | now c | Relation.Binary.PropositionalEquality.[ eq ] = later (♯ (lema₁ a b c f g eq))
+      ... | later c | Relation.Binary.PropositionalEquality.[ eq ] = later (♯ {!   !})
       interchange (later a) (now b)   f g  with g b 
       ...                                     | now d    = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → now d))))
       ...                                     | later d₁ = {!   !} -- laterʳ⁻¹ (later (♯ (interchange (♭ a) (now b) f (λ _ → ♭ d₁))))
