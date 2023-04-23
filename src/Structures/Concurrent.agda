@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 open import Data.Product as Prod
 open import Data.Unit
 
