@@ -1,24 +1,143 @@
 {-# OPTIONS --guardedness #-}
 
 open import Codata.Musical.Notation
+open import Data.Nat as Nat using (ℕ; zero; suc; _≤_)
 open import Relation.Binary.PropositionalEquality
 
 data Coℕ : Set where
    zero : Coℕ
    suc  : ∞ Coℕ → Coℕ
 
-inf : Coℕ
-inf = suc (♯ inf)
+-- Bisimilarity 
+
+infix 4 _≈_
 
 data _≈_ : Coℕ → Coℕ → Set where
   zero : zero ≈ zero
   suc  : ∀ {m n} → ∞ (♭ m ≈ ♭ n) → suc m ≈ suc n
 
+refl≈ : {n : Coℕ} → n ≈ n 
+refl≈ {zero}  = zero
+refl≈ {suc x} = suc (♯ refl≈)
+
+sym≈ : {m n : Coℕ} → m ≈ n → n ≈ m 
+sym≈ zero    = zero
+sym≈ (suc p) = suc (♯ (sym≈ (♭ p)))
+
+trans≈ : {m n o : Coℕ} → m ≈ n → n ≈ o → m ≈ o 
+trans≈ zero    zero    = zero
+trans≈ (suc p) (suc q) = suc (♯ (trans≈ (♭ p) (♭ q)))
+
+≡⇒≈ : ∀ {n m : Coℕ} → n ≡ m → n ≈ m 
+≡⇒≈ refl = refl≈
+
+-- Equational reasoning combinators.
+
+infix  -1 finally-≈ _∎≈
+infixr -2 step-≈ _≡⟨⟩≈_
+
+_∎≈ : {n : Coℕ} → n ≈ n
+_∎≈ = refl≈ 
+
+step-≈ : ∀ m {n o} → n ≈ o → m ≈ n → m ≈ o
+step-≈ _ n≈o m≈n = trans≈ m≈n n≈o
+
+syntax step-≈ m n≈o m≈n = m ≈⟨ m≈n ⟩ n≈o
+
+_≡⟨⟩≈_ : ∀ m {n} → m ≈ n → m ≈ n
+_ ≡⟨⟩≈ m≈n = m≈n
+
+finally-≈ : ∀ m n → m ≈ n → m ≈ n
+finally-≈ _ _ m≈n = m≈n
+
+syntax finally-≈ m n m≈n = m ≈⟨ m≈n ⟩∎ n ∎≈
+
+-- The largest conatural number 
+inf : Coℕ
+inf = suc (♯ inf)
+
+-- Turns natural numbers into conatural numbers
+⌜_⌝ : ℕ → Coℕ 
+⌜ zero ⌝  = zero
+⌜ suc n ⌝ = suc (♯ ⌜ n ⌝)
+
+-- ⌜_⌝ maps equal numbers to bisimilar numbers
+⌜⌝-cong : {m n : ℕ} → m ≡ n → ⌜ m ⌝ ≈ ⌜ n ⌝ 
+⌜⌝-cong refl = refl≈
+
+-- Addition 
+
+infixl 6 _+_
+
+_+_ : Coℕ → Coℕ → Coℕ
+zero    + n = n
+(suc m) + n = suc (♯ ((♭ m) + n))
+
+-- Zero is a left and right identity of addition (up to bisimilarity).
+
++-left-identity : ∀ (n : Coℕ) → zero + n ≈ n 
++-left-identity n = refl≈
+
++-right-identity : ∀ (n : Coℕ) → n + zero ≈ n 
++-right-identity zero    = zero
++-right-identity (suc n) = suc (♯ (+-right-identity (♭ n)))
+
+-- Infinity is a left and right zero of addition (up to bisimilarity). 
+
++-left-zero : ∀ {n : Coℕ} → inf + n ≈ inf 
++-left-zero = suc (♯ +-left-zero)
+
++-right-zero : ∀ (n : Coℕ) → n + inf ≈ inf 
++-right-zero zero    = refl≈
++-right-zero (suc n) = suc (♯ (+-right-zero (♭ n)))
+
+-- Addition is associative.
+
++-assoc : ∀ {m n o : Coℕ} → m + (n + o) ≈ (m + n) + o 
++-assoc {zero}  = refl≈
++-assoc {suc m} = suc (♯ +-assoc {♭ m})
+
+-- The successor constructor can be moved from one side of _+_ to the other.
+{- mutual 
+  suc+≈+suc : ∀ {m n : ∞ Coℕ} → suc m + (♭ n) ≈ (♭ m) + suc n 
+  suc+≈+suc {m} {n} = 
+            suc m + (♭ n) ≈⟨ suc (♯ refl≈) ⟩ 
+            ⌜ 1 ⌝ + (♭ m) + (♭ n) ≈⟨ 1++≈+suc (♭ m) ⟩∎ 
+            (♭ m) + suc n ∎≈ 
+
+  1++≈+suc : ∀ (m : Coℕ) {n : ∞ Coℕ} → ⌜ 1 ⌝ + m + (♭ n) ≈ m + (suc n)
+  1++≈+suc zero    = suc (♯ refl≈)
+  1++≈+suc (suc m) = suc (♯ suc+≈+suc)
+
+
+suc≈1+ : ∀ {n : ∞ Coℕ} → suc n ≈ ⌜ 1 ⌝ + (♭ n) 
+suc≈1+ = suc (♯ refl≈)
+
+suc≈+1 : ∀ {n : ∞ Coℕ} → suc n ≈ (♭ n) + ⌜ 1 ⌝ 
+suc≈+1 {n} with ♭ n   | inspect ♭ n 
+...           | zero  | [ eq ] = suc (♯ ≡⇒≈ eq)
+...           | suc m | [ eq ] = 
+                    suc n           ≈⟨ suc (♯ ≡⇒≈ eq) ⟩
+                    suc (♯ (suc m)) ≈⟨ suc (♯ (suc≈+1 {m})) ⟩∎  
+                    {!  ⌜ 1 ⌝ + (♭ m)  !} ∎≈
+
+-- Addition is commutative. 
+
++-comm : ∀ {m n : Coℕ} → m + n ≈ n + m 
++-comm {zero}  {n} = 
+        zero + n ≈⟨ sym≈ (+-right-identity _) ⟩∎ 
+        n + zero ∎≈
++-comm {suc m} {n} = {!   !}
+-}
+
+
+{-}
+
 data _≳_ : Coℕ → Coℕ → Set where
   zero  : zero ≳ zero
   suc   : ∀ {m n} → ∞ (♭ m ≳ ♭ n) → suc m ≳ suc n
   sucˡ  : ∀ {m n} → (♭ m) ≳ n → suc m ≳ n
-
+  
 refl≳ : {n : Coℕ} → n ≳ n
 refl≳ {zero}  = zero
 refl≳ {suc n} = suc (♯ (refl≳))
@@ -66,11 +185,6 @@ max : Coℕ → Coℕ → Coℕ
 max zero n          = n
 max (suc m) zero    = suc m
 max (suc m) (suc n) = suc (♯ (max (♭ m) (♭ n)))
-
-sum : Coℕ → Coℕ → Coℕ
-sum zero n          = n
-sum (suc m) zero    = suc m
-sum (suc m) (suc n) = suc (♯ (suc (♯ (sum (♭ m) (♭ n)))))
 
 maxzero₁ : {n : Coℕ} → n ≳ max n zero
 maxzero₁ {zero}  = zero
@@ -225,3 +339,5 @@ interchange (suc a) (suc b) zero    zero    = suc (♯ refl≳)
 interchange (suc a) (suc b) zero    (suc d) = suc (♯ {!   !})
 interchange (suc a) (suc b) (suc c) zero    = suc (♯ {!   !})
 interchange (suc a) (suc b) (suc c) (suc d) = suc (♯ (suc (♯ (interchange (♭ a) (♭ b) (♭ c) (♭ d)))))
+
+-}
