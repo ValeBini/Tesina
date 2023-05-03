@@ -2,6 +2,7 @@
 
 open import Data.Product as Prod
 open import Data.Unit
+open import Relation.Binary.Structures
 
 module Structures.ConcurrentMonoid where
 
@@ -10,7 +11,9 @@ module Structures.ConcurrentMonoid where
       makeConcurrentMonoid
     field
       _≅ₘ_    : M → M → Set
+      eqₘ     : IsEquivalence _≅ₘ_
       _≲ₘ_    : M → M → Set 
+      porderₘ : IsPreorder _≅ₘ_ _≲ₘ_
       zeroₘ   : M
       _+ₘ_    : M → M → M
       sidl    : (x : M) → (zeroₘ +ₘ x) ≅ₘ x

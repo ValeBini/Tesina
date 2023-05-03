@@ -4,6 +4,7 @@ module CoNaturalInstances.ConcurrentMonoidD where
 
 open import Size
 open import Data.Nat as Nat using (ℕ; zero; suc; _≤_)
+open import Relation.Binary.Structures
 open import Relation.Binary.PropositionalEquality hiding ([_])
 open import Data.Empty
 open import Function.Equivalence using (_⇔_)
@@ -12,10 +13,15 @@ open import Data.Sum
 open import CoNaturalsD
 open import Structures.ConcurrentMonoid
 
+∼eq : IsEquivalence {?} {?} {Conat ∞} [_]_∼_ 
+∼eq = ?
+
 conaturalsD : ConcurrentMonoid (Conat ∞)
 conaturalsD = makeConcurrentMonoid 
                 ([_]_∼_ ∞) 
+                {!   !}
                 ([_]_≤_ ∞) 
+                {!   !}
                 zero 
                 _+_ 
                 +-left-identity 
