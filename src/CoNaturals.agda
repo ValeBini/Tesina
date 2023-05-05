@@ -3,6 +3,9 @@
 open import Codata.Musical.Notation
 open import Data.Nat as Nat using (ℕ; zero; suc; _≤_)
 open import Relation.Binary.PropositionalEquality
+open import Data.Empty
+open import Function.Equivalence using (_⇔_)
+open import Data.Sum
 
 data Coℕ : Set where
    zero : Coℕ
@@ -130,18 +133,214 @@ suc≈+1 {n} with ♭ n   | inspect ♭ n
 +-comm {suc m} {n} = {!   !}
 -}
 
+-- Addition preserves bisimilarity.
 
-{-}
+infixl 6 _+-cong_
+
+_+-cong_ : ∀ {m₁ m₂ n₁ n₂ : Coℕ} → m₁ ≈ m₂ → n₁ ≈ n₂ → m₁ + n₁ ≈ m₂ + n₂
+zero  +-cong q = q
+suc p +-cong q = suc (♯ ((♭ p) +-cong q))
+
+-- ⌜_⌝ is homomorphic with respect to addition.
+
+⌜⌝-+ : ∀ {m n : ℕ} → ⌜ m Nat.+ n ⌝ ≈ ⌜ m ⌝ + ⌜ n ⌝ 
+⌜⌝-+ {zero}  = refl≈
+⌜⌝-+ {suc m} = suc (♯ (⌜⌝-+ {m})) 
+
+-- Ordering 
 
 data _≳_ : Coℕ → Coℕ → Set where
   zero  : zero ≳ zero
   suc   : ∀ {m n} → ∞ (♭ m ≳ ♭ n) → suc m ≳ suc n
   sucˡ  : ∀ {m n} → (♭ m) ≳ n → suc m ≳ n
-  
+
+infix 4 _>_ 
+
+_>_ : Coℕ → Coℕ → Set 
+m > n = m ≳ suc (♯ n)
+
+   
+
+-- Every conatural number is less than or equal to infinity.
+{-}
+infix 4 inf≳ 
+
+-- no termina 
+inf≳ : ∀ (n : Coℕ) → inf ≳ n 
+inf≳ zero    = sucˡ (inf≳ zero)
+inf≳ (suc n) = suc (♯ (inf≳ (♭ n)))
+-} 
+
+-- No natural number is greater than or equal to infinity.
+
+¬_ : Set → Set 
+¬ X = X → ⊥ 
+
+⌜⌝⋧inf : ∀ (n : ℕ) → ¬ (⌜ n ⌝ ≳ inf)
+⌜⌝⋧inf zero   ()
+⌜⌝⋧inf (suc n) (suc p)  = ⌜⌝⋧inf n (♭ p)
+⌜⌝⋧inf (suc n) (sucˡ p) = ⌜⌝⋧inf n p
+
+-- No number is less than zero.
+
+0≯ : ∀ {n : Coℕ} → ¬ (zero > n)
+0≯ {n} ()
+
+-- If a number is not bounded from above by any natural number, then it is bisimilar to infinity.
+
+¬⌜⌝≳→≈∞ : ∀ (m : Coℕ) → (∀ (n : ℕ) → ¬ (⌜ n ⌝ ≳ m)) → m ≈ inf 
+¬⌜⌝≳→≈∞ zero    p = ⊥-elim (p 0 zero)
+¬⌜⌝≳→≈∞ (suc m) p = suc (♯ (¬⌜⌝≳→≈∞ (♭ m) (λ n x → p (suc n) (suc (♯ x)))))
+
+-- The ordering relation is a partial order (with respect to bisimilarity).
+
 refl≳ : {n : Coℕ} → n ≳ n
 refl≳ {zero}  = zero
 refl≳ {suc n} = suc (♯ (refl≳))
 
+≳suc→≳ : ∀ {n : Coℕ} {m : ∞ Coℕ} → n ≳ suc m → n ≳ ♭ m 
+≳suc→≳ {suc n} {m} (suc p)  = sucˡ (♭ p)
+≳suc→≳ {suc n} {m} (sucˡ p) = sucˡ (≳suc→≳ p)
+
+antisym≳ : ∀ {m n : Coℕ} → m ≳ n → n ≳ m → m ≈ n 
+antisym≳ zero q   = zero
+antisym≳ (suc p) (suc  q)  = suc (♯ antisym≳ (♭ p) (♭ q))
+antisym≳ (suc p) (sucˡ q)  = suc (♯ antisym≳ (♭ p) (≳suc→≳ q))
+antisym≳ (sucˡ p) (suc q)  = suc (♯ (antisym≳ (≳suc→≳ p) (♭ q)))
+antisym≳ (sucˡ p) (sucˡ q) = suc (♯ (antisym≳ (≳suc→≳ p) (≳suc→≳ q)))
+
+trans≳ : ∀ {m n o : Coℕ} → m ≳ n → n ≳ o → m ≳ o 
+trans≳ zero zero = zero
+trans≳ (suc p) (suc q) = suc (♯ (trans≳ (♭ p) (♭ q)))
+trans≳ (suc p) (sucˡ q) = sucˡ (trans≳ (♭ p) q)
+trans≳ (sucˡ p) zero = sucˡ p
+trans≳ (sucˡ p) (suc q) = suc (♯ (trans≳ (≳suc→≳ p) (♭ q)))
+trans≳ (sucˡ p) (sucˡ q) = sucˡ (trans≳ (≳suc→≳ p) q) 
+
+
+
+-- Bisimilarity is contained in the ordering relation.
+
+≈→≳ : ∀ {m n : Coℕ} → m ≈ n → m ≳ n 
+≈→≳ zero    = zero
+≈→≳ (suc p) = suc (♯ (≈→≳ (♭ p)))
+
+-- "Equational" reasoning combinators.
+
+infix  -1 finally-≳ _∎≳
+infixr -2 step-≳ step-≈≳ _≡⟨⟩≳_
+
+_∎≳ : ∀ (n : Coℕ) → n ≳ n
+_∎≳ n = refl≳ {n}
+
+step-≳ : ∀ (m : Coℕ) {n o : Coℕ} → n ≳ o → m ≳ n → m ≳ o
+step-≳ _ n≳o m≳n = trans≳ m≳n n≳o
+
+syntax step-≳ m n≳o m≳n = m ≳⟨ m≳n ⟩ n≳o
+
+step-≈≳ : ∀ (m : Coℕ) {n o : Coℕ} → n ≳ o → m ≈ n → m ≳ o
+step-≈≳ _ n≳o m≈n = step-≳ _ n≳o (≈→≳ m≈n)
+
+syntax step-≈≳ m n≳o m≈n = m ≈⟨ m≈n ⟩≳ n≳o
+
+_≡⟨⟩≳_ : ∀ (m : Coℕ) {n : Coℕ} → m ≳ n → m ≳ n
+_ ≡⟨⟩≳ m≳n = m≳n
+
+finally-≳ : ∀ (m n : Coℕ) → m ≳ n → m ≳ n
+finally-≳ _ _ m≳n = m≳n
+
+syntax finally-≳ m n m≳n = m ≳⟨ m≳n ⟩∎ n ∎≳
+
+-- The ordering relation respects the ordering relation (contravariantly in the first argument).
+
+infix 4 _≳-cong-≳_ 
+
+_≳-cong-≳_ : ∀ {m m' n n' : Coℕ} → m ≳ m' → n' ≳ n → n ≳ m → n' ≳ m'
+_≳-cong-≳_ {m} {m'} {n} {n'} m≳m' n'≳n n≳m = 
+    n' ≳⟨ n'≳n ⟩ 
+    n  ≳⟨ n≳m ⟩ 
+    m  ≳⟨ m≳m' ⟩ 
+    m' ∎≳ 
+
+-- A kind of preservation result for bisimilarity, ordering and logical equivalence.
+
+infix 4 _≳-cong-≈_ 
+
+_≳-cong-≈_ : ∀ {m m' n n' : Coℕ} → m ≈ m' → n ≈ n' → (m ≳ n) ⇔ (m' ≳ n')
+m≈m' ≳-cong-≈ n≈n' = record 
+                  { to = record { _⟨$⟩_ = ≈→≳ n≈n' ≳-cong-≳ ≈→≳ (sym≈ m≈m') ; cong = λ { refl → refl} } 
+                  ; from = record { _⟨$⟩_ = ≈→≳ (sym≈ n≈n') ≳-cong-≳ ≈→≳ m≈m' ; cong = λ { refl → refl} } } 
+
+
+-- Some inversion lemmas. 
+
+cancel-suc-≳ : ∀ {m n : ∞ Coℕ} → suc m ≳ suc n → (♭ m) ≳ (♭ n)
+cancel-suc-≳ (suc p)  = ♭ p
+cancel-suc-≳ (sucˡ p) = ≳suc→≳ p
+
+-- The successor of a number is greater than or equal to the number.
+
+suc≳ : ∀ {n : ∞ Coℕ} → suc n ≳ (♭ n) 
+suc≳ = sucˡ refl≳
+
+-- If a number is less than or equal to another, then it is also less than or equal to the others successor.
+
+≳→suc≳ : ∀ {m : Coℕ} {n : ∞ Coℕ} → (♭ n) ≳ m → suc n ≳ m 
+≳→suc≳ {zero}  {n} p = sucˡ p
+≳→suc≳ {suc m} {n} p = suc (♯ (≳suc→≳ p))
+
+-- If m is less than n, then m is less than or equal to n.
+
+>→≳ : ∀ {m n : Coℕ} → m > n → m ≳ n 
+>→≳ (suc p)  = ≳→suc≳ (♭ p)
+>→≳ (sucˡ p) = ≳→suc≳ (≳suc→≳ p)
+
+-- If you add something to a number, then you get something that is
+-- greater than or equal to what you started with.
+{-
+-- no termina
+n+m≳m : ∀ {m n : Coℕ} → (n + m) ≳ m 
+n+m≳m {m} {zero}  = refl≳
+n+m≳m {m} {suc n} = ≳→suc≳ n+m≳m 
+
+m+n≳m : ∀ {m n : Coℕ} → (m + n) ≳ m 
+m+n≳m {m} {zero}  = {!   !}
+m+n≳m {m} {suc n} = {!   !}
+-}
+
+-- One can decide whether a natural number is greater than or equal
+-- to, or less than, any number.
+{-
+-- no termina
+⌜⌝≳⊎⌜⌝< : ∀ (m : Coℕ) (n : ℕ) → (⌜ n ⌝ ≳ m) ⊎ (m > ⌜ n ⌝)
+⌜⌝≳⊎⌜⌝< zero    zero    = inj₁ zero
+⌜⌝≳⊎⌜⌝< zero    (suc n) = map sucˡ (λ { ()}) (⌜⌝≳⊎⌜⌝< zero n)
+⌜⌝≳⊎⌜⌝< (suc m) zero    = inj₂ (≳→suc≳ {!   !})
+⌜⌝≳⊎⌜⌝< (suc m) (suc n) = {!   !}
+-}
+-- One can decide whether a natural number is less than or equal to,
+-- or greater than, any number.
+{-
+-- no termina
+≳⌜⌝⊎<⌜⌝ : ∀ (m : ℕ) (n : Coℕ) → n ≳ ⌜ m ⌝ ⊎ ⌜ m ⌝ > n  
+≳⌜⌝⊎<⌜⌝ zero    zero    = inj₁ zero
+≳⌜⌝⊎<⌜⌝ zero    (suc n) = {!   !}
+≳⌜⌝⊎<⌜⌝ (suc m) n = {!   !}
+-}
+
+-- ⌜_⌝ is monotone.
+nat≮0 : ∀ (n : ℕ) → ¬ (Nat._>_ zero n)
+nat≮0 n = λ {()}
+{-
+-- no termina
+⌜⌝-mono : ∀ {m n : ℕ} → m Nat.≥ n → ⌜ m ⌝ ≳ ⌜ n ⌝ 
+⌜⌝-mono {zero}  {zero}  m≥n = zero
+⌜⌝-mono {suc m} {zero}  m≥n = {!   !}
+⌜⌝-mono {suc m} {suc n} m≥n = {!   !}
+-}
+
+
+{-}
 succ : Coℕ → Coℕ
 succ n = suc (♯ n)
 
@@ -340,4 +539,4 @@ interchange (suc a) (suc b) zero    (suc d) = suc (♯ {!   !})
 interchange (suc a) (suc b) (suc c) zero    = suc (♯ {!   !})
 interchange (suc a) (suc b) (suc c) (suc d) = suc (♯ (suc (♯ (interchange (♭ a) (♭ b) (♭ c) (♭ d)))))
 
--}
+-} 
