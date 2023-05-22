@@ -13,22 +13,29 @@ open import Data.Sum
 open import CoNaturalsD
 open import Structures.ConcurrentMonoid
 
-∼eq : IsEquivalence {?} {?} {Conat ∞} [_]_∼_ 
-∼eq = ?
+∼eq : IsEquivalence ([ ∞ ]_∼_)
+∼eq = record { refl = reflexive-∼ _
+             ; sym = symmetric-∼
+             ; trans = transitive-∼ }
+
+∼preord : IsPreorder ([ ∞ ]_∼_) ([ ∞ ]_≤_)
+∼preord = record { isEquivalence = ∼eq
+                 ; reflexive = ∼→≤
+                 ; trans = transitive-≤ }
 
 conaturalsD : ConcurrentMonoid (Conat ∞)
-conaturalsD = makeConcurrentMonoid 
-                ([_]_∼_ ∞) 
-                {!   !}
-                ([_]_≤_ ∞) 
-                {!   !}
-                zero 
-                _+_ 
-                +-left-identity 
-                +-right-identity 
-                (λ x y z → +-assoc x {y} {z} {∞}) 
-                max 
-                (max-left-identity {∞}) 
-                (max-right-identity {∞}) 
-                (max-assoc {∞}) 
+conaturalsD = makeConcurrentMonoid
+                ([ ∞ ]_∼_)
+                ∼eq
+                ([ ∞ ]_≤_)
+                ∼preord
+                zero
+                _+_
+                +-left-identity
+                +-right-identity
+                (λ x y z → +-assoc x {y} {z} {∞})
+                max
+                (max-left-identity {∞})
+                (max-right-identity {∞})
+                (max-assoc {∞})
                 interchange
