@@ -1,0 +1,74 @@
+\newenvironment{abstract}%
+    {\cleardoublepage\thispagestyle{empty}\null\vfill\begin{center}%
+    \bfseries\abstractname\end{center}}%
+    {\vfill\null}
+
+
+\makeatletter
+\renewenvironment{thebibliography}[1]
+     {\section*{\bibname}% <-- this line was changed from \chapter* to \section*
+      \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\makeatother
+
+
+\makeatletter
+\renewcommand\part{%
+  \if@openright
+    \cleardoublepage
+  \else
+    \clearpage
+  \fi
+  \thispagestyle{empty}%   % Original "plain" replaced by "empty"
+  \if@twocolumn
+    \onecolumn
+    \@tempswatrue
+  \else
+    \@tempswafalse
+  \fi
+  \null\vfil
+  \secdef\@part\@spart}
+\makeatother
+
+\usepackage{etoolbox}% http://ctan.org/pkg/etoolbox
+\makeatletter
+% \patchcmd{<cmd>}{<search>}{<replace>}{<success>}{<failure>}
+% --- Patch \chapter
+\patchcmd{\@makechapterhead}{50\p@}{\chapheadtopskip}{}{}% Space from top of page to CHAPTER X
+\patchcmd{\@makechapterhead}{20\p@}{\chapheadsep}{}{}% Space between CHAPTER X and CHAPTER TITLE
+\patchcmd{\@makechapterhead}{40\p@}{\chapheadbelowskip}{}{}% Space between CHAPTER TITLE and text
+% --- Patch \chapter*
+\patchcmd{\@makeschapterhead}{50\p@}{\chapheadtopskip}{}{}% Space from top of page to CHAPTER TITLE
+\patchcmd{\@makeschapterhead}{40\p@}{\chapheadbelowskip}{}{}% SPace between CHAPTER TITLE and text
+\makeatother
+% Set new lengths
+\newlength{\chapheadtopskip}\setlength{\chapheadtopskip}{0pt}
+\newlength{\chapheadsep}\setlength{\chapheadsep}{15pt}
+\newlength{\chapheadbelowskip}\setlength{\chapheadbelowskip}{20pt}
+
+\hypersetup{
+     linktocpage,
+     colorlinks=true,                %set true for colored links
+     citecolor=MidnightBlue,
+     linkcolor=MidnightBlue  
+}
+
+\setlength{\parskip}{1ex}
+\setlength{\epigraphwidth}{9cm} 
+\setcounter{tocdepth}{1}
+\selectbiblanguage{spanish}

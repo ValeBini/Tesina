@@ -1,0 +1,97 @@
+\documentclass[a4paper,spanish,fixlanguage]{book}
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,mathtools}    
+\usepackage{stmaryrd}
+\usepackage[dvipsnames]{xcolor}      %MidnightBlue color in links
+\usepackage[resetlabels]{multibib}   %multiple bibliographies
+\usepackage[margin=1.55in]{geometry} %page size
+%\usepackage{cmbright}                %font
+\usepackage{amsthm}                  %theorem styles
+\usepackage[spanish]{babelbib}       %bibliografía en español
+\usepackage{catchfilebetweentags}    %inclusión de pedazos de código
+\usepackage{url}
+\usepackage{float}                   %H option in figure
+\usepackage[all]{xy}                 %categorical schemas
+\usepackage{mathrsfs}
+\usepackage{epigraph}
+\usepackage{proof}                   %infer, used in exponential.tex
+\usepackage{rotating}
+\usepackage{latex/agda}
+\usepackage[hidelinks]{hyperref}
+%\usepackage{changepage}
+\usepackage{bookmark}
+\usepackage[header]{appendix}
+\usepackage{dirtree}                 %directory tree of the appendix
+\usepackage{sty/macros}              %macros
+\usepackage{sty/unicode}             %unicode characters
+\usepackage{sty/prefs}
+
+\usepackage{amsfonts}
+
+
+%\newcites{Intro}{Referencias hist\'{o}ricas}
+%\newcommand{\gitcode}{\url{http://www.github.com/eugeniasimich/containers}}
+
+
+
+\begin{document}
+
+\include{tex/titlepage}
+\thispagestyle{empty}
+
+%\include{tex/resumen}
+%\thispagestyle{empty}
+
+%\frontmatter
+
+\tableofcontents
+
+%\mainmatter
+
+%\include{tex/introduccion}
+
+\part{Preliminares}
+
+\include{tex/agda}
+%\include{tex/categorias}
+
+%\part{Formalización de Containers}\label{part:cont}
+
+%\include{tex/containers}
+%\include{tex/construcciones}
+%\input{tex/coproducto}
+%\input{tex/producto}
+%\input{tex/terminal}
+%\input{tex/exponencial}
+
+%\bookmarksetup{startatroot}
+
+%\include{tex/conclusiones}
+
+%\begin{appendices}
+%\include{tex/guia}
+%\end{appendices}
+
+\backmatter
+
+\chapter{Bibliograf\'{i}a}
+
+\bibliographystyleIntro{babalpha}
+\bibliographyIntro{bib/bibintro}
+\addcontentsline{toc}{section}{Referencias históricas}
+
+\newcommand{\nombredelabiblio}{Bibliograf\'{i}a general}
+\renewcommand\bibname{\nombredelabiblio}
+
+\bibliographystyle{babalpha}
+\bibliography{bib/biblio}
+\addcontentsline{toc}{section}{\nombredelabiblio}
+
+
+\end{document}
+
+
+
+
