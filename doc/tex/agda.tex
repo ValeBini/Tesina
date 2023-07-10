@@ -10,7 +10,7 @@ El objetivo de esta sección es presentar una introducción a Agda, haciendo én
 
 \section{Tipos de datos y \textit{Pattern Matching}}
 
-Un concepto clave en Agda es el \textit{pattern matching} sobre tipos de datos algebraicos. Al agregar los tipos dependientes el \textit{pattern matching} se hace aún más poderoso. Se verá este tema más en detalle en la sección ??. Para comenzar, en esta sección se describirán las funciones y tipos de datos con tipos simples. 
+Un concepto clave en Agda es el \textit{pattern matching} sobre tipos de datos algebraicos. Al agregar los tipos dependientes el \textit{pattern matching} se hace aún más poderoso. Se verá este tema más en detalle en la sección \ref{dependent}. Para comenzar, en esta sección se describirán las funciones y tipos de datos con tipos simples. 
 
 Los tipos de datos se definen utilizando una declaración \AgdaKeyword{data}, en la que se especifica el nombre y el tipo del tipo de dato a definir, así como los constructores y sus respectivos tipos. En el siguiente código se puede ver una forma de definir el tipo de los booleanos:
 
@@ -34,17 +34,19 @@ Para garantizar la terminación de la función, las llamadas recursivas deben se
 
 Si el nombre de una función contiene guiones bajos (\AgdaSymbol{\_}), entonces puede ser utilizado como un operador en el cual los argumentos se posicionan donde están los guiones bajos. En consecuencia, la función \AgdaFunction{\_+\_} puede ser utilizada como un operador infijo escribiendo \AgdaArgument{n} \AgdaFunction{+} \AgdaArgument{m} en lugar de \AgdaFunction{\_+\_} \AgdaArgument{n m}. 
 
-La precedencia y asociatividad de un operador se define utilizando una declaración \AgdaKeyword{infix}. Para mostrar esto se agregará, además de la suma, una función producto (la cual tiene más precedencia que la suma). La precedencia y asociatividad de ambas funciones podría escribirse de la siguiente manera:
+La precedencia y asociatividad de un operador se define utilizando una declaración \AgdaKeyword{infix}. Para mostrar esto se agregará, además de la suma, una función producto (la cual tiene más precedencia que la suma). La precedencia y asociatividad de ambas funciones podrían escribirse de la siguiente manera:
 
 \ExecuteMetaData[latex/Agda.tex]{precedence}
 
 La palabra clave \AgdaKeyword{infixl} indica que se asocia a izquierda (de igual manera existe \AgdaKeyword{infixr} para asociar a derecha o \AgdaKeyword{infix} si no se asocia hacia ningún lado) y el número que sigue indica la precedencia, operadores con mayor número tendrán más precedencia que operadores con menor número.
 
-\subsection{Tipos de datos parametrizados}
+\subsection{Tipos de datos parametrizados}\label{parametrized}
 
 Los tipos de datos pueden estar parametrizados por otros tipos de datos. El tipo de las listas de elementos de tipo arbitrario se define de la siguiente manera:
 
 \ExecuteMetaData[latex/Agda.tex]{lists}
+
+En este ejemplo el tipo \AgdaDatatype{List} está parametrizado por el tipo \AgdaArgument{A}, el cual define el tipo de dato que tendrán los elementos de las listas. \AgdaDatatype{List} \AgdaArgument{$\mathbb{N}$} es el tipo de las listas de números naturales. 
 
 
 \subsection{Patrones con puntos}
@@ -96,7 +98,7 @@ En este caso, el valor que tome \AgdaArgument{x} \AgdaFunction{<} \AgdaArgument{
 
 \ExecuteMetaData[latex/Agda.tex]{min2} 
 
-\section{Funciones dependientes}
+\section{Funciones dependientes}\label{dependent}
 
 Como se mencionó anteriormente, una de las principales características de Agda es que tiene tipos dependientes. El tipo dependiente más básico de todos son las funciones dependientes, en las cuales el tipo del resultado depende del valor del argumento. En Agda se escribe \AgdaSymbol{(}\AgdaArgument{x} \AgdaSymbol{:} \AgdaDatatype{A}\AgdaSymbol{)} \AgdaSymbol{$\rightarrow$} \AgdaDatatype{B} para indicar el tipo de una función que toma un argumento \AgdaArgument{x} de tipo \AgdaDatatype{A} y devuelve un resultado de tipo \AgdaDatatype{B}, donde \AgdaArgument{x} puede aparecer en \AgdaDatatype{B}. Un caso especial de esto es cuando \AgdaArgument{x} es un tipo en sí mismo. Se podría definir, por ejemplo:
 
@@ -128,7 +130,19 @@ Si se desea, por el contrario, que el verificador de tipos infiera un término q
 
 \section{Familias de Tipos de datos}
 
+Se definió en el apartado \ref{parametrized} el tipo de las listas de tipo arbitrario parametrizado por \AgdaArgument{A}. Estas listas pueden tener cualquier largo, tanto una lista vacía como una lista con un millón de elementos son de tipo \AgdaDatatype{List} \AgdaArgument{A}. En ciertos casos es útil que el tipo restrinja el largo que tiene la lista, y es así como surgen las listas de largo definido, llamadas comúnmente vectores, que se definen como sigue:
 
+\ExecuteMetaData[latex/Agda.tex]{vec}
+
+El tipo de \AgdaDatatype{Vec} \AgdaArgument{A} es \AgdaDatatype{$\mathbb{N}$} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. Esto significa que \AgdaDatatype{Vec} \AgdaArgument{A} es una familia de tipos indexada por los números naturales. Por lo tanto, para cada \AgdaArgument{n} natural, \AgdaDatatype{Vec} \AgdaArgument{A n} es un tipo. Los constructores pueden construir elementos de cualquier tipo dentro de la familia. Hay una diferencia sustancial entre parámetros e índices de un tipo de dato. Se dice que \AgdaDatatype{Vec} está parametrizado por un tipo \AgdaArgument{A} e indexado sobre los números naturales. 
+
+En el tipo del constructor \AgdaFunction{\_::\_} se puede observar un ejemplo de una función dependiente. El primer argumento del constructor es un número natural \AgdaArgument{n} implícito, el cual es el largo de la cola. Es seguro poner \AgdaArgument{n} como argumento implícito ya que el verificador de tipos siempre podrá inferirlo en base al tipo del tercer argumento. 
+
+Lo que tienen de interesante las familias de tipos es lo que sucede cuando se usa \textit{pattern matching} sobre sus elementos. Si se quisiera definir una función que devuelva la cabeza de una lista no vacía, el tipo \AgdaDatatype{Vec} permite expresar el tipo de las listas no vacías, lo cual hace posible definir la función \AgdaFunction{head} de manera segura como se muestra a continuación: 
+
+\ExecuteMetaData[latex/Agda.tex]{head}
+
+La definición es aceptada por el verificador de tipos ya que, aunque no se da un caso para la lista vacía, es exhaustiva. Esto es gracias a que un elemento del tipo \mbox{\AgdaDatatype{Vec} \AgdaArgument{A} \AgdaSymbol{(}\AgdaFunction{suc} \AgdaArgument{n}\AgdaSymbol{)}} sólo puede ser construído por el constructor \AgdaFunction{\_::\_}, y resulta útil ya que la función \AgdaFunction{head} no está correctamente definida para el caso de la lista vacía.  
 
 \section{Sistema de Módulos}
 
@@ -199,9 +213,39 @@ Los módulos se importan por nombre. Si se tiene un módulo \AgdaModule{A.B.C} e
 
 Al importar módulos se pueden utilizar las mismas palabras claves de control de espacio de nombres que al abrir un módulo (\AgdaKeyword{using}, \AgdaKeyword{hiding} y \AgdaKeyword{renaming}). Importar un módulo, sin embargo, no lo abre automáticamente. Se puede abrir de forma separada con una sentencia \AgdaKeyword{open} o usar la forma corta \AgdaKeyword{open import} \AgdaModule{A.B.C}.
 
+\section{Records}
+
+Un tipo \textit{record} se define de forma similar a un tipo \textit{data}, donde en lugar de constructores se tienen campos, los cuales son provistos por la palabra clave \AgdaKeyword{field}. Por ejemplo: 
+
+\ExecuteMetaData[latex/Agda.tex]{point}
+
+Esto declara el registro \AgdaRecord{Point} con dos campos naturales \AgdaArgument{x} e \AgdaArgument{y}. Para construir un elemento de \AgdaRecord{Point} se escribe:
+
+\ExecuteMetaData[latex/Agda.tex]{mkpoint}
+
+Si antes de la palabra clave \AgdaKeyword{field} se agrega la palabra clave \AgdaKeyword{constructor}, se puede dar un constructor específico para el registro, el cual permite construir de manera simplificada un elemento del mismo. 
+
+\ExecuteMetaData[latex/Agda.tex]{point2}
+
+Para poder extraer los campos de un \textit{record}, cada tipo \textit{record} viene con un módulo con el mismo nombre. Este módulo está parametrizado por un elemento del tipo y contiene funciones de proyección para cada uno de los campos. En el ejemplo de \AgdaRecord{Point} se obtiene el siguiente módulo:
+
+\ExecuteMetaData[latex/Agda.tex]{modpoint}
+
+Este módulo puede utilizarse como viene o puede instanciarse a un registro en particular. 
+
+\ExecuteMetaData[latex/Agda.tex]{get}
+
+Es posible agregar funciones al módulo de un \textit{record} incluyéndolas en la declaración del mismo luego de los campos. 
+
+\ExecuteMetaData[latex/Agda.tex]{monad}
+
+Como se puede ver en este ejemplo, los \textit{records} pueden ser, al igual que los \textit{datatype}, parametrizados. En este caso, el \textit{record} \AgdaRecord{Monad} está parametrizado por \AgdaArgument{M}. Cuando un \textit{record} está parametrizado, el módulo generado por él tiene los parámetros del \textit{record} como parámetros implícitos.
+
 \section{Características adicionales}
 
-\section{Records}
+Agda tiene soporte para definiciones mutuamente recursivas. Estas deben ser declaradas dentro de un bloque \AgdaKeyword{mutual}:
+
+\ExecuteMetaData[latex/Agda.tex]{mutual}
 
 \section{Coinducción}
 

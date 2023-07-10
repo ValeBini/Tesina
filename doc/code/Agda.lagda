@@ -107,8 +107,8 @@ min x y | false = y
 
 %<*min2>
 \begin{code}
-min2 : ℕ → ℕ → ℕ 
-min2 x y with x < y 
+min₂  : ℕ → ℕ → ℕ 
+min₂  x y with x < y 
 ... | true = x 
 ... | false = y
 \end{code}
@@ -147,6 +147,21 @@ one' : ℕ
 one' = identity _ (suc zero) 
 \end{code}
 %</one'>
+
+%<*vec>
+\begin{code}
+data Vec (A : Set) : ℕ → Set where 
+    []  : Vec A zero 
+    _∷_ : {n : ℕ} → A → Vec A n → Vec A (suc n)
+\end{code}
+%</vec>
+
+%<*head>
+\begin{code}
+head : {A : Set} {n : ℕ} → Vec A (suc n) → A 
+head (x ∷ xs) = x
+\end{code}
+%</head>
 
 %<*moduleNumbers>
 \begin{code}
@@ -237,3 +252,80 @@ sort₂  = SortNat.sort
 open Sort ℕ _<_ renaming (insert to insertNat; sort to sortNat)
 \end{code}
 %</opensortnat>
+
+%<*point>
+\begin{code}
+record Point : Set where
+    field x : ℕ 
+          y : ℕ
+\end{code}
+%</point>
+
+%<*mkpoint>
+\begin{code}
+mkPoint : ℕ → ℕ → Point 
+mkPoint a b = record{ x = a; y = b }
+\end{code}
+%</mkpoint>
+
+%<*point2>
+\begin{code}
+record Point' : Set where
+    constructor _,_
+    field x : ℕ 
+          y : ℕ
+
+mkPoint' : ℕ → ℕ → Point' 
+mkPoint' a b = a , b
+\end{code}
+%</point2>
+
+%<*modpoint>
+\begin{code}
+-- module Point (p : Point) where
+--    x : Nat 
+--    y : Nat 
+\end{code}
+%</modpoint>
+
+%<*get>
+\begin{code}
+getX : Point → ℕ 
+getX = Point.x 
+
+getY : Point → ℕ 
+getY p = let open Point p in y
+\end{code}
+%</get>
+
+%<*monad>
+\begin{code}
+record Monad (M : Set → Set) : Set₁ where 
+    constructor makeMonad
+    field 
+        return : {A : Set} → A → M A 
+        _>>=_ : {A B : Set} → M A → (A → M B) → M B 
+
+    mapM : {A B : Set} → (A → M B) → List A → M (List B) 
+    mapM f [] = return [] 
+    mapM f (x ∷ xs) = f x       >>= \y → 
+                      mapM f xs >>= \ys → 
+                      return (y ∷ ys)
+
+mapM' : {M : Set → Set} → Monad M → {A B : Set} → (A → M B) → List A → M (List B) 
+mapM' {M} Mon f xs = Monad.mapM {M} Mon f xs
+\end{code}
+%</monad>
+
+%<*mutual>
+\begin{code}
+mutual 
+    even : ℕ → Bool 
+    even zero = true 
+    even (suc n) = odd n 
+
+    odd : ℕ → Bool 
+    odd zero = false
+    odd (suc n) = even n
+\end{code}
+%</mutual>
