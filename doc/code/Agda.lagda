@@ -199,7 +199,8 @@ two₂  = suc one
 
 %<*hidingrenaming>
 \begin{code}
-open Numbers hiding (suc₂) renaming (Nat to natural; zero to z0; suc to successor)
+open Numbers hiding (suc₂) 
+             renaming (Nat to natural; zero to z0; suc to successor)
 \end{code}
 %</hidingrenaming>
 
@@ -312,7 +313,8 @@ record Monad (M : Set → Set) : Set₁ where
                       mapM f xs >>= \ys → 
                       return (y ∷ ys)
 
-mapM' : {M : Set → Set} → Monad M → {A B : Set} → (A → M B) → List A → M (List B) 
+mapM' : {M : Set → Set} → Monad M → {A B : Set} 
+        → (A → M B) → List A → M (List B) 
 mapM' {M} Mon f xs = Monad.mapM {M} Mon f xs
 \end{code}
 %</monad>

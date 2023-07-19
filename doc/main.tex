@@ -27,67 +27,64 @@
 \usepackage{sty/macros}              %macros
 \usepackage{sty/unicode}             %unicode characters
 \usepackage{sty/prefs}
+\usepackage{enumitem} 				 %itemize setup
+\usepackage{amssymb}
+
 
 \usepackage{amsfonts}
 
 
 %\newcites{Intro}{Referencias hist\'{o}ricas}
-%\newcommand{\gitcode}{\url{http://www.github.com/eugeniasimich/containers}}
-
-
+\newcommand{\gitcode}{\url{http://www.github.com/ValeBini/Tesina}}
 
 \begin{document}
 
 \include{tex/titlepage}
-\thispagestyle{empty}
-
-%\include{tex/resumen}
 %\thispagestyle{empty}
 
-%\frontmatter
+\include{tex/resumen}
+%\thispagestyle{empty}
 
+\frontmatter
+
+\setcounter{tocdepth}{1}
 \tableofcontents
 
-%\mainmatter
+\mainmatter
 
-%\include{tex/introduccion}
+\include{tex/introduccion}
 
-\part{Preliminares}
+\part{Preliminares}\label{part:pre}
 
 \include{tex/agda}
-%\include{tex/categorias}
+\include{tex/monconc}
+\include{tex/delay}
 
-%\part{Formalización de Containers}\label{part:cont}
+\part{Formalización de Mónadas Concurrentes}\label{part:mc}
+ 
 
-%\include{tex/containers}
-%\include{tex/construcciones}
-%\input{tex/coproducto}
-%\input{tex/producto}
-%\input{tex/terminal}
-%\input{tex/exponencial}
+\bookmarksetup{startatroot}
 
-%\bookmarksetup{startatroot}
+\include{tex/conclusiones}
 
-%\include{tex/conclusiones}
-
-%\begin{appendices}
-%\include{tex/guia}
-%\end{appendices}
+\begin{appendices}
+\include{tex/guia}
+\end{appendices}
 
 \backmatter
 
 \chapter{Bibliograf\'{i}a}
 
-\bibliographystyleIntro{babalpha}
-\bibliographyIntro{bib/bibintro}
-\addcontentsline{toc}{section}{Referencias históricas}
+%\bibliographystyleIntro{babalpha}
+%\bibliographyIntro{bib/bibintro}
+%\addcontentsline{toc}{section}{Referencias históricas}
 
-\newcommand{\nombredelabiblio}{Bibliograf\'{i}a general}
-\renewcommand\bibname{\nombredelabiblio}
+%\newcommand{\nombredelabiblio}{Bibliograf\'{i}a general}
+%\renewcommand\bibname{\nombredelabiblio}
 
-\bibliographystyle{babalpha}
+\bibliographystyle{bababbrv}
 \bibliography{bib/biblio}
-\addcontentsline{toc}{section}{\nombredelabiblio}
+%\addcontentsline{toc}{section}{\nombredelabiblio}
 
 
 \end{document}

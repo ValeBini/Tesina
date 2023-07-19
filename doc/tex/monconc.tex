@@ -1,0 +1,102 @@
+\chapter{M\'onadas Concurrentes}\label{chapter:monconc}
+
+
+\section{Definiciones previas}\label{monconc:previas}
+
+\subsection{Categorías}\label{previas:cat}
+Una \textbf{categoría} $\mathscr{C}$ consiste de:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep,label=$\blacktriangleright$]
+	\item una clase de \textbf{objetos}: $\mathbf{ob} \ \mathscr{C}$;
+	\item una clase de \textbf{morfismos} o \textbf{flechas}: $\mathbf{mor} \ \mathscr{C}$;
+	\item dos funciones de clase:
+	\begin{itemize}[noitemsep,label=$\bullet$]
+		\item $dom : \mathbf{mor} \ \mathscr{C} \rightarrow \mathbf{ob} \ \mathscr{C}$ (dominio),
+		\item $codom : \mathbf{mor} \ \mathscr{C} \rightarrow \mathbf{ob} \ \mathscr{C}$ (codominio).
+	\end{itemize}
+	Para cada par de objetos $A, B$ en $\mathbf{ob} \ \mathscr{C}$ se denomina $Hom(A,B)$ al conjunto de flechas o morfismos de $A$ a $B$, es decir:
+	\begin{equation*}
+		Hom(A,B) := \{f \in \mathbf{mor} \ \mathscr{C} : dom(f) = A, codom(f) = B\}
+	\end{equation*}
+	\item Y para cada $A, B, C \in \mathbf{ob} \ \mathit{C}$ una operación  
+	\begin{equation*}
+		\circ : Hom(A,B) \times Hom(B,C) \rightarrow Hom(A,C)
+	\end{equation*}
+	llamada \textbf{composición} con las siguientes propiedades: 
+	\begin{itemize}[noitemsep,label=$\bullet$]
+		\item Se denota $\circ(f,g) = g \circ f$.
+		\item \textbf{Asociatividad}: para cada $A,B,C,D \in \mathbf{ob} \ \mathscr{C}$ y $f,g,h \in \mathbf{mor} \ \mathscr{C}$ tales que $f \in Hom(A,B)$, $g \in Hom(B,C)$ y $h \in Hom(C,D)$, \ \ $h \circ (g \circ f) = (h \circ g) \circ f$.
+		\item Para cada $A \in \mathbf{ob} \mathscr{C}$ existe un \textbf{morfismo identidad} $id_A \in Hom(A,A)$ tal que
+		\begin{itemize}[noitemsep,label=$\star$]
+			\item $\forall B, \ \forall f \in Hom(A,B), f \circ id_A = f$,
+			\item $\forall C, \ \forall g \in Hom(C,A, id_A \circ g = g$.
+		\end{itemize}
+	\end{itemize}
+	
+\end{itemize}
+
+Un ejemplo que será utilizado en este trabajo es la categoría \textbf{Set}, cuyos objetos son conjuntos y cuyos morfismos son funciones. 
+
+\subsection{Funtores}\label{previas:fun}
+Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{D}$ asigna:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep,label=$\blacktriangleright$]
+	\item a cada objeto $A \in \mathbf{ob} \ \mathscr{C}$, un objeto $\mathit{F}(A) \in \mathbf{ob} \ \mathscr{D}$;
+	\item a cada morfismo $f : A \rightarrow B \in \mathbf{mor} \ \mathscr{C}$, un morfismo $\mathit{F}(f) : \mathit{F}(A) \rightarrow \mathit{F}(B) \in \mathbf{mor} \ \mathscr{D}$ tal que: 
+	\begin{itemize}[noitemsep,label=$\bullet$]
+		\item para todo $A \in \mathbf{ob} \ \mathscr{C}$, $\mathit{F}(id_A) = id_{\mathit{F}(A)}$;
+		\item para todos $f,g \in \mathbf{mor} \ \mathscr{C}$ tales que tenga sentido la composición $g \circ f$, se tiene $\mathit{F}(g \circ f) = \mathit{F}(g) \circ \mathit{F}(f)$.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Transformaciones Naturales}\label{previas:transfnat}
+Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores (entre las mismas categorías. Una \textbf{transformación natural} $\eta : \mathit{F} \rightarrow \mathit{G}$ asigna a cada $A \in \mathbf{ob} \ \mathscr{C}$ un morfismo $\eta_A : \mathit{F}(A) \rightarrow \mathit{G}(A)$ tal que para todo $f \in Hom(A,B)$ se cumple que: 
+\begin{equation*}
+	\eta_B \circ \mathit{F}(f) = \mathit{G}(f) \circ \eta_A 
+\end{equation*}
+
+\section{Introducción a las mónadas}\label{monconc:monadas}
+
+Se considerarán dos variantes de la definición de mónadas. La primera es la definición clásica y la segunda define a una mónada como un sistema de extensión o 3-tupla Kleisli. La primera es muy utilizada en la literatura ya que es la definición matemática y está definida en torno a transformaciones naturales, pero la segunda es más fácil de utilizar desde una perspectiva computacional. Como ambas definiciones son equivalentes \cite{moggi:1991}, se utilizará una u otra según sea conveniente.
+
+\subsection{Definición clásica de Mónadas}\label{monadas:usual}
+
+Dada una categoría $\mathscr{C}$, una mónada sobre $\mathscr{C}$ es una tupla $(\mathit{T},\mu,\eta)$, donde:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep,label=$\blacktriangleright$]
+	\item $\mathit{T} : \mathscr{C} \rightarrow \mathscr{C}$ es un funtor,
+	\item $\eta : \mathit{Id} \rightarrow \mathit{T}$ y $\mu : \mathit{T} \cdot \mathit{T} \rightarrow \mathit{T}$ son transformaciones naturales
+	\item y se cumplen las siguientes identidades:
+	\begin{equation*}
+		\mu_X \circ \mathit{T}\mu_X = \mu_X \circ \mu_{\mathit{T}X} \text{, } \qquad \mu_X \circ \mathit{T}\eta_X = id_{\mathit{T}X} \text{, } \qquad 
+		\mu_X \circ \eta_{\mathit{T}X} = id_{\mathit{T}X} 
+	\end{equation*}
+\end{itemize}
+
+\subsection{Definición alternativa de Mónadas}\label{monadas:alt}
+Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep,label=$\blacktriangleright$]
+	\item $\mathit{T} : \mathbf{ob} \ \mathscr{C} \rightarrow \mathbf{ob} \ \mathscr{C}$,
+	\item para cada $A \in \mathbf{ob} \ \mathscr{C}$, $\eta_A : A \rightarrow \mathit{T}A$,
+	\item para cada $f : A \rightarrow \mathit{T}B$,  $f^* : \mathit{T}A \rightarrow \mathit{T}B$,
+	\item y se cumplen las siguientes ecuaciones:
+	\begin{itemize}[noitemsep,label=$\bullet$]
+		\item $\eta^*_A = id_{\mathit{T}A}$
+		\item $\eta_A ; f^* = f$ para cada $f : A \rightarrow \mathit{T}B$
+		\item $f^* ; g^* = (f ; g^*)^*$ para cada $f : A \rightarrow \mathit{T}B$ y $g : B \rightarrow \mathit{T}C$.
+	\end{itemize}
+\end{itemize}
+
+Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en programación funcional usualmente se conoce como \textit{return}) y $f^*$ es la extensión de una función $f$ de valores a computaciones a una función de computaciones a computaciones, la cual primero evalúa una computación y luego aplica $f$ al valor resultante (lo que generalmente se conoce como \textit{bind} o $>$\hspace{-1mm}$>$\hspace{-1mm}$=$).
+
+
+
+\subsection{Fortaleza de Funtores y Mónadas}\label{monadas:strength}
+
+\subsection{Funtor Monoidal}\label{monadas:monoidalfunctor}
+
+\subsection{Mónada monoidal}\label{monadas:monoidalmonad}
+
+
+
