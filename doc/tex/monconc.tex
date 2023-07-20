@@ -73,6 +73,24 @@ Dada una categoría $\mathscr{C}$, una mónada sobre $\mathscr{C}$ es una tupla 
 	\end{equation*}
 \end{itemize}
 
+\subsubsection{Ejemplos de mónadas sobre la categoría Set}
+\vspace{-0.75\baselineskip}
+\paragraph{M\'onada \textit{Error}}
+Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{T} X = X + E$, donde $E$ es un conjunto de errores. Intuitivamente un elemento de $\mathit{T} X$ puede ser un elemento de $X$ (un valor) o un error pertenenciente a $E$. Luego se definen $\eta$ y $\mu$ como siguen:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep, label=$\blacktriangleright$]
+	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = inl(x)$.
+	\item Para cada conjunto $X$, se define $\mu_X : \mathit{T T} X \rightarrow \mathit{T} X$ como $\mu_X (inl(tx)) = tx$ si $tx \in X + E$ y $\mu_X (inr(e)) = inr(e)$ si $e \in E$. Es decir que si se tiene un error se propaga el error y si se tiene un elemento de $\mathit{T} X$ se devuelve dicho elemento. 
+\end{itemize}
+
+\paragraph{M\'onada \textit{State}}
+Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{T} X = (X \times S)^S$, donde $S$ es un conjunto no vacío de estados. Intuitivamente, $\mathit{T} X$ es una computación que toma un estado y retorna el valor resultante junto con el estado modificado. Luego se definen $\eta$ y $\mu$ como sigue:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep, label=$\blacktriangleright$]
+	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = (\lambda s : S . \langle x , s \rangle)$.
+	\item Para cada conjunto $X$, se define $\mu_X : \mathit{T T} X \rightarrow \mathit{T} X$ como \\ \mbox{$\mu_X (f) = (\lambda s : S .$ let $\langle f' , s' \rangle = f(s)$ in $f'(s'))$}, es decir que $\mu_X (f)$ es la computación que, dado un estado $s$, primero computa el par computación-estado $f(s) = \langle f' , s' \rangle$ y luego retorna el par valor-estado $f'(s') = \langle x , s'' \rangle$.   
+\end{itemize}
+
 \subsection{Definición alternativa de Mónadas}\label{monadas:alt}
 Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
 \vspace{-0.75\baselineskip}
@@ -90,7 +108,21 @@ Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\
 
 Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en programación funcional usualmente se conoce como \textit{return}) y $f^*$ es la extensión de una función $f$ de valores a computaciones a una función de computaciones a computaciones, la cual primero evalúa una computación y luego aplica $f$ al valor resultante (lo que generalmente se conoce como \textit{bind} o $>$\hspace{-1mm}$>$\hspace{-1mm}$=$).
 
+\subsubsection{Ejemplos definidos como 3-tupla Kleisli}
+\vspace{-0.75\baselineskip}
+\paragraph{M\'onada \textit{Error}} Tomando el funtor descripto en la versión clásica:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep, label=$\blacktriangleright$]
+	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = inl(x)$ al igual que en la versión clásica.
+	\item Para cada función $f : X \rightarrow \mathit{T}Y$, se define $f^* : \mathit{T} X \rightarrow \mathit{T} Y$ como \mbox{$f^*(inl(x)) = f(x)$} si $x \in X$ y $f^*(inr(e)) = inr(e)$ si $e \in E$.   
+\end{itemize}
 
+\paragraph{M\'onada \textit{State}} Tomando el funtor descripto en la versión clásica:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep, label=$\blacktriangleright$]
+	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = (\lambda s : S . \langle x , s \rangle)$ al igual que en la primera versión.
+	\item Para cada función $f : X \rightarrow \mathit{T}Y$, se define $f^* : \mathit{T} X \rightarrow \mathit{T} Y$ como \\ \mbox{$f^*(g) = (\lambda s : S .$ let $\langle x , s' \rangle = g(s)$ in $f(x)(s'))$}.
+\end{itemize}
 
 \subsection{Fortaleza de Funtores y Mónadas}\label{monadas:strength}
 
