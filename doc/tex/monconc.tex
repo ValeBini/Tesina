@@ -35,8 +35,30 @@ Una \textbf{categoría} $\mathscr{C}$ consiste de:
 	
 \end{itemize}
 
-Un ejemplo que será utilizado en este trabajo es la categoría \textbf{Set}, cuyos objetos son conjuntos y cuyos morfismos son funciones. 
+\subsubsection{Ejemplos}
+\paragraph{Categor\'ia Set} 
+La categoría \textbf{Set} es aquella tal que:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep,label=$\blacktriangleright$]
+	\item $\text{\bf ob Set} = \text{conjuntos}$
+	\item $\text{\bf mor Set} = \text{funciones}$. 
+\end{itemize}
+\vspace{-0.75\baselineskip}
+\paragraph{Categor\'ia $\mathds{1}$} 
+La categoría $\mathds{1}$ es aquella tal que:
+\vspace{-0.75\baselineskip}
+\begin{itemize}[noitemsep,label=$\blacktriangleright$]
+	\item $\text{\bf ob} \ \mathds{1} = \{*\}$
+	\item $\text{\bf mor} \ \mathds{1} = \{\text{id}_*\}$. 
+\end{itemize}
 
+\subsubsection{Objetos iniciales y terminales}
+Un objeto $\mathbf{0} \in \text{\bf ob}  \mathscr{C}$ se dice \textbf{inicial} si $\forall A \in \text{\bf ob} \mathscr{C}, \exists! \mathbf{0} \rightarrow A$. 
+
+Un objeto $\mathbf{1} \in \text{\bf ob} \mathscr{C}$ se dice \textbf{terminal} si $\forall A \in \text{\bf ob} \mathscr{C}, \exists! A \rightarrow \mathbf{1}$.
+
+\paragraph{Ejemplo} En \textbf{Set} $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
+ 
 \subsection{Funtores}\label{previas:fun}
 Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{D}$ asigna:
 \vspace{-0.75\baselineskip}
@@ -50,9 +72,15 @@ Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{
 \end{itemize}
 
 \subsection{Transformaciones Naturales}\label{previas:transfnat}
-Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores (entre las mismas categorías. Una \textbf{transformación natural} $\eta : \mathit{F} \rightarrow \mathit{G}$ asigna a cada $A \in \mathbf{ob} \ \mathscr{C}$ un morfismo $\eta_A : \mathit{F}(A) \rightarrow \mathit{G}(A)$ tal que para todo $f \in Hom(A,B)$ se cumple que: 
+Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores (entre las mismas categorías). Una \textbf{transformación natural} $\eta : \mathit{F} \rightarrow \mathit{G}$ asigna a cada $A \in \mathbf{ob} \ \mathscr{C}$ un morfismo $\eta_A : \mathit{F}(A) \rightarrow \mathit{G}(A)$ tal que para todo $f \in Hom(A,B)$ se cumple que: 
 \begin{equation*}
 	\eta_B \circ \mathit{F}(f) = \mathit{G}(f) \circ \eta_A 
+\end{equation*}
+
+\subsection{Monoides}\label{previas:monoid}
+Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \times M \rightarrow M$, $(m,n) \rightarrow mn$ tal que existe un elemento neutro:
+\begin{equation*}
+\exists e \in M, \forall m \in M, (em = me = m).
 \end{equation*}
 
 \section{Introducción a las mónadas}\label{monconc:monadas}
@@ -124,11 +152,35 @@ Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en 
 	\item Para cada función $f : X \rightarrow \mathit{T}Y$, se define $f^* : \mathit{T} X \rightarrow \mathit{T} Y$ como \\ \mbox{$f^*(g) = (\lambda s : S .$ let $\langle x , s' \rangle = g(s)$ in $f(x)(s'))$}.
 \end{itemize}
 
-\subsection{Fortaleza de Funtores y Mónadas}\label{monadas:strength}
+\subsection{Fortaleza de funtores y mónadas}\label{monadas:strength}
+Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{C}$  es \textbf{fuerte} si viene equipado con una transformación natural $\sigma_{X,Y} : \mathit{F}X \times Y \rightarrow \mathit{F} (X \times Y)$, de manera que se cumplen las siguientes ecuaciones:
+\begin{equation*}
+	\pi_1 = \mathit{F}(\pi_1) \circ \sigma_{X,\mathbf{1}} \text{, \quad} \sigma \circ (\sigma \times \text{id}) \circ \alpha = \mathit{F}(\alpha) \circ \sigma 
+\end{equation*} 
+donde $\pi_1$ y $\pi_2$ son las proyecciones del producto cartesiano y $\alpha = \langle \langle \pi_1 , \pi_1 \circ \pi_2 \rangle , \pi_2 \circ \pi_2 \rangle$ representa su asociatividad.
 
-\subsection{Funtor Monoidal}\label{monadas:monoidalfunctor}
+Una \textbf{mónada} $(\mathit{T},\mu,\eta)$ sobre $\mathscr{C}$ es \textbf{fuerte} si el funtor subyacente $\mathit{T}$ es fuerte y la fortaleza es compatible con $\mu$ y $\eta$: 
+\begin{equation*}
+\eta_{A \times B} = \sigma_{A,B} \circ (\eta_A \times \text{id}) \text{, \quad} \sigma_{A,B} \circ (\mu_A \times \text{id}) = \mu_{A \times B} \circ \mathit{T}\sigma_{A,B} \circ \sigma_{\mathit{T}A,B}
+\end{equation*}
 
-\subsection{Mónada monoidal}\label{monadas:monoidalmonad}
+Hay una definición similar de fortaleza $\bar{\sigma}_{X,Y} : X \times \mathit{F}Y \rightarrow \mathit{F} (X \times Y)$ que actúa sobre el lado derecho, pero como el producto cartesiano es simétrico, se puede obtener de la fortaleza izquierda como $\bar{\sigma} = \mathit{F} \gamma \circ \sigma \circ \gamma$, donde $\gamma = \langle \pi_2 , \pi_1 \rangle$ intercambia los elementos del producto cartesiano.
 
+\subsection{Estructuras monoidales}\label{monadas:monoidal}
+Un \textbf{funtor monoidal} es un funtor $\mathit{F}: \mathscr{C} \rightarrow \mathscr{C}$ equipado con una estructura monoidal $(m,e)$, donde $m : \mathit{F} X \times \mathit{F} Y \rightarrow \mathit{F} (X \times Y)$ es una transformación natural y $e : \mathbf
+{1} \rightarrow \mathit{F} \mathbf{1}$ es un morfismo tal que los diagramas de coherencia estándar conmutan. Además, si la estructura monoidal es compatible con $\gamma$, entonces el funtor monoidal es simétrico.
 
+Una \textbf{mónada monoidal} es una mónada $(\textit{T},\mu,\eta)$ que tiene una estructura monoidal $(m,e)$ en su funtor subyacente $\mathit{T}$ tal que $e = \eta_{\mathbf{1}}$ y las estructuras monoidal y monádica son compatibles:
+\begin{equation*}
+\eta_{A \times B} = m_{A,B} \circ (\eta_A \times \eta_B) \text{, \quad} m_{A,B} \circ (\mu_A \times \mu_B) = \mu_{A \times B} \circ \mathit{T}m_{A,B} \circ m_{\mathit{T}A \times \mathit{T}B}.
+\end{equation*}
 
+\subsection{Mónadas conmutativas}\label{monads:commutative}
+Dada una mónada fuerte $(\mathit{T},\mu,\eta)$, $\mathit{T}$ como funtor puede ser equipado con dos estructuras monoidales canóncas:
+\begin{align*}
+&\phi : \mathit{T}A \times \mathit{T}B \rightarrow \mathit{T} (A \times B) & &\psi : \mathit{T}A \times \mathit{T}B \rightarrow \mathit{T}(A \times B) \\
+&\phi = \mu \circ \mathit{T}\bar{\sigma} \circ \sigma & &\psi = \mu \circ \mathit{T}\sigma \circ \bar{\sigma}
+\end{align*}
+y $e = \eta_1 : \mathbf{1} \rightarrow \mathit{T}\mathbf{1}$ en ambos casos. 
+
+Se dice que una mónada es \textbf{conmutativa} cuando estas dos estructuraso coinciden.
