@@ -48,8 +48,8 @@ La categoría \textbf{Set} es aquella tal que:
 La categoría $\mathds{1}$ es aquella tal que:
 \vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
-	\item $\text{\bf ob} \ \mathds{1} = \{*\}$
-	\item $\text{\bf mor} \ \mathds{1} = \{\text{id}_*\}$. 
+	\item $\text{\bf ob} \ \mathds{1} = \{\star\}$
+	\item $\text{\bf mor} \ \mathds{1} = \{\text{id}_{\star}\}$. 
 \end{itemize}
 
 \subsubsection{Objetos iniciales y terminales}
@@ -183,4 +183,8 @@ Dada una mónada fuerte $(\mathit{T},\mu,\eta)$, $\mathit{T}$ como funtor puede 
 \end{align*}
 y $e = \eta_1 : \mathbf{1} \rightarrow \mathit{T}\mathbf{1}$ en ambos casos. 
 
-Se dice que una mónada es \textbf{conmutativa} cuando estas dos estructuraso coinciden.
+Se dice que una mónada es \textbf{conmutativa} cuando estas dos estructuras coinciden.
+
+En esta tesina se utilizará la categoría \textbf{Set}, la cual es la categoría de conjuntos y funciones, y las mónadas que se presenten serán sobre esta categoría. El objeto terminal $\mathbf{1} = \{\star\}$ es un conjunto unitario. Una consecuencia particular de esto es que cualquier funtor $\mathit{F}$ y mónada $(\mathit{T},\mu,\eta)$ sobre esta categoría son fuertes, y cada uno admite una única fortaleza posible $\sigma$ ($\bar{\sigma}$). 
+
+Por ejemplo, la mónada del conjunto partes $\mathcal{P}$ (y su variante finita $\mathcal{P}_f$) tiene fortaleza $\sigma(X,y) = X \times \{y\}$. En general, la fórmula de fortaleza de un funtor sobre \textbf{Set} puede ser expresada como $\sigma(v,y) = \mathit{F}(\lambda x : X . (x,y))(v)$. Cuando la mónada es conmutativa, hay sólo una estructura monoidal posible. En consecuencia, si una mónada es monoidal entonces es conmutativa \cite{kock:1970}. 
