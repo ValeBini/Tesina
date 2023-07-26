@@ -1,52 +1,9 @@
-%% item customization
-\renewcommand{\labelitemi}{$\bullet$}        
-\renewcommand{\labelitemii}{\scriptsize$-$}
-
-%% hard-coded comment
-\newcommand{\esconder}[1]{}
-
-%% hard-coded blank space
-\newcommand{\sangrar}{\hspace{2.8ex}}
-
-%% red text
-\newcommand{\rojo}[1]{\textcolor{red}{#1}}
-
-%% CATEGORIES AND MATH STUFF
-\newcommand{\C}{\ensuremath{\mathscr{C}}}
-\newcommand{\Hom}[3]{\ensuremath{\mathit{#3(}#1,#2\mathit{)}}}
-\newcommand{\Obj}[1]{\ensuremath{|#1|}}
-\newcommand{\flecha}[3]{\ensuremath{ #1\xrightarrow{#2}#3}}
-\newcommand{\flechaFlat}[3]{\ensuremath{#2 : #1 \to #3}}
-\newcommand{\id}[1]{\ensuremath{\mathit{id}_{#1}}}
-\newcommand{\floor}[1]{\ensuremath{\lfloor #1 \rfloor}}
-\newcommand{\ceil}[1]{\ensuremath{\lceil #1 \rceil}}
-\newcommand{\curry}[1]{\ensuremath{\mbox{curry}}}
-\newcommand{\uncurry}[1]{\ensuremath{\mbox{uncurry}}}
-\newcommand{\Nat}{\ensuremath{\mathbb{N}}}
-\newcommand{\Cont}{\ensuremath{\mathbf{Cont}}}
-\newcommand{\Set}{\ensuremath{\mathbf{Set}}}
-
-%% CONTAINERS
-\newcommand{\Sh}{\AgdaField{Sh} }
-\newcommand{\Pos}{\AgdaField{Pos} }
-\newcommand{\mSh}{\AgdaField{mSh} }
-\newcommand{\mPos}{\AgdaField{mPos} }
-\newcommand{\tri}{\ensuremath{\triangleleft}}
-
-
-%%%%%AGDA
-\newcommand{\cons}{\AgdaInductiveConstructor{∷}}
-\newcommand{\agdaExt}[1]{\AgdaFunction{$\llbracket$} #1 \AgdaFunction{$\rrbracket$}}
-\newcommand{\agdaCont}[2]{\AgdaBound{#1} \AgdaInductiveConstructor{\tri}\;\AgdaBound{#2}}
-\newcommand{\agdaExtMorph}[1]{\AgdaFunction{$\llbracket$} #1 \AgdaFunction{$\rrbracket_{m}$}}
-
-%%%%%THEOREMS
-\theoremstyle{definition}
-\newtheorem{definition}{Definición}[chapter]
-\newtheorem{example}[definition]{Ejemplo}
-\newtheorem{agdacode}[definition]{Código}
-\theoremstyle{remark}
-\newtheorem*{remark}{Nota}
-
-
-
+%% THEOREMS
+\declaretheoremstyle[
+  headfont=\bfseries,
+  bodyfont=\itshape,
+]{myplain}
+\declaretheorem[
+  style=myplain,
+  name=Teorema,
+]{thm}

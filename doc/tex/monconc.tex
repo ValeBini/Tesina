@@ -188,3 +188,36 @@ Se dice que una mónada es \textbf{conmutativa} cuando estas dos estructuras coi
 En esta tesina se utilizará la categoría \textbf{Set}, la cual es la categoría de conjuntos y funciones, y las mónadas que se presenten serán sobre esta categoría. El objeto terminal $\mathbf{1} = \{\star\}$ es un conjunto unitario. Una consecuencia particular de esto es que cualquier funtor $\mathit{F}$ y mónada $(\mathit{T},\mu,\eta)$ sobre esta categoría son fuertes, y cada uno admite una única fortaleza posible $\sigma$ ($\bar{\sigma}$). 
 
 Por ejemplo, la mónada del conjunto partes $\mathcal{P}$ (y su variante finita $\mathcal{P}_f$) tiene fortaleza $\sigma(X,y) = X \times \{y\}$. En general, la fórmula de fortaleza de un funtor sobre \textbf{Set} puede ser expresada como $\sigma(v,y) = \mathit{F}(\lambda x : X . (x,y))(v)$. Cuando la mónada es conmutativa, hay sólo una estructura monoidal posible. En consecuencia, si una mónada es monoidal entonces es conmutativa \cite{kock:1970}. 
+
+\section{Mónadas Concurrentes}\label{monconc:mc}
+
+La teoría de concurrencia está compuesta por una amplia variedad de modelos basados en diferentes conceptos. Hoare en \cite{hoare:2011} se plantea si es posible tener un tratamiento comprensible de la concurrencia en el cual la memoria compartida, el pasaje de mensajes y los modelos de intercalación e independencia de computaciones puedan ser vistos como parte de la misma teoría con el mismo núcleo de axiomas. Con esta motivación crea un modelo simple de concurrencia basado en estructuras algebraicas, dos de las cuales resultan interesantes para este trabajo: bimonoides ordenados y monoides concurrentes. En las siguientes secciones se detallarán sus características principales. Más tarde en \cite{rivas:2019}, Rivas y Jaskelioff extendieron este modelo al nivel de funtores y mónadas, dando lugar a las mónadas concurrentes. 
+
+\subsection{Ley de intercambio}\label{mc:interchange}
+
+Ya estaba establecido que la composición secuencial y concurrente son estructuras monoidales, donde la concurrencia es además conmutativa. La pregunta que surge luego es cómo estas operaciones se relacionan entre sí. Se podría pensar en un principio que la ley de intercambio $(p * r) ; (q * s) = (p ; q) * (r ; s)$ de 2-categorías o bi-categorías debería cumplirse.  Sin embargo, la presencia de esta ley implicaría que ambas estructuras monoidales coinciden, derivando en que las operaciones de secuenciación y concurrencia son la misma. Esto se puede ver aplicando el argumento Eckmann-Hilton. 
+
+\begin{thm}[argumento Eckmann-Hilton] Sea $X$ un conjunto con dos operaciones binarias $;$ y $*$ tal que $e_;$ es el elemento neutro de $;$, $e_*$ es el elemento neutro de $*$ y la ley de intercambio $(a * b) ; (c * d) = (a ; c) * (b ; d)$ se cumple. Entonces, ambas operaciones $;$ y $*$ coinciden, y ambas son conmutativas y asociativas. 
+\end{thm}
+\begin{proof}
+Primero se muestra que ambos elementos neutros coinciden:
+\begin{equation*}
+e_; = e_; ; e_; = (e_* * e_;);(e_; * e_*) = (e_* ; e_;) * (e_; ; e_*) = e_* * e_* = e_*
+\end{equation*}
+Como los neutros coinciden, se lo puede llamar simplemente $e$. Se muestra ahora que ambas operaciones coinciden:
+\begin{equation*}
+a ; b = (e * a) ; (b * e) = (e ; b) * (a ; e) = b * a = (b ; e) * (e ; a) = (b * e) ; (e * a) = b ; a
+\end{equation*}
+Usando el mismo argumento se puede ver también que la operación es conmutativa. La prueba de asociatividad es análoga. 
+\end{proof}
+
+Como solución a esto, surge la idea de considerar un orden en los procesos, de manera que pueda debilitarse la ley de intercambio. En \cite{hoare:2009} se introduce una generalización del álgebra de Kleene para programas secuenciales (\cite{kozen:1994}), llamada Álgebra Concurrente de Kleene. Esta es un álgebra que mezcla primitivas de composición concurrente ($*$) y secuencial ($;$), cuya característica principal es la presencia de una versión ordenada de la ley de intercambio de 2-categorías o bi-categorías. 
+\begin{equation*}
+(p * r) ; (q * s) \sqsubseteq (p ; q) * (r ; s)
+\end{equation*}
+
+\subsection{Monoides concurrentes}\label{mc:monoid}
+
+\subsection{Generalización a nivel de funtores y mónadas}\label{mc:lifting}
+
+
