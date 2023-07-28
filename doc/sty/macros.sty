@@ -2,8 +2,23 @@
 \declaretheoremstyle[
   headfont=\bfseries,
   bodyfont=\itshape,
+  mdframed=
+  {linecolor=white!20,
+  skipabove=5pt,
+  skipbelow=5pt}
 ]{myplain}
 \declaretheorem[
   style=myplain,
   name=Teorema,
+  numberwithin=chapter,
 ]{thm}
+\declaretheorem[
+  style = myplain,
+  name = Definici\'on,
+  numberwithin =chapter,
+]{definition}
+\declaretheorem[
+  style = myplain,
+  name = Ejemplo,
+  numberwithin=definition,
+]{ejemplo}

@@ -3,9 +3,9 @@
 
 \section{Definiciones previas}\label{monconc:previas}
 
-\subsection{Categorías}\label{previas:cat}
+%\subsection*{Categorías}\label{previas:cat}
+\begin{definition}[Categoría]
 Una \textbf{categoría} $\mathscr{C}$ consiste de:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item una clase de \textbf{objetos}: $\mathbf{ob} \ \mathscr{C}$;
 	\item una clase de \textbf{morfismos} o \textbf{flechas}: $\mathbf{mor} \ \mathscr{C}$;
@@ -34,34 +34,35 @@ Una \textbf{categoría} $\mathscr{C}$ consiste de:
 	\end{itemize}
 	
 \end{itemize}
+\end{definition}
 
-\subsubsection{Ejemplos}
-\paragraph{Categor\'ia Set} 
+\begin{ejemplo}[Categoría \textbf{Set}]
 La categoría \textbf{Set} es aquella tal que:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\text{\bf ob Set} = \text{conjuntos}$
 	\item $\text{\bf mor Set} = \text{funciones}$. 
 \end{itemize}
-\vspace{-0.75\baselineskip}
-\paragraph{Categor\'ia $\mathds{1}$} 
+\end{ejemplo}
+\begin{ejemplo}[Categor\'ia $\mathds{1}$]
 La categoría $\mathds{1}$ es aquella tal que:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\text{\bf ob} \ \mathds{1} = \{\star\}$
 	\item $\text{\bf mor} \ \mathds{1} = \{\text{id}_{\star}\}$. 
 \end{itemize}
+\end{ejemplo}
 
-\subsubsection{Objetos iniciales y terminales}
+\begin{definition}[Objetos iniciales y terminales]
 Un objeto $\mathbf{0} \in \text{\bf ob}  \mathscr{C}$ se dice \textbf{inicial} si $\forall A \in \text{\bf ob} \mathscr{C}, \exists! \mathbf{0} \rightarrow A$. 
-
 Un objeto $\mathbf{1} \in \text{\bf ob} \mathscr{C}$ se dice \textbf{terminal} si $\forall A \in \text{\bf ob} \mathscr{C}, \exists! A \rightarrow \mathbf{1}$.
+\end{definition}
 
-\paragraph{Ejemplo} En \textbf{Set} $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
+\begin{ejemplo} 
+En \textbf{Set} $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
+\end{ejemplo}
  
-\subsection{Funtores}\label{previas:fun}
+%\subsection*{Funtores}\label{previas:fun}
+\begin{definition}[Funtor]
 Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{D}$ asigna:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item a cada objeto $A \in \mathbf{ob} \ \mathscr{C}$, un objeto $\mathit{F}(A) \in \mathbf{ob} \ \mathscr{D}$;
 	\item a cada morfismo $f : A \rightarrow B \in \mathbf{mor} \ \mathscr{C}$, un morfismo $\mathit{F}(f) : \mathit{F}(A) \rightarrow \mathit{F}(B) \in \mathbf{mor} \ \mathscr{D}$ tal que: 
@@ -70,18 +71,23 @@ Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{
 		\item para todos $f,g \in \mathbf{mor} \ \mathscr{C}$ tales que tenga sentido la composición $g \circ f$, se tiene $\mathit{F}(g \circ f) = \mathit{F}(g) \circ \mathit{F}(f)$.
 	\end{itemize}
 \end{itemize}
+\end{definition}
 
-\subsection{Transformaciones Naturales}\label{previas:transfnat}
+%\subsection*{Transformaciones Naturales}\label{previas:transfnat}
+\begin{definition}[Transformaci\'on Natural]
 Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores (entre las mismas categorías). Una \textbf{transformación natural} $\eta : \mathit{F} \rightarrow \mathit{G}$ asigna a cada $A \in \mathbf{ob} \ \mathscr{C}$ un morfismo $\eta_A : \mathit{F}(A) \rightarrow \mathit{G}(A)$ tal que para todo $f \in Hom(A,B)$ se cumple que: 
 \begin{equation*}
 	\eta_B \circ \mathit{F}(f) = \mathit{G}(f) \circ \eta_A 
 \end{equation*}
+\end{definition}
 
-\subsection{Monoides}\label{previas:monoid}
+%\subsection*{Monoides}\label{previas:monoid}
+\begin{definition}[Monoide]
 Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \times M \rightarrow M$, $(m,n) \rightarrow mn$ tal que existe un elemento neutro:
 \begin{equation*}
 \exists e \in M, \forall m \in M, (em = me = m).
 \end{equation*}
+\end{definition}
 
 \section{Introducción a las mónadas}\label{monconc:monadas}
 
@@ -89,8 +95,8 @@ Se considerarán dos variantes de la definición de mónadas. La primera es la d
 
 \subsection{Definición clásica de Mónadas}\label{monadas:usual}
 
+\begin{definition}[Mónada]
 Dada una categoría $\mathscr{C}$, una mónada sobre $\mathscr{C}$ es una tupla $(\mathit{T},\mu,\eta)$, donde:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\mathit{T} : \mathscr{C} \rightarrow \mathscr{C}$ es un funtor,
 	\item $\eta : \mathit{Id} \rightarrow \mathit{T}$ y $\mu : \mathit{T} \cdot \mathit{T} \rightarrow \mathit{T}$ son transformaciones naturales
@@ -100,28 +106,28 @@ Dada una categoría $\mathscr{C}$, una mónada sobre $\mathscr{C}$ es una tupla 
 		\mu_X \circ \eta_{\mathit{T}X} = id_{\mathit{T}X} 
 	\end{equation*}
 \end{itemize}
+\end{definition}
 
-\subsubsection{Ejemplos de mónadas sobre la categoría Set}
-\vspace{-0.75\baselineskip}
-\paragraph{M\'onada \textit{Error}}
+%\subsubsection{Ejemplos de mónadas sobre la categoría Set}
+\begin{ejemplo}[M\'onada \textit{Error}]
 Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{T} X = X + E$, donde $E$ es un conjunto de errores. Intuitivamente un elemento de $\mathit{T} X$ puede ser un elemento de $X$ (un valor) o un error pertenenciente a $E$. Luego se definen $\eta$ y $\mu$ como siguen:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep, label=$\blacktriangleright$]
 	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = inl(x)$.
 	\item Para cada conjunto $X$, se define $\mu_X : \mathit{T T} X \rightarrow \mathit{T} X$ como $\mu_X (inl(tx)) = tx$ si $tx \in X + E$ y $\mu_X (inr(e)) = inr(e)$ si $e \in E$. Es decir que si se tiene un error se propaga el error y si se tiene un elemento de $\mathit{T} X$ se devuelve dicho elemento. 
 \end{itemize}
+\end{ejemplo}
 
-\paragraph{M\'onada \textit{State}}
+\begin{ejemplo}[M\'onada \textit{State}]
 Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{T} X = (X \times S)^S$, donde $S$ es un conjunto no vacío de estados. Intuitivamente, $\mathit{T} X$ es una computación que toma un estado y retorna el valor resultante junto con el estado modificado. Luego se definen $\eta$ y $\mu$ como sigue:
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep, label=$\blacktriangleright$]
 	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = (\lambda s : S . \langle x , s \rangle)$.
 	\item Para cada conjunto $X$, se define $\mu_X : \mathit{T T} X \rightarrow \mathit{T} X$ como \\ \mbox{$\mu_X (f) = (\lambda s : S .$ let $\langle f' , s' \rangle = f(s)$ in $f'(s'))$}, es decir que $\mu_X (f)$ es la computación que, dado un estado $s$, primero computa el par computación-estado $f(s) = \langle f' , s' \rangle$ y luego retorna el par valor-estado $f'(s') = \langle x , s'' \rangle$.   
 \end{itemize}
+\end{ejemplo}
 
 \subsection{Definición alternativa de Mónadas}\label{monadas:alt}
+\begin{definition}[3-tupla Kleisli]
 Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
-\vspace{-0.75\baselineskip}
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\mathit{T} : \mathbf{ob} \ \mathscr{C} \rightarrow \mathbf{ob} \ \mathscr{C}$,
 	\item para cada $A \in \mathbf{ob} \ \mathscr{C}$, $\eta_A : A \rightarrow \mathit{T}A$,
@@ -133,47 +139,57 @@ Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\
 		\item $f^* ; g^* = (f ; g^*)^*$ para cada $f : A \rightarrow \mathit{T}B$ y $g : B \rightarrow \mathit{T}C$.
 	\end{itemize}
 \end{itemize}
+\end{definition}
 
 Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en programación funcional usualmente se conoce como \textit{return}) y $f^*$ es la extensión de una función $f$ de valores a computaciones a una función de computaciones a computaciones, la cual primero evalúa una computación y luego aplica $f$ al valor resultante (lo que generalmente se conoce como \textit{bind} o $>$\hspace{-1mm}$>$\hspace{-1mm}$=$).
 
-\subsubsection{Ejemplos definidos como 3-tupla Kleisli}
-\vspace{-0.75\baselineskip}
-\paragraph{M\'onada \textit{Error}} Tomando el funtor descripto en la versión clásica:
-\vspace{-0.75\baselineskip}
+%\subsubsection{Ejemplos definidos como 3-tupla Kleisli}
+\begin{ejemplo}[M\'onada \textit{Error}] 
+Tomando el funtor descripto en la versión clásica:
 \begin{itemize}[noitemsep, label=$\blacktriangleright$]
 	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = inl(x)$ al igual que en la versión clásica.
 	\item Para cada función $f : X \rightarrow \mathit{T}Y$, se define $f^* : \mathit{T} X \rightarrow \mathit{T} Y$ como \mbox{$f^*(inl(x)) = f(x)$} si $x \in X$ y $f^*(inr(e)) = inr(e)$ si $e \in E$.   
 \end{itemize}
+\end{ejemplo}
 
-\paragraph{M\'onada \textit{State}} Tomando el funtor descripto en la versión clásica:
-\vspace{-0.75\baselineskip}
+\begin{ejemplo}[M\'onada \textit{State}] 
+Tomando el funtor descripto en la versión clásica:
 \begin{itemize}[noitemsep, label=$\blacktriangleright$]
 	\item Para cada conjunto $X$, se define $\eta_X : \mathit{Id} X \rightarrow \mathit{T} X$ como $\eta_X (x) = (\lambda s : S . \langle x , s \rangle)$ al igual que en la primera versión.
 	\item Para cada función $f : X \rightarrow \mathit{T}Y$, se define $f^* : \mathit{T} X \rightarrow \mathit{T} Y$ como \\ \mbox{$f^*(g) = (\lambda s : S .$ let $\langle x , s' \rangle = g(s)$ in $f(x)(s'))$}.
 \end{itemize}
+\end{ejemplo}
 
 \subsection{Fortaleza de funtores y mónadas}\label{monadas:strength}
+\begin{definition}[Funtor fuerte]
 Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{C}$  es \textbf{fuerte} si viene equipado con una transformación natural $\sigma_{X,Y} : \mathit{F}X \times Y \rightarrow \mathit{F} (X \times Y)$, de manera que se cumplen las siguientes ecuaciones:
 \begin{equation*}
 	\pi_1 = \mathit{F}(\pi_1) \circ \sigma_{X,\mathbf{1}} \text{, \quad} \sigma \circ (\sigma \times \text{id}) \circ \alpha = \mathit{F}(\alpha) \circ \sigma 
 \end{equation*} 
 donde $\pi_1$ y $\pi_2$ son las proyecciones del producto cartesiano y $\alpha = \langle \langle \pi_1 , \pi_1 \circ \pi_2 \rangle , \pi_2 \circ \pi_2 \rangle$ representa su asociatividad.
+\end{definition}
 
+\begin{definition}[Mónada fuerte]
 Una \textbf{mónada} $(\mathit{T},\mu,\eta)$ sobre $\mathscr{C}$ es \textbf{fuerte} si el funtor subyacente $\mathit{T}$ es fuerte y la fortaleza es compatible con $\mu$ y $\eta$: 
 \begin{equation*}
 \eta_{A \times B} = \sigma_{A,B} \circ (\eta_A \times \text{id}) \text{, \quad} \sigma_{A,B} \circ (\mu_A \times \text{id}) = \mu_{A \times B} \circ \mathit{T}\sigma_{A,B} \circ \sigma_{\mathit{T}A,B}
 \end{equation*}
+\end{definition}
 
 Hay una definición similar de fortaleza $\bar{\sigma}_{X,Y} : X \times \mathit{F}Y \rightarrow \mathit{F} (X \times Y)$ que actúa sobre el lado derecho, pero como el producto cartesiano es simétrico, se puede obtener de la fortaleza izquierda como $\bar{\sigma} = \mathit{F} \gamma \circ \sigma \circ \gamma$, donde $\gamma = \langle \pi_2 , \pi_1 \rangle$ intercambia los elementos del producto cartesiano.
 
 \subsection{Estructuras monoidales}\label{monadas:monoidal}
+\begin{definition}[Funtor monoidal]
 Un \textbf{funtor monoidal} es un funtor $\mathit{F}: \mathscr{C} \rightarrow \mathscr{C}$ equipado con una estructura monoidal $(m,e)$, donde $m : \mathit{F} X \times \mathit{F} Y \rightarrow \mathit{F} (X \times Y)$ es una transformación natural y $e : \mathbf
 {1} \rightarrow \mathit{F} \mathbf{1}$ es un morfismo tal que los diagramas de coherencia estándar conmutan. Además, si la estructura monoidal es compatible con $\gamma$, entonces el funtor monoidal es simétrico.
+\end{definition}
 
+\begin{definition}[Mónada monoidal]
 Una \textbf{mónada monoidal} es una mónada $(\textit{T},\mu,\eta)$ que tiene una estructura monoidal $(m,e)$ en su funtor subyacente $\mathit{T}$ tal que $e = \eta_{\mathbf{1}}$ y las estructuras monoidal y monádica son compatibles:
 \begin{equation*}
 \eta_{A \times B} = m_{A,B} \circ (\eta_A \times \eta_B) \text{, \quad} m_{A,B} \circ (\mu_A \times \mu_B) = \mu_{A \times B} \circ \mathit{T}m_{A,B} \circ m_{\mathit{T}A \times \mathit{T}B}.
 \end{equation*}
+\end{definition}
 
 \subsection{Mónadas conmutativas}\label{monads:commutative}
 Dada una mónada fuerte $(\mathit{T},\mu,\eta)$, $\mathit{T}$ como funtor puede ser equipado con dos estructuras monoidales canóncas:
@@ -191,7 +207,7 @@ Por ejemplo, la mónada del conjunto partes $\mathcal{P}$ (y su variante finita 
 
 \section{Mónadas Concurrentes}\label{monconc:mc}
 
-La teoría de concurrencia está compuesta por una amplia variedad de modelos basados en diferentes conceptos. Hoare en \cite{hoare:2011} se plantea si es posible tener un tratamiento comprensible de la concurrencia en el cual la memoria compartida, el pasaje de mensajes y los modelos de intercalación e independencia de computaciones puedan ser vistos como parte de la misma teoría con el mismo núcleo de axiomas. Con esta motivación crea un modelo simple de concurrencia basado en estructuras algebraicas, dos de las cuales resultan interesantes para este trabajo: bimonoides ordenados y monoides concurrentes. En las siguientes secciones se detallarán sus características principales. Más tarde en \cite{rivas:2019}, Rivas y Jaskelioff extendieron este modelo al nivel de funtores y mónadas, dando lugar a las mónadas concurrentes. 
+La teoría de concurrencia está compuesta por una amplia variedad de modelos basados en diferentes conceptos. Hoare et al. \cite{hoare:2011} se plantearon si es posible tener un tratamiento comprensible de la concurrencia en el cual la memoria compartida, el pasaje de mensajes y los modelos de intercalación e independencia de computaciones puedan ser vistos como parte de la misma teoría con el mismo núcleo de axiomas. Con esta motivación crearon un modelo simple de concurrencia basado en estructuras algebraicas, dos de las cuales resultan interesantes para este trabajo: bimonoides ordenados y monoides concurrentes. En las siguientes secciones se detallarán sus características principales. Más tarde, Rivas y Jaskelioff \cite{rivas:2019} extendieron este modelo al nivel de funtores y mónadas, dando lugar a las mónadas concurrentes. 
 
 \subsection{Ley de intercambio}\label{mc:interchange}
 
@@ -211,12 +227,60 @@ a ; b = (e * a) ; (b * e) = (e ; b) * (a ; e) = b * a = (b ; e) * (e ; a) = (b *
 Usando el mismo argumento se puede ver también que la operación es conmutativa. La prueba de asociatividad es análoga. 
 \end{proof}
 
-Como solución a esto, surge la idea de considerar un orden en los procesos, de manera que pueda debilitarse la ley de intercambio. En \cite{hoare:2009} se introduce una generalización del álgebra de Kleene para programas secuenciales (\cite{kozen:1994}), llamada Álgebra Concurrente de Kleene. Esta es un álgebra que mezcla primitivas de composición concurrente ($*$) y secuencial ($;$), cuya característica principal es la presencia de una versión ordenada de la ley de intercambio de 2-categorías o bi-categorías. 
+Como solución a esto, surge la idea de considerar un orden en los procesos, de manera que pueda debilitarse la ley de intercambio. En \cite{hoare:2009} se introduce una generalización del álgebra de Kleene para programas secuenciales \cite{kozen:1994}, llamada Álgebra Concurrente de Kleene. Esta es un álgebra que mezcla primitivas de composición concurrente ($*$) y secuencial ($;$), cuya característica principal es la presencia de una versión ordenada de la ley de intercambio de 2-categorías o bi-categorías. 
 \begin{equation*}
 (p * r) ; (q * s) \sqsubseteq (p ; q) * (r ; s)
 \end{equation*}
 
+Esta ley intuitivamente tiene sentido, por ejemplo, en un modelo de concurrencia de intercalación. Si se tiene una traza $t = t_1 ; t_2$ donde $t_1$ es una intercalación de dos trazas $t_p$ y $t_r$, y $t_2$ de $t_q$ y $t_s$, entonces $t$ es también una intercalación de $t_p ; t_q$ y $t_r ; t_s$. 
+
+\subsection{Dos modelos}\label{mc:models}
+Se introducirán a continuación dos modelos utilizados por Hoare et al. \cite{hoare:2011} para desarrollar su teoría, los cuales servirán de ejemplo en las secciones que siguen.
+
+\paragraph{Modelo de Trazas} Sea $A$ un conjunto. Luego $Trazas_A$ es el conjunto de secuencias finitas de elementos de $A$. El conjunto partes $\mathcal{P}(Trazas_A)$ será el conjunto soporte del modelo. Se tienen las siguientes operaciones binarias sobre $\mathcal{P}(Trazas_A)$:
+\begin{enumerate}
+	\item $T_1 * T_2$ es el conjunto de las intercalaciones de las trazas de $T_1$ y $T_2$.
+	\item $T_1 ; T_2$ es el conjunto de las concatenaciones entre las trazas de $T_1$ y $T_2$.
+\end{enumerate}
+El conjunto $\{\epsilon\}$ funciona como elemento neutro para ambas operaciones $;$ y $*$, donde $\epsilon$ es la secuencia vacía. El orden está dado por la inclusión de conjuntos. 
+
+\paragraph{Modelo de Recursos} Sea $(\Sigma,\bullet,u)$ un monoide parcial conmutativo, dado por una operación parcial binaria $\bullet$ y elemento neutro $u$. La igualdad significa que ambos lados están definidos y son iguales, o que ninguno está definido. El conjunto partes $\mathcal{P}(\Sigma)$ tiene una estructura de monoide ordenado conmutativo $(*,\text{emp})$ definido por:
+\begin{align*}
+p * q &= \{\sigma_0 \bullet \sigma_1 | (\sigma_0, \sigma_1) \in dom(\bullet) \land \sigma_0 \in p \land \sigma_1 \in q\} \\
+emp &= \{u\}
+\end{align*}
+El conjunto de funciones monótonas $\mathcal{P}(\Sigma) \rightarrow \mathcal{P}(\Sigma)$ es el conjunto soporte del modelo. Estas funciones representan transformadores de predicados. Las operaciones se definen mediante las siguientes fórmulas, donde $F_i$ itera sobre los transformadores de predicados e $Y_i$ se utiliza para iterar sobre los subconjuntos de $\Sigma$:
+\begin{align*}
+(F * G) Y &= \bigcup \{FY_1 * GY_2 | Y_1 * Y_2 \subseteq Y\} \\
+\mathtt{nothing} \ Y &= Y \cap \text{emp}  \\
+(F ; G) Y &= F(G(Y))  \\
+\mathtt{skip} \ Y &= Y \\
+\end{align*}
+La idea es que se comienza con una postcondición $Y$, luego se la separa en dos afirmaciones separadas $Y_1$ e $Y_2$ y se aplica la regla de concurrencia hacia atrás para obtener una precondición $FY_1 * GY_2$ para la composición paralela de $F$ y $G$. Se realilza la unión de todas estas descomposiciones de manera de obtener la precondición más débil posible. 
+
+El orden del modelo está dado por el orden reverso punto a punto, es decir $F \sqsubseteq G$ significa que $\forall X \subseteq \mathcal{P}(\Sigma), FX \supseteq GX$. Según esta definición, el elemento más pequeño es la función $\lambda X.\Sigma$, la cual se corresponde con el transformador de precondición más débil para la divergencia. 
+
 \subsection{Monoides concurrentes}\label{mc:monoid}
+
+Como se va a utilizar un orden combinado con estructuras alegbraicas, se necesita una noción de compatibilidad de las operaciones con el orden.
+Sea $(A, \sqsubseteq)$ un orden parcial, entonces una operación $\oplus : A \times A \rightarrow A$ es \textit{compatible} con el orden si $a \sqsubseteq b$ y $c \sqsubseteq d$ implica que $a \oplus c \sqsubseteq b \oplus d$. 
+Se define primero una aproximación a la noción de monoide concurrente, el cual tiene dos estructuras monoidales y un orden compatible con ellas, pero no incluye ninguna relación especial entre ellas.  
+
+\begin{definition}[Bimonoide ordenado]
+Un \textbf{bimonoide ordenado} es un conjunto parcialmente ordenado $(A,\sqsubseteq)$ junto con dos estructuras monoidales $(A,*,\mathtt{nothing})$ y $(A,;,\mathtt{skip})$ tal que $*$ y $;$ son compatibles con $\sqsubseteq$ y $*$ es conmutativa.
+\end{definition}
+
+Podría ser tentador requerir que ambos elementos neutros de un bimonoide ordenado sean iguales, pero, por ejemplo, en el Modelo de Recursos no lo son. El Modelo de Recursos es un ejemplo de bimonoide ordenado que no es un monoide concurrente. 
+
+\begin{definition}[Monoide concurrente]
+Un \textbf{monoide concurrente} es un bimonoide ordenado tal que los neutros coinciden, es decir $\mathtt{nothing} = \mathtt{skip}$, y la siguiente ley de intercambio se cumple:
+\begin{equation*}
+(a * b) ; (c * d) \sqsubseteq (a ; c) * (b ; d)
+\end{equation*}
+\end{definition}
+
+En esta estructura no hay reducción de la operación $*$ a una intercalación del operador $;$. El orden une a ambas estructuras sin reducir una a la otra. En el Modelo de Trazas ambos elementos neutros coinciden y la ley de intercambio se cumple, por lo que, además de bimonoide ordenado, es un monoide concurrente. 
+
 
 \subsection{Generalización a nivel de funtores y mónadas}\label{mc:lifting}
 
