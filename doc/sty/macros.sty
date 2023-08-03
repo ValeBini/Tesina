@@ -6,19 +6,32 @@
   {linecolor=white!20,
   skipabove=5pt,
   skipbelow=5pt}
-]{myplain}
+]{thmstyle}
+\declaretheoremstyle[
+  headfont=\bfseries,
+  bodyfont=\normalfont,
+  mdframed=
+  {linecolor=white!20,
+  skipabove=5pt,
+  skipbelow=5pt}
+]{defstyle}
 \declaretheorem[
-  style=myplain,
+  style=thmstyle,
   name=Teorema,
   numberwithin=chapter,
 ]{thm}
 \declaretheorem[
-  style = myplain,
+  style = defstyle,
   name = Definici\'on,
-  numberwithin =chapter,
+  numberlike =thm,
 ]{definition}
 \declaretheorem[
-  style = myplain,
+  style = defstyle,
   name = Ejemplo,
-  numberwithin=definition,
+  numberlike = thm,
 ]{ejemplo}
+\declaretheorem[
+  style=thmstyle,
+  name=Lema,
+  numberlike=thm,
+]{lema}

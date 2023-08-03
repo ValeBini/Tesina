@@ -1,9 +1,9 @@
 \chapter{M\'onadas Concurrentes}\label{chapter:monconc}
 
+En este capítulo se hará una introducción teórica sobre mónadas concurrentes. Se definirán al comienzo algunos conceptos previos de la teoría de categorías sobre la cual se definen las mónadas. En la segunda sección se hará una introducción a las mónadas en sí mismas, en la cual se darán varias definiciones y ejemplos. Por último, en la tercera, se introducirán los conceptos específicos necesarios para definir una mónada concurrente. 
 
 \section{Definiciones previas}\label{monconc:previas}
 
-%\subsection*{Categorías}\label{previas:cat}
 \begin{definition}[Categoría]
 Una \textbf{categoría} $\mathscr{C}$ consiste de:
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
@@ -18,7 +18,7 @@ Una \textbf{categoría} $\mathscr{C}$ consiste de:
 	\begin{equation*}
 		Hom(A,B) := \{f \in \mathbf{mor} \ \mathscr{C} : dom(f) = A, codom(f) = B\}
 	\end{equation*}
-	\item Y para cada $A, B, C \in \mathbf{ob} \ \mathit{C}$ una operación  
+	\item Y para cada $A, B, C \in \mathbf{ob} \ \mathscr{C}$ una operación  
 	\begin{equation*}
 		\circ : Hom(A,B) \times Hom(B,C) \rightarrow Hom(A,C)
 	\end{equation*}
@@ -26,10 +26,10 @@ Una \textbf{categoría} $\mathscr{C}$ consiste de:
 	\begin{itemize}[noitemsep,label=$\bullet$]
 		\item Se denota $\circ(f,g) = g \circ f$.
 		\item \textbf{Asociatividad}: para cada $A,B,C,D \in \mathbf{ob} \ \mathscr{C}$ y $f,g,h \in \mathbf{mor} \ \mathscr{C}$ tales que $f \in Hom(A,B)$, $g \in Hom(B,C)$ y $h \in Hom(C,D)$, \ \ $h \circ (g \circ f) = (h \circ g) \circ f$.
-		\item Para cada $A \in \mathbf{ob} \mathscr{C}$ existe un \textbf{morfismo identidad} $id_A \in Hom(A,A)$ tal que
+		\item Para cada $A \in \mathbf{ob} \ \mathscr{C}$ existe un \textbf{morfismo identidad} $id_A \in Hom(A,A)$ tal que
 		\begin{itemize}[noitemsep,label=$\star$]
-			\item $\forall B, \ \forall f \in Hom(A,B), f \circ id_A = f$,
-			\item $\forall C, \ \forall g \in Hom(C,A, id_A \circ g = g$.
+			\item $\forall B, \ \forall f \in Hom(A,B), \ f \circ id_A = f$,
+			\item $\forall C, \ \forall g \in Hom(C,A, \ id_A \circ g = g$.
 		\end{itemize}
 	\end{itemize}
 	
@@ -52,15 +52,14 @@ La categoría $\mathds{1}$ es aquella tal que:
 \end{ejemplo}
 
 \begin{definition}[Objetos iniciales y terminales]
-Un objeto $\mathbf{0} \in \text{\bf ob}  \mathscr{C}$ se dice \textbf{inicial} si $\forall A \in \text{\bf ob} \mathscr{C}, \exists! \mathbf{0} \rightarrow A$. 
-Un objeto $\mathbf{1} \in \text{\bf ob} \mathscr{C}$ se dice \textbf{terminal} si $\forall A \in \text{\bf ob} \mathscr{C}, \exists! A \rightarrow \mathbf{1}$.
+Un objeto $\mathbf{0} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{inicial} si $\forall A \in \text{\bf ob} \ \mathscr{C}$, $\exists! \mathbf{0} \rightarrow A$. 
+Un objeto $\mathbf{1} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{terminal} si $\forall A \in \text{\bf ob} \ \mathscr{C}$, $\exists! A \rightarrow \mathbf{1}$.
 \end{definition}
 
 \begin{ejemplo} 
-En \textbf{Set} $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
+En \textbf{Set}, $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
 \end{ejemplo}
  
-%\subsection*{Funtores}\label{previas:fun}
 \begin{definition}[Funtor]
 Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{D}$ asigna:
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
@@ -68,12 +67,11 @@ Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{
 	\item a cada morfismo $f : A \rightarrow B \in \mathbf{mor} \ \mathscr{C}$, un morfismo $\mathit{F}(f) : \mathit{F}(A) \rightarrow \mathit{F}(B) \in \mathbf{mor} \ \mathscr{D}$ tal que: 
 	\begin{itemize}[noitemsep,label=$\bullet$]
 		\item para todo $A \in \mathbf{ob} \ \mathscr{C}$, $\mathit{F}(id_A) = id_{\mathit{F}(A)}$;
-		\item para todos $f,g \in \mathbf{mor} \ \mathscr{C}$ tales que tenga sentido la composición $g \circ f$, se tiene $\mathit{F}(g \circ f) = \mathit{F}(g) \circ \mathit{F}(f)$.
+		\item para todos $f,g \in \mathbf{mor} \ \mathscr{C}$ tales que tenga sentido la composición $g \circ f$, se tiene que $\mathit{F}(g \circ f) = \mathit{F}(g) \circ \mathit{F}(f)$.
 	\end{itemize}
 \end{itemize}
 \end{definition}
 
-%\subsection*{Transformaciones Naturales}\label{previas:transfnat}
 \begin{definition}[Transformaci\'on Natural]
 Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores (entre las mismas categorías). Una \textbf{transformación natural} $\eta : \mathit{F} \rightarrow \mathit{G}$ asigna a cada $A \in \mathbf{ob} \ \mathscr{C}$ un morfismo $\eta_A : \mathit{F}(A) \rightarrow \mathit{G}(A)$ tal que para todo $f \in Hom(A,B)$ se cumple que: 
 \begin{equation*}
@@ -81,7 +79,6 @@ Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores
 \end{equation*}
 \end{definition}
 
-%\subsection*{Monoides}\label{previas:monoid}
 \begin{definition}[Monoide]
 Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \times M \rightarrow M$, $(m,n) \rightarrow mn$ tal que existe un elemento neutro:
 \begin{equation*}
@@ -94,9 +91,10 @@ Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \t
 Se considerarán dos variantes de la definición de mónadas. La primera es la definición clásica y la segunda define a una mónada como un sistema de extensión o 3-tupla Kleisli. La primera es muy utilizada en la literatura ya que es la definición matemática y está definida en torno a transformaciones naturales, pero la segunda es más fácil de utilizar desde una perspectiva computacional. Como ambas definiciones son equivalentes \cite{moggi:1991}, se utilizará una u otra según sea conveniente.
 
 \subsection{Definición clásica de Mónadas}\label{monadas:usual}
+Se define a continuación el concepto de mónada de la manera clásica dentro de la teoría de categorías.
 
 \begin{definition}[Mónada]
-Dada una categoría $\mathscr{C}$, una mónada sobre $\mathscr{C}$ es una tupla $(\mathit{T},\mu,\eta)$, donde:
+Dada una categoría $\mathscr{C}$, una \textbf{mónada} sobre $\mathscr{C}$ es una tupla $(\mathit{T},\mu,\eta)$, donde:
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\mathit{T} : \mathscr{C} \rightarrow \mathscr{C}$ es un funtor,
 	\item $\eta : \mathit{Id} \rightarrow \mathit{T}$ y $\mu : \mathit{T} \cdot \mathit{T} \rightarrow \mathit{T}$ son transformaciones naturales
@@ -108,7 +106,8 @@ Dada una categoría $\mathscr{C}$, una mónada sobre $\mathscr{C}$ es una tupla 
 \end{itemize}
 \end{definition}
 
-%\subsubsection{Ejemplos de mónadas sobre la categoría Set}
+A continuación se presentan algunos ejemplos de mónadas clásicas que son ampliamente utilizadas en computación.
+
 \begin{ejemplo}[M\'onada \textit{Error}]
 Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{T} X = X + E$, donde $E$ es un conjunto de errores. Intuitivamente un elemento de $\mathit{T} X$ puede ser un elemento de $X$ (un valor) o un error pertenenciente a $E$. Luego se definen $\eta$ y $\mu$ como siguen:
 \begin{itemize}[noitemsep, label=$\blacktriangleright$]
@@ -126,6 +125,9 @@ Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{
 \end{ejemplo}
 
 \subsection{Definición alternativa de Mónadas}\label{monadas:alt}
+
+Se define ahora la 3-tupla Kleisli, llamada también sistema de extensión. Esta definición también parte de la teoría de categorías pero no es la más utilizada en la literatura. Sin embargo, como se explica más adelante, es la que más se acerca a la forma de utilizar las mónadas en los lenguajes de programación funcional. 
+
 \begin{definition}[3-tupla Kleisli]
 Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
@@ -141,9 +143,10 @@ Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\
 \end{itemize}
 \end{definition}
 
-Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en programación funcional usualmente se conoce como \textit{return}) y $f^*$ es la extensión de una función $f$ de valores a computaciones a una función de computaciones a computaciones, la cual primero evalúa una computación y luego aplica $f$ al valor resultante (lo que generalmente se conoce como \textit{bind} o $>$\hspace{-1mm}$>$\hspace{-1mm}$=$).
+Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en programación funcional usualmente se conoce como \textit{return}) y $f^*$ es la extensión de una función $f$ que va de valores a computaciones a una función que va de computaciones a computaciones, la cual primero evalúa una computación y luego aplica $f$ al valor resultante (lo que generalmente se conoce como \textit{bind} o $>$\hspace{-1mm}$>$\hspace{-1mm}$=$).
 
-%\subsubsection{Ejemplos definidos como 3-tupla Kleisli}
+A continuación se muestra cómo quedan definidos los ejemplos vistos para la definición clásica como 3-tuplas Kleisli para que se comprenda mejor el paralelismo entre ambas definiciones. 
+
 \begin{ejemplo}[M\'onada \textit{Error}] 
 Tomando el funtor descripto en la versión clásica:
 \begin{itemize}[noitemsep, label=$\blacktriangleright$]
@@ -160,7 +163,10 @@ Tomando el funtor descripto en la versión clásica:
 \end{itemize}
 \end{ejemplo}
 
-\subsection{Fortaleza de funtores y mónadas}\label{monadas:strength}
+\subsection{Funtores, mónadas y producto cartesiano}\label{monadas:cartesian}
+
+La fortaleza de los funtores es una forma de compatibilidad entre funtores y productos cartesianos. En adelante se trabajará con funtores y mónadas que son fuertes respecto del producto cartesiano. A continuación se definen las nociones de funtor fuerte y mónada fuerte.
+
 \begin{definition}[Funtor fuerte]
 Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{C}$  es \textbf{fuerte} si viene equipado con una transformación natural $\sigma_{X,Y} : \mathit{F}X \times Y \rightarrow \mathit{F} (X \times Y)$, de manera que se cumplen las siguientes ecuaciones:
 \begin{equation*}
@@ -178,7 +184,9 @@ Una \textbf{mónada} $(\mathit{T},\mu,\eta)$ sobre $\mathscr{C}$ es \textbf{fuer
 
 Hay una definición similar de fortaleza $\bar{\sigma}_{X,Y} : X \times \mathit{F}Y \rightarrow \mathit{F} (X \times Y)$ que actúa sobre el lado derecho, pero como el producto cartesiano es simétrico, se puede obtener de la fortaleza izquierda como $\bar{\sigma} = \mathit{F} \gamma \circ \sigma \circ \gamma$, donde $\gamma = \langle \pi_2 , \pi_1 \rangle$ intercambia los elementos del producto cartesiano.
 
-\subsection{Estructuras monoidales}\label{monadas:monoidal}
+%\subsection{Estructuras monoidales}\label{monadas:monoidal}
+Otra forma en la que un funtor puede ser compatible con el producto cartesiano es si es un funtor monoidal. A continuación se definen los conceptos de funtor monoidal y mónada monoidal.
+
 \begin{definition}[Funtor monoidal]
 Un \textbf{funtor monoidal} es un funtor $\mathit{F}: \mathscr{C} \rightarrow \mathscr{C}$ equipado con una estructura monoidal $(m,e)$, donde $m : \mathit{F} X \times \mathit{F} Y \rightarrow \mathit{F} (X \times Y)$ es una transformación natural y $e : \mathbf
 {1} \rightarrow \mathit{F} \mathbf{1}$ es un morfismo tal que los diagramas de coherencia estándar conmutan. Además, si la estructura monoidal es compatible con $\gamma$, entonces el funtor monoidal es simétrico.
@@ -191,7 +199,7 @@ Una \textbf{mónada monoidal} es una mónada $(\textit{T},\mu,\eta)$ que tiene u
 \end{equation*}
 \end{definition}
 
-\subsection{Mónadas conmutativas}\label{monads:commutative}
+%\subsection{Mónadas conmutativas}\label{monads:commutative}
 Dada una mónada fuerte $(\mathit{T},\mu,\eta)$, $\mathit{T}$ como funtor puede ser equipado con dos estructuras monoidales canóncas:
 \begin{align*}
 &\phi : \mathit{T}A \times \mathit{T}B \rightarrow \mathit{T} (A \times B) & &\psi : \mathit{T}A \times \mathit{T}B \rightarrow \mathit{T}(A \times B) \\
@@ -284,4 +292,67 @@ En esta estructura no hay reducción de la operación $*$ a una intercalación d
 
 \subsection{Generalización a nivel de funtores y mónadas}\label{mc:lifting}
 
+Para elevar la teoría descripta en la sección anterior al nivel de funtores, se modela el operador de secuenciación $;$ como la multiplicación monádica y su elemento neutro $\mathtt{skip}$ como la unidad monádica. Sólo faltan tres elementos: la operación de mezcla $*$, su elemento neutro $\mathtt{nothing}$ y el orden $\sqsubseteq$. La operación de mezcla será modelada como una familia de transformaciones naturales $m_{A,B} : \mathit{T} A \times \mathit{T} B \rightarrow \mathit{T} (A \times B)$. Como se requiere que $*$ sea un monoide conmutativo, se requerirá que $\mathit{T}$ tenga una estructura de funtor monoidal simétrica, incluyendo un morfismo unidad $e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ que representará $\mathtt{skip}$. 
 
+En cuanto al orden, lo que se necesita es un orden sobre computaciones que mida el grado de secuencialidad en ellas. Esto es una estructura de orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, sujeto a algún tipo de compatibilidad con el resto de la estructura que modela computaciones. Se define a continuación la noción de funtor ordenado, la cual establece una condición de compatibilidad de un funtor con un orden parcial, siguiendo la idea de Hughes y Jacobs \cite{hughes:2004}:
+
+\begin{definition}[Funtor ordenado]
+Un orden para un funtor $\mathit{F}$ es una asignación de un orden parcial $\sqsubseteq_I$ en $\mathit{F} I$ para cada conjunto $I$, tal que para cada morfismo $f : I \rightarrow J$, el morfismo $\mathit{F} f : \mathit{F} I \rightarrow \mathit{F} J$ es una función monótona respecto de $\sqsubseteq_I$ y $\sqsubseteq_J$.
+\end{definition}
+
+A continuación se define la compatibilidad para la estructura de mónada. Para esto se utilizan una familia de estructuras ordenadas, lo cual es una instancia de lo que definieron Katsumata y Sato como una mónada ordenada \cite{katsumata:2013}.
+
+\begin{definition}[Mónada ordenada]
+Un orden para una mónada $(\mathit{T},\mu,\eta)$ es una asignación de un orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, tal que la categoría Kleisli de $T$ se enriquece en la categoría de órdenes con el orden correspondiente a $\mathcal{K}\ell(\mathit{T})(A,B)$ definido por $f \sqsubseteq_{A,B} g$ si y sólo si $\forall a : \mathbf{1} \rightarrow A, f \circ a \sqsubseteq_B g \circ a$.
+\end{definition}
+
+Esta noción de orden sólo se relaciona con la estructura monádica. En comparación a los bimonoides ordenados, se corresponde con la condición de que $;$ sea compatible con $\sqsubseteq$. La compatibilidad entre $*$ y $\sqsubseteq$ se postula como sigue:
+
+\begin{definition}[Funtor monoidal ordenado]
+Sea $\mathit{T}$ un funtor con una estructura monoidal $(m,e)$ y una asignación de un orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$. Se dice que el orden es compatible con $(m,e)$ si $v \sqsubseteq_A v'$ y $w \sqsubseteq_B w'$ implican que $m \circ \langle v,w \rangle \sqsubseteq_{A \times B} m \circ \langle v',w' \rangle$ para cada $v,v' : \mathbf{1} \rightarrow \mathit{T} A$ y $w,w' : \mathbf{1} \rightarrow \mathit{T} B$. 
+\end{definition}
+
+A partir de todas estas definiciones previas se define la variante monádica de los bimonoides ordenados y monoides concurrentes como sigue:
+
+\begin{definition}[Mónada monoidal ordenada]
+Una mónada $(\mathit{T},\eta,\_^*)$ es una mónada monoidal ordenada si está dotada de una estructura de funtor monoidal simétrico 
+\begin{equation*}
+m_{X,Y} : \mathit{T} X \times \mathit{T} Y \rightarrow \mathit{T} (X \times Y) \text{, qquad} e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1} 
+\end{equation*}
+y una relación de orden $\sqsubseteq$ sobre $\mathit{T}$ compatible con $(m,e)$.
+\end{definition}
+
+\textit{Aclaración: se escribe $f \star g$ para representar $m \circ (f \times g)$.}
+
+\begin{definition}[Mónada concurrente]
+Una mónada monoidal ordenada $\mathit{T}$ es una mónada concurrente si $e = \eta_{\mathbf{1}} : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ y se cumple la siguiente ley de intercambio:
+\begin{equation*}
+(h \star i) \bullet (f \star g) \sqsubseteq (h \bullet f) \star (i \bullet g)
+\end{equation*}
+\end{definition}
+
+Esta definición puede probarse mostrando que las mónadas conmutativas (como los monoides conmutativos) son mónadas concurrentes (como los monoides concurrentes). 
+
+\begin{ejemplo}
+Sea $(\mathit{T},\mu,\eta)$ una mónada conmutativa. Entonces $\mathit{T}$ tiene una única estructura de mónada monoidal $(m,\eta_{\mathbf{1}})$, y se puede definir la estructura de orden por el orden diagonal. La ley de intercambio se reduce a las condiciones de mónada monoidal. 
+\end{ejemplo}
+
+Rivas y Jaskelioff \cite{rivas.2019} también muestran que estas estructuras al nivel de mónada efectivamente generalizan aquellas al nivel de los monoides probando el siguiente lema.
+
+\begin{lema}
+Sea $(\mathit{T},\mu,\eta)$ una mónada monoidal ordenada (mónada concurrente). Entonces $\mathit{T} \mathbf{1}$ es un bimonoide ordenado (monoide concurrente). 
+\end{lema}
+
+Como en el caso de los monoides, hay dos estructuras de bimonoide ordenado sobre $\mathit{T} \mathbf{1}$, que resultan de la simetría de los axiomas de los bimonoides ordenados.  En esta estructura, como en los monoides, se puede también ir en la dirección contraria: dado un bimonoide ordenado, este puede ser elevado a una mónada monoidal ordenada.
+
+\begin{lema}
+Sea $(A,\sqsubseteq,*,\mathtt{nothing},;,\mathtt{skip})$ un bimonoide ordenado. Este puede convertirse en una mónada monoidal ordenada con funtor soporte $\mathit{T}_A X = A \times X$, operaciones y orden. Más aún, si $\mathtt{nothing} = \mathtt{skip}$ (es decir que es un monoide concurrente), entonces $e = \eta_{\mathbf{1}}$ (es decir que es una mónada concurrente).
+\end{lema}
+
+Este resultado será utilizado más adelante en este trabajo para dar una representación alternativa de la mónada delay. 
+
+El ejemplo de la semántica de trazas puede ser generalizado a una mónada concurrente parametrizando el conjunto sobre el cual se toman las trazas. 
+
+\begin{ejemplo}
+La mónada $Tr_L(X) = \mathcal{P}_f(Traces_{L \times X}$ es concurrente. La estructura de orden se define como la inclusión de conjuntos al igual que antes.
+\end{ejemplo}
