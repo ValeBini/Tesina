@@ -215,7 +215,7 @@ Por ejemplo, la mónada del conjunto partes $\mathcal{P}$ (y su variante finita 
 
 \section{Mónadas Concurrentes}\label{monconc:mc}
 
-La teoría de concurrencia está compuesta por una amplia variedad de modelos basados en diferentes conceptos. Hoare et al. \cite{hoare:2011} se plantearon si es posible tener un tratamiento comprensible de la concurrencia en el cual la memoria compartida, el pasaje de mensajes y los modelos de intercalación e independencia de computaciones puedan ser vistos como parte de la misma teoría con el mismo núcleo de axiomas. Con esta motivación crearon un modelo simple de concurrencia basado en estructuras algebraicas, dos de las cuales resultan interesantes para este trabajo: bimonoides ordenados y monoides concurrentes. En las siguientes secciones se detallarán sus características principales. Más tarde, Rivas y Jaskelioff \cite{rivas:2019} extendieron este modelo al nivel de funtores y mónadas, dando lugar a las mónadas concurrentes. 
+La teoría de concurrencia está compuesta por una amplia variedad de modelos basados en diferentes conceptos. Hoare et al. \cite{hoare:2011} se plantearon si es posible tener un tratamiento comprensible de la concurrencia en el cual la memoria compartida, el pasaje de mensajes y los modelos de intercalación e independencia de computaciones puedan ser vistos como parte de la misma teoría con el mismo núcleo de axiomas. Con esta motivación crearon un modelo simple de concurrencia basado en estructuras algebraicas, dos de las cuales resultan interesantes para este trabajo: bimonoides ordenados y monoides concurrentes. Más tarde, Rivas y Jaskelioff \cite{rivas:2019} extendieron este modelo al nivel de funtores y mónadas, dando lugar a las mónadas concurrentes. En las siguientes secciones se detallarán las características principales de cada uno de estos modelos.
 
 \subsection{Ley de intercambio}\label{mc:interchange}
 
@@ -278,7 +278,7 @@ Se define primero una aproximación a la noción de monoide concurrente, el cual
 Un \textbf{bimonoide ordenado} es un conjunto parcialmente ordenado $(A,\sqsubseteq)$ junto con dos estructuras monoidales $(A,*,\mathtt{nothing})$ y $(A,;,\mathtt{skip})$ tal que $*$ y $;$ son compatibles con $\sqsubseteq$ y $*$ es conmutativa.
 \end{definition}
 
-Podría ser tentador requerir que ambos elementos neutros de un bimonoide ordenado sean iguales, pero, por ejemplo, en el Modelo de Recursos no lo son. El Modelo de Recursos es un ejemplo de bimonoide ordenado que no es un monoide concurrente. 
+Podría ser tentador requerir que ambos elementos neutros de un bimonoide ordenado sean iguales, pero, por ejemplo, en el Modelo de Recursos no lo son. El Modelo de Recursos es un ejemplo de un bimonoide ordenado que no es un monoide concurrente. A continuación se define la noción de monoide concurrente.
 
 \begin{definition}[Monoide concurrente]
 Un \textbf{monoide concurrente} es un bimonoide ordenado tal que los neutros coinciden, es decir $\mathtt{nothing} = \mathtt{skip}$, y la siguiente ley de intercambio se cumple:
@@ -292,18 +292,18 @@ En esta estructura no hay reducción de la operación $*$ a una intercalación d
 
 \subsection{Generalización a nivel de funtores y mónadas}\label{mc:lifting}
 
-Para elevar la teoría descripta en la sección anterior al nivel de funtores, se modela el operador de secuenciación $;$ como la multiplicación monádica y su elemento neutro $\mathtt{skip}$ como la unidad monádica. Sólo faltan tres elementos: la operación de mezcla $*$, su elemento neutro $\mathtt{nothing}$ y el orden $\sqsubseteq$. La operación de mezcla será modelada como una familia de transformaciones naturales $m_{A,B} : \mathit{T} A \times \mathit{T} B \rightarrow \mathit{T} (A \times B)$. Como se requiere que $*$ sea un monoide conmutativo, se requerirá que $\mathit{T}$ tenga una estructura de funtor monoidal simétrica, incluyendo un morfismo unidad $e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ que representará $\mathtt{skip}$. 
+Para elevar la teoría descripta en la sección anterior al nivel de funtores, se modela el operador de secuenciación $;$ como la multiplicación monádica y su elemento neutro $\mathtt{skip}$ como la unidad monádica. Sólo faltan tres elementos: la operación de mezcla $*$, su elemento neutro $\mathtt{nothing}$ y el orden $\sqsubseteq$. La operación de mezcla se modela como una familia de transformaciones naturales $m_{A,B} : \mathit{T} A \times \mathit{T} B \rightarrow \mathit{T} (A \times B)$. Como se necesita que $*$ sea un monoide conmutativo, se requiere que $\mathit{T}$ tenga una estructura de funtor monoidal simétrica, incluyendo un morfismo unidad $e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ que representa $\mathtt{skip}$. 
 
 En cuanto al orden, lo que se necesita es un orden sobre computaciones que mida el grado de secuencialidad en ellas. Esto es una estructura de orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, sujeto a algún tipo de compatibilidad con el resto de la estructura que modela computaciones. Se define a continuación la noción de funtor ordenado, la cual establece una condición de compatibilidad de un funtor con un orden parcial, siguiendo la idea de Hughes y Jacobs \cite{hughes:2004}:
 
 \begin{definition}[Funtor ordenado]
-Un orden para un funtor $\mathit{F}$ es una asignación de un orden parcial $\sqsubseteq_I$ en $\mathit{F} I$ para cada conjunto $I$, tal que para cada morfismo $f : I \rightarrow J$, el morfismo $\mathit{F} f : \mathit{F} I \rightarrow \mathit{F} J$ es una función monótona respecto de $\sqsubseteq_I$ y $\sqsubseteq_J$.
+Un \textbf{orden} para un \textbf{funtor} $\mathit{F}$ es una asignación de un orden parcial $\sqsubseteq_I$ en $\mathit{F} I$ para cada conjunto $I$, tal que para cada morfismo $f : I \rightarrow J$, el morfismo $\mathit{F} f : \mathit{F} I \rightarrow \mathit{F} J$ es una función monótona respecto de $\sqsubseteq_I$ y $\sqsubseteq_J$.
 \end{definition}
 
-A continuación se define la compatibilidad para la estructura de mónada. Para esto se utilizan una familia de estructuras ordenadas, lo cual es una instancia de lo que definieron Katsumata y Sato como una mónada ordenada \cite{katsumata:2013}.
+A continuación se define la compatibilidad para la estructura de mónada. Para esto se utiliza una familia de estructuras ordenadas, lo cual es una instancia de lo que definieron Katsumata y Sato como una mónada ordenada \cite{katsumata:2013}.
 
 \begin{definition}[Mónada ordenada]
-Un orden para una mónada $(\mathit{T},\mu,\eta)$ es una asignación de un orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, tal que la categoría Kleisli de $T$ se enriquece en la categoría de órdenes con el orden correspondiente a $\mathcal{K}\ell(\mathit{T})(A,B)$ definido por $f \sqsubseteq_{A,B} g$ si y sólo si $\forall a : \mathbf{1} \rightarrow A, f \circ a \sqsubseteq_B g \circ a$.
+Un \textbf{orden} para una \textbf{mónada} $(\mathit{T},\mu,\eta)$ es una asignación de un orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, tal que la categoría Kleisli de $T$ se enriquece en la categoría de órdenes con el orden correspondiente a $\mathcal{K}\ell(\mathit{T})(A,B)$ definido por $f \sqsubseteq_{A,B} g$ si y sólo si $\forall a : \mathbf{1} \rightarrow A, f \circ a \sqsubseteq_B g \circ a$.
 \end{definition}
 
 Esta noción de orden sólo se relaciona con la estructura monádica. En comparación a los bimonoides ordenados, se corresponde con la condición de que $;$ sea compatible con $\sqsubseteq$. La compatibilidad entre $*$ y $\sqsubseteq$ se postula como sigue:
@@ -312,12 +312,12 @@ Esta noción de orden sólo se relaciona con la estructura monádica. En compara
 Sea $\mathit{T}$ un funtor con una estructura monoidal $(m,e)$ y una asignación de un orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$. Se dice que el orden es compatible con $(m,e)$ si $v \sqsubseteq_A v'$ y $w \sqsubseteq_B w'$ implican que $m \circ \langle v,w \rangle \sqsubseteq_{A \times B} m \circ \langle v',w' \rangle$ para cada $v,v' : \mathbf{1} \rightarrow \mathit{T} A$ y $w,w' : \mathbf{1} \rightarrow \mathit{T} B$. 
 \end{definition}
 
-A partir de todas estas definiciones previas se define la variante monádica de los bimonoides ordenados y monoides concurrentes como sigue:
+A partir de todas estas definiciones previas se definen las variantes monádicas de los bimonoides ordenados y monoides concurrentes como sigue:
 
 \begin{definition}[Mónada monoidal ordenada]
 Una mónada $(\mathit{T},\eta,\_^*)$ es una mónada monoidal ordenada si está dotada de una estructura de funtor monoidal simétrico 
 \begin{equation*}
-m_{X,Y} : \mathit{T} X \times \mathit{T} Y \rightarrow \mathit{T} (X \times Y) \text{, qquad} e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1} 
+m_{X,Y} : \mathit{T} X \times \mathit{T} Y \rightarrow \mathit{T} (X \times Y) \text{, \qquad} e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1} 
 \end{equation*}
 y una relación de orden $\sqsubseteq$ sobre $\mathit{T}$ compatible con $(m,e)$.
 \end{definition}
@@ -337,7 +337,7 @@ Esta definición puede probarse mostrando que las mónadas conmutativas (como lo
 Sea $(\mathit{T},\mu,\eta)$ una mónada conmutativa. Entonces $\mathit{T}$ tiene una única estructura de mónada monoidal $(m,\eta_{\mathbf{1}})$, y se puede definir la estructura de orden por el orden diagonal. La ley de intercambio se reduce a las condiciones de mónada monoidal. 
 \end{ejemplo}
 
-Rivas y Jaskelioff \cite{rivas.2019} también muestran que estas estructuras al nivel de mónada efectivamente generalizan aquellas al nivel de los monoides probando el siguiente lema.
+Rivas y Jaskelioff \cite{rivas:2019} también muestran que estas estructuras al nivel de mónada efectivamente generalizan aquellas al nivel de los monoides probando el siguiente lema.
 
 \begin{lema}
 Sea $(\mathit{T},\mu,\eta)$ una mónada monoidal ordenada (mónada concurrente). Entonces $\mathit{T} \mathbf{1}$ es un bimonoide ordenado (monoide concurrente). 
@@ -351,8 +351,8 @@ Sea $(A,\sqsubseteq,*,\mathtt{nothing},;,\mathtt{skip})$ un bimonoide ordenado. 
 
 Este resultado será utilizado más adelante en este trabajo para dar una representación alternativa de la mónada delay. 
 
-El ejemplo de la semántica de trazas puede ser generalizado a una mónada concurrente parametrizando el conjunto sobre el cual se toman las trazas. 
+El ejemplo del Modelo de Trazas puede ser generalizado a una mónada concurrente parametrizando el conjunto sobre el cual se toman las trazas. 
 
 \begin{ejemplo}
-La mónada $Tr_L(X) = \mathcal{P}_f(Traces_{L \times X}$ es concurrente. La estructura de orden se define como la inclusión de conjuntos al igual que antes.
+La mónada $Tr_L(X) = \mathcal{P}_f(Trazas_{L \times X})$ es concurrente. La estructura de orden se define como la inclusión de conjuntos al igual que antes.
 \end{ejemplo}
