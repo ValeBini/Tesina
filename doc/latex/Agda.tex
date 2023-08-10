@@ -1141,6 +1141,36 @@
 \end{code}
 %</monad>
 
+\begin{code}%
+\>[0]\AgdaKeyword{open}\AgdaSpace{}%
+\AgdaKeyword{import}\AgdaSpace{}%
+\AgdaModule{Agda.Builtin.Sigma}\<%
+\\
+\>[0]\AgdaKeyword{open}\AgdaSpace{}%
+\AgdaKeyword{import}\AgdaSpace{}%
+\AgdaModule{Function.Equality}\<%
+\end{code}
+
+%<*ind-rec>
+\begin{code}%
+\>[0]\AgdaComment{-- mutual}\<%
+\\
+\>[0]\AgdaComment{--     data U : ? where}\<%
+\\
+\>[0]\AgdaComment{--         sig : (A : U) → (El A → U) → U }\<%
+\\
+\>[0]\AgdaComment{--         pi  : (A : U) → (El A → U) → U }\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+\>[0]\AgdaComment{--     El : U → ?}\<%
+\\
+\>[0]\AgdaComment{--     El (sig A B) = Σ (El A) (λ a → El (B a)) }\<%
+\\
+\>[0]\AgdaComment{--     El (pi A B) = Π (El A) (λ a → El (B a))   }\<%
+\end{code}
+%</ind-rec>
+
 %<*mutual>
 \begin{code}%
 \>[0]\AgdaKeyword{mutual}\<%

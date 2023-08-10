@@ -319,6 +319,24 @@ mapM' {M} Mon f xs = Monad.mapM {M} Mon f xs
 \end{code}
 %</monad>
 
+\begin{code}
+open import Agda.Builtin.Sigma 
+open import Function.Equality
+\end{code}
+
+%<*ind-rec>
+\begin{code}
+-- mutual
+--     data U : ? where
+--         sig : (A : U) → (El A → U) → U 
+--         pi  : (A : U) → (El A → U) → U 
+
+--     El : U → ?
+--     El (sig A B) = Σ (El A) (λ a → El (B a)) 
+--     El (pi A B) = Π (El A) (λ a → El (B a))   
+\end{code}
+%</ind-rec>
+
 %<*mutual>
 \begin{code}
 mutual 

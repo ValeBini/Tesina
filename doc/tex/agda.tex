@@ -16,7 +16,7 @@ Los tipos de datos se definen utilizando una declaración \AgdaKeyword{data}, en
 
 \ExecuteMetaData[latex/Agda.tex]{booleans}
 
-El tipo de \AgdaDatatype{Bool} es \AgdaPrimitiveType{Set}, el tipo de los tipos pequeños. Las funciones sobre \AgdaDatatype{Bool} pueden definirse por \textit{pattern matching}:
+El tipo de \AgdaDatatype{Bool} es \AgdaPrimitiveType{Set}, el tipo de los tipos simples (se profundizará esto en la sección \ref{additional:univ}). Las funciones sobre \AgdaDatatype{Bool} pueden definirse por \textit{pattern matching}:
 
 \ExecuteMetaData[latex/Agda.tex]{not}
 
@@ -242,9 +242,40 @@ Como se puede ver en este ejemplo, los \textit{records} pueden ser, al igual que
 
 \section{Características adicionales}\label{agda:additional}
 
-Agda tiene soporte para definiciones mutuamente recursivas. Estas deben ser declaradas dentro de un bloque \AgdaKeyword{mutual}:
+\subsection{Inducción-Recursión}\label{additional:ind-rec}
+
+Una característica fundamental de Agda que la distingue de otros lenguajes similares es el soporte para \textit{inducción-recursión} (en inglés \textit{induction-recursion}). En la teoría de tipos intuicionista, la inducción-recursión es una propiedad que permite declarar simultáneamente un tipo y una función sobre dicho tipo, haciendo posible la creación de tipos más grandes que los tipos inductivos como, por ejemplo, los universos. En una definición inductiva, se dan reglas para generar elementos de un tipo y luego pueden definirse funciones de ese tipo por inducción en dichos elementos. En inducción-recursión se permite que las reglas que generan los elementos de un tipo hagan referencia a la función que a su vez es definida por inducción en los elementos del tipo. A continuación se muestra un ejemplo de una definición inductiva-recursiva para ilustrar mejor esta característica. 
+
+\ExecuteMetaData[latex/Agda.tex]{ind-rec}
+
+Como se ve en el ejemplo, la manera de hacer una declaración inductiva-recursiva es mediante la palabra clave \AgdaKeyword{mutual}. Esta palabra clave puede utilizarse también para realizar definiciones mutuamente recursivas. 
 
 \ExecuteMetaData[latex/Agda.tex]{mutual}
 
+\subsection{Universos}\label{additional:univ}
+
+La paradoja de Russell implica que la colección de todos los conjuntos no es en sí misma un conjunto. Si existiera tal conjunto $U$, entonces uno podría formar el subconjunto $A \subseteq U$ de todos los conjuntos que no se contienen a sí mismos. Luego se deduciría que $A \in A \iff A \notin A$, lo cual es una contradicción.
+
+Por razones similares, no todos los tipos de Agda son de tipo \AgdaPrimitiveType{Set}. Por ejemplo, se tiene que \AgdaDatatype{Bool} \AgdaSymbol{:} \AgdaPrimitiveType{Set} y \AgdaDatatype{Nat} \AgdaSymbol{:} \AgdaPrimitiveType{Set}, pero no es cierto que \AgdaPrimitiveType{Set} \AgdaSymbol{:} \AgdaPrimitiveType{Set}. Sin embargo, es necesario y conveniente que \AgdaPrimitiveType{Set} tenga un tipo, y es por eso que en Agda se le da el tipo \AgdaPrimitiveType{Set$_1$}:
+
+\AgdaPrimitiveType{Set} \AgdaSymbol{:} \AgdaPrimitiveType{Set$_1$}
+
+Las expresiones de tipo \AgdaPrimitiveType{Set$_1$} se comportan en gran medida como las de tipo \AgdaPrimitiveType{Set}, por ejemplo, pueden ser utilizadas como tipo de otras cosas. Sin embargo, los elementos de \AgdaPrimitiveType{Set$_1$} son potencialmente \textit{más grandes}. Cuando se tiene \AgdaDatatype{A} \AgdaSymbol{:} \AgdaPrimitiveType{Set$_1$}, entonces se dice a veces que \AgdaDatatype{A} es un \textit{conjunto grande}. Sucesivamente, se tiene que:
+
+\AgdaPrimitiveType{Set$_1$} \AgdaSymbol{:} \AgdaPrimitiveType{Set$_2$} 
+
+\AgdaPrimitiveType{Set$_2$} \AgdaSymbol{:} \AgdaPrimitiveType{Set$_3$}
+
+etcétera. Un tipo cuyos elementos son tipos se llama \textbf{universo}. Agda provee un número infinito de universos \AgdaPrimitiveType{Set}, \AgdaPrimitiveType{Set$_1$}, \AgdaPrimitiveType{Set$_2$}, \AgdaPrimitiveType{Set$_3$}, ..., cada uno de los cuales es un elemento del siguiente. \AgdaPrimitiveType{Set} es en sí mismo una abreviación de \AgdaPrimitiveType{Set$_0$}. El subíndice \AgdaDatatype{$n$} es el \textbf{nivel} del universo \AgdaPrimitiveType{Set$_n$}. Agda provee también un tipo primitivo especial \AgdaPrimitiveType{Level}, cuyos elementos son los posibles niveles de los universos. De hecho, la notación \AgdaPrimitiveType{Set$_n$} es una abreviación para \AgdaPrimitiveType{Set $n$}, donde \AgdaDatatype{$n$} \AgdaSymbol{:} \AgdaPrimitiveType{Level}. 
+
+Si bien no hay un número de niveles específico, se sabe que existe un nivel más bajo \AgdaKeyword{lzero}, y que para cada nivel \AgdaDatatype{$n$} existe algún nivel mayor \AgdaKeyword{lsuc} \AgdaDatatype{$n$}. Por lo tanto, el conjunto de niveles es infinito. Además, puede tomarse la cota superior mínima (o supremo) \AgdaDatatype{$n\  \sqcup \ m$} de dos niveles. En resumen, las siguientes operaciones son las únicas operaciones que Agda provee sobre niveles:
+
+\AgdaKeyword{lzero} \AgdaSymbol{:} \AgdaPrimitiveType{Level}
+
+\AgdaKeyword{lsuc} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaDatatype{$n$} : \AgdaPrimitiveType{Level}\AgdaSymbol{)} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Level} 
+
+\AgdaFunction{$\_\sqcup\_$} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaDatatype{n m} \AgdaSymbol{:} \AgdaPrimitiveType{Level}\AgdaSymbol{)} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Level}
+
 \section{Coinducción}\label{agda:coinduction}
 
+Agda tiene varios soportes diferentes para coinducción. Se describirán algunos de ellos más adelante en la sección \ref{}, junto con sus características principales y su utilidad.
