@@ -947,13 +947,38 @@
 
 %<*modpoint>
 \begin{code}%
-\>[0]\AgdaComment{-- module Point (p : Point) where}\<%
+\>[0]\AgdaKeyword{module}\AgdaSpace{}%
+\AgdaModule{Pοint}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaRecord{Point}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaKeyword{where}\<%
 \\
-\>[0]\AgdaComment{--    x : Nat }\<%
+\>[0][@{}l@{\AgdaIndent{0}}]%
+\>[4]\AgdaFunction{x}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{ℕ}\<%
 \\
-\>[0]\AgdaComment{--    y : Nat }\<%
+%
+\>[4]\AgdaFunction{y}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{ℕ}\<%
 \end{code}
 %</modpoint>
+
+\begin{code}%
+%
+\>[4]\AgdaFunction{x}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaField{Point.x}\AgdaSpace{}%
+\AgdaBound{p}\<%
+\\
+%
+\>[4]\AgdaFunction{y}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaField{Point.y}\AgdaSpace{}%
+\AgdaBound{p}\<%
+\end{code}
 
 %<*get>
 \begin{code}%
@@ -1075,13 +1100,13 @@
 \AgdaOperator{\AgdaInductiveConstructor{∷}}\AgdaSpace{}%
 \AgdaBound{xs}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaSymbol{=}%
-\>[619I]\AgdaBound{f}\AgdaSpace{}%
+\>[634I]\AgdaBound{f}\AgdaSpace{}%
 \AgdaBound{x}%
 \>[32]\AgdaOperator{\AgdaField{>>=}}\AgdaSpace{}%
 \AgdaSymbol{\textbackslash{}}\AgdaBound{y}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[619I]%
+\>[.][@{}l@{}]\<[634I]%
 \>[22]\AgdaFunction{mapM}\AgdaSpace{}%
 \AgdaBound{f}\AgdaSpace{}%
 \AgdaBound{xs}\AgdaSpace{}%
@@ -1099,7 +1124,7 @@
 \\[\AgdaEmptyExtraSkip]%
 \>[0]\AgdaFunction{mapM'}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[632I]\AgdaSymbol{\{}\AgdaBound{M}\AgdaSpace{}%
+\>[647I]\AgdaSymbol{\{}\AgdaBound{M}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitiveType{Set}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -1113,7 +1138,7 @@
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitiveType{Set}\AgdaSymbol{\}}\<%
 \\
-\>[.][@{}l@{}]\<[632I]%
+\>[.][@{}l@{}]\<[647I]%
 \>[8]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -1153,21 +1178,82 @@
 
 %<*ind-rec>
 \begin{code}%
-\>[0]\AgdaComment{-- mutual}\<%
+\>[0]\AgdaKeyword{mutual}\<%
 \\
-\>[0]\AgdaComment{--     data U : ? where}\<%
+\>[0][@{}l@{\AgdaIndent{0}}]%
+\>[5]\AgdaKeyword{data}\AgdaSpace{}%
+\AgdaDatatype{U}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaPrimitiveType{Set}\AgdaSpace{}%
+\AgdaKeyword{where}\<%
 \\
-\>[0]\AgdaComment{--         sig : (A : U) → (El A → U) → U }\<%
+\>[5][@{}l@{\AgdaIndent{0}}]%
+\>[9]\AgdaInductiveConstructor{sig}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{U}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{El}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{U}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{U}\<%
 \\
-\>[0]\AgdaComment{--         pi  : (A : U) → (El A → U) → U }\<%
+%
+\>[9]\AgdaInductiveConstructor{pi}%
+\>[13]\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{U}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{El}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{U}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{U}\<%
 \\
 %
 \\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaComment{--     El : U → ?}\<%
+%
+\>[5]\AgdaFunction{El}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{U}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaPrimitiveType{Set}\<%
 \\
-\>[0]\AgdaComment{--     El (sig A B) = Σ (El A) (λ a → El (B a)) }\<%
+%
+\>[5]\AgdaFunction{El}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaInductiveConstructor{sig}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSpace{}%
+\AgdaBound{B}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaRecord{Σ}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{El}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{(λ}\AgdaSpace{}%
+\AgdaBound{a}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaFunction{El}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{B}\AgdaSpace{}%
+\AgdaBound{a}\AgdaSymbol{))}\<%
 \\
-\>[0]\AgdaComment{--     El (pi A B) = Π (El A) (λ a → El (B a))   }\<%
+%
+\>[5]\AgdaFunction{El}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaInductiveConstructor{pi}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSpace{}%
+\AgdaBound{B}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{a}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{El}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSymbol{))}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{El}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{B}\AgdaSpace{}%
+\AgdaBound{a}\AgdaSymbol{))}\<%
 \end{code}
 %</ind-rec>
 

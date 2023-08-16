@@ -283,11 +283,16 @@ mkPoint' a b = a , b
 
 %<*modpoint>
 \begin{code}
--- module Point (p : Point) where
---    x : Nat 
---    y : Nat 
+module Pοint (p : Point) where
+    x : ℕ 
+    y : ℕ 
 \end{code}
 %</modpoint>
+
+\begin{code}
+    x = Point.x p
+    y = Point.y p
+\end{code}
 
 %<*get>
 \begin{code}
@@ -326,14 +331,14 @@ open import Function.Equality
 
 %<*ind-rec>
 \begin{code}
--- mutual
---     data U : ? where
---         sig : (A : U) → (El A → U) → U 
---         pi  : (A : U) → (El A → U) → U 
+mutual
+     data U : Set where
+         sig : (A : U) → (El A → U) → U 
+         pi  : (A : U) → (El A → U) → U 
 
---     El : U → ?
---     El (sig A B) = Σ (El A) (λ a → El (B a)) 
---     El (pi A B) = Π (El A) (λ a → El (B a))   
+     El : U → Set
+     El (sig A B) = Σ (El A) (λ a → El (B a)) 
+     El (pi A B) = (a : (El A)) → (El (B a))   
 \end{code}
 %</ind-rec>
 

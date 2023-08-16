@@ -2,7 +2,9 @@
 
 En este capítulo se hará una introducción teórica sobre mónadas concurrentes. Se definirán al comienzo algunos conceptos previos de la teoría de categorías sobre la cual se definen las mónadas. En la segunda sección se hará una introducción a las mónadas en sí mismas, en la cual se darán varias definiciones y ejemplos. Por último, en la tercera, se introducirán los conceptos específicos necesarios para definir una mónada concurrente. 
 
-\section{Definiciones previas}\label{monconc:previas}
+\section{Teoría de Categorías}\label{monconc:cat}
+
+La teoría de categorías fue desarrollada por Eilenberg y MacLane \cite{eilenberg:1945} en 1945. Esta teoría busca axiomatizar de forma abstracta diversas estructuras matemáticas como una sola, tales como los grupos y los espacios topológicos, mediante el uso de objetos y morfismos. A su vez, esta axiomatización se realiza de una manera nueva sin incluir las nociones de elemento o pertenencia, es decir, sin utilizar conjuntos. Con el concepto de categoría se pretende capturar la esencia de una clase de objetos matemáticos que se relacionan entre sí mediante aplicaciones, poniendo énfasis en la relación entre los objetos y no en la pertenencia como en la teoría de conjuntos.
 
 \begin{definition}[Categoría]
 Una \textbf{categoría} $\mathscr{C}$ consiste de:
@@ -29,12 +31,14 @@ Una \textbf{categoría} $\mathscr{C}$ consiste de:
 		\item Para cada $A \in \mathbf{ob} \ \mathscr{C}$ existe un \textbf{morfismo identidad} $id_A \in Hom(A,A)$ tal que
 		\begin{itemize}[noitemsep,label=$\star$]
 			\item $\forall B, \ \forall f \in Hom(A,B), \ f \circ id_A = f$,
-			\item $\forall C, \ \forall g \in Hom(C,A, \ id_A \circ g = g$.
+			\item $\forall C, \ \forall g \in Hom(C,A), \ id_A \circ g = g$.
 		\end{itemize}
 	\end{itemize}
 	
 \end{itemize}
 \end{definition}
+
+A continuación se presentan algunos ejemplos de categorías que pueden ser de utilidad para comprender mejor el concepto.
 
 \begin{ejemplo}[Categoría \textbf{Set}]
 La categoría \textbf{Set} es aquella tal que:
@@ -51,6 +55,8 @@ La categoría $\mathds{1}$ es aquella tal que:
 \end{itemize}
 \end{ejemplo}
 
+Dentro de los objetos de una categoría, hay dos clases especiales de objetos: los iniciales y terminales. Estos se definen como sigue:
+
 \begin{definition}[Objetos iniciales y terminales]
 Un objeto $\mathbf{0} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{inicial} si $\forall A \in \text{\bf ob} \ \mathscr{C}$, $\exists! \mathbf{0} \rightarrow A$. 
 Un objeto $\mathbf{1} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{terminal} si $\forall A \in \text{\bf ob} \ \mathscr{C}$, $\exists! A \rightarrow \mathbf{1}$.
@@ -59,6 +65,46 @@ Un objeto $\mathbf{1} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{terminal}
 \begin{ejemplo} 
 En \textbf{Set}, $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
 \end{ejemplo}
+
+En la categoría \textbf{Set}, se sabe que el producto cartesiano entre dos objetos (conjuntos) $A \times B$ es el conjunto de los pares $(a,b)$ tales que $a \in A$ y $b \in B$. Para definir el concepto de producto cartesiano entre dos objetos $A$ y $B$ de una categoría cualquiera, es necesario caracterizar a $A \times B$ sin hacer referencia a sus elementos. 
+
+\begin{definition}[Producto]
+El \textbf{producto} de dos objetos $A$ y $B$ en una categoría $\mathscr{C}$ es una terna $(A \times B, \pi_A, \pi_B)$ donde:
+\begin{itemize}[label=$\blacktriangleright$]
+	\item $\pi_A \in Hom(A \times B, A)$,
+	\item $\pi_B \in Hom(A \times B, B)$
+	\item y para todo objeto $C$ y para todo par de morfismos $f : C \rightarrow A$, $g : C \rightarrow B$, existe un único mofismo $\langle f, g \rangle : C \rightarrow A \times B$ tal que:
+	\begin{itemize}[label=$\bullet$]
+		\item $f = \pi_A \circ \langle f, g \rangle$
+		\item $g = \pi_B \circ \langle f, g \rangle$
+	\end{itemize}
+\end{itemize}
+\end{definition}
+
+Suponiendo que existen los productos $A \times B$ y $C \times D$ y que se tienen dos morfismos $f : A \rightarrow C$ y $g : B \rightarrow D$, se puede definir un morfismo $f \times g : A \times B \rightarrow C \times D$ tal que $f \times g = \langle f \circ \pi_A , g \circ \pi_B \rangle$.
+
+De forma dual a la definición de producto, se puede definir la noción de coproducto entre dos objetos $A$ y $B$ de una categoría arbitraria como sigue:
+
+\begin{definition}[Coproducto]
+El \textbf{coproducto} de dos objetos $A, B$ de una categoría $\mathscr{C}$ es una terna $(A + B, \iota_A, \iota_B)$ donde:
+\begin{itemize}[label=$\blacktriangleright$]
+	\item $\iota_A \in Hom(A, A + B)$,
+	\item $\iota_B \in Hom(B, A + B)$
+	\item y para todo objeto $C$ y para todo par de morfismos $f : A \rightarrow C$, $g : B \rightarrow C$ existe un único morfismo $[f,g] : A + B \rightarrow C$ tal que se cumplen las siguientes ecuaciones:
+	\begin{itemize}[label=$\bullet$]
+		\item $f = [f,g] \circ \iota_A$
+		\item $g = [f,g] \circ \iota_B$
+	\end{itemize}
+\end{itemize}
+\end{definition}
+
+Una última relación que puede establecerse entre dos objetos de una categoría es el exponencial. En \textbf{Set}, el exponencial de dos conjuntos $A$ y $B$ es el conjunto $B^A$ de todas las funciones que van de $A$ en $B$, es decir que toman un elemento de $A$ y devuelven un elemento de $B$. Esta noción puede generalizarse a una categoría arbitraria que tenga productos cartesianos.
+
+\begin{definition}[Exponencial]
+Sea $\mathscr{C}$ una categoría con productos binarios y sean $A,B \in \text{\bf ob} \ \mathscr{C}$. Un objeto $B^A$ es un \textbf{exponencial} si existe un morfismo $\varepsilon : B^A \times A \rightarrow B$ tal que para todo morfismo $g : C \times A \rightarrow B$ existe un único morfismo $\tilde{g} : C \rightarrow B^A$ tal que $g = \varepsilon \circ (\tilde{g} \times \text{id}_A)$.
+\end{definition}
+
+Si se quisiera construir una categoría cuyos objetos son categorías, se necesitaría contar con morfismos entre categorías. Estos existen y se llaman funtores, son en cierta manera una generalización del concepto de función de conjuntos para categorías. Un funtor permite construir una nueva categoría a partir de otra dada.
  
 \begin{definition}[Funtor]
 Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{D}$ asigna:
@@ -72,12 +118,16 @@ Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{
 \end{itemize}
 \end{definition}
 
+Siguiendo con la misma lógica, uno podría construir morfismos entre funtores. Es decir, algún tipo de construcción matemática que lleve de un funtor dado a otro. Este concepto se denomina transformación natural y se define como sigue:
+
 \begin{definition}[Transformaci\'on Natural]
 Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores (entre las mismas categorías). Una \textbf{transformación natural} $\eta : \mathit{F} \rightarrow \mathit{G}$ asigna a cada $A \in \mathbf{ob} \ \mathscr{C}$ un morfismo $\eta_A : \mathit{F}(A) \rightarrow \mathit{G}(A)$ tal que para todo $f \in Hom(A,B)$ se cumple que: 
 \begin{equation*}
 	\eta_B \circ \mathit{F}(f) = \mathit{G}(f) \circ \eta_A 
 \end{equation*}
 \end{definition}
+
+Para cerrar la sección, se introducirá la noción de monoide. Los monoides son un tipo de estructura algebraica abstracta y fueron introducidos por primera vez por Arthur Cayley \cite{}.
 
 \begin{definition}[Monoide]
 Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \times M \rightarrow M$, $(m,n) \rightarrow mn$ tal que existe un elemento neutro:
@@ -126,10 +176,10 @@ Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{
 
 \subsection{Definición alternativa de Mónadas}\label{monadas:alt}
 
-Se define ahora la 3-tupla Kleisli, llamada también sistema de extensión. Esta definición también parte de la teoría de categorías pero no es la más utilizada en la literatura. Sin embargo, como se explica más adelante, es la que más se acerca a la forma de utilizar las mónadas en los lenguajes de programación funcional. 
+Se define ahora la noción de sistema de extensión, también llamado 3-tupla Kleisli. Esta definición también parte de la teoría de categorías pero no es la más utilizada en la literatura. Sin embargo, como se explica más adelante, es la que más se acerca a la forma de utilizar las mónadas en los lenguajes de programación funcional. 
 
-\begin{definition}[3-tupla Kleisli]
-Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
+\begin{definition}[Sistema de extensión]
+Un \textbf{sistema de extensión} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\mathit{T} : \mathbf{ob} \ \mathscr{C} \rightarrow \mathbf{ob} \ \mathscr{C}$,
 	\item para cada $A \in \mathbf{ob} \ \mathscr{C}$, $\eta_A : A \rightarrow \mathit{T}A$,
@@ -145,7 +195,7 @@ Una \textbf{3-tupla Kleisli} sobre una categoría $\mathscr{C}$ es una tupla $(\
 
 Intuitivamente $\eta_A$ es la inclusión de valores en computaciones (lo que en programación funcional usualmente se conoce como \textit{return}) y $f^*$ es la extensión de una función $f$ que va de valores a computaciones a una función que va de computaciones a computaciones, la cual primero evalúa una computación y luego aplica $f$ al valor resultante (lo que generalmente se conoce como \textit{bind} o $>$\hspace{-1mm}$>$\hspace{-1mm}$=$).
 
-A continuación se muestra cómo quedan definidos los ejemplos vistos para la definición clásica como 3-tuplas Kleisli para que se comprenda mejor el paralelismo entre ambas definiciones. 
+A continuación se muestra cómo quedan definidos los ejemplos vistos para la definición clásica como sistemas de extensión para que se comprenda mejor el paralelismo entre ambas definiciones. 
 
 \begin{ejemplo}[M\'onada \textit{Error}] 
 Tomando el funtor descripto en la versión clásica:
