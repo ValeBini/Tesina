@@ -55,7 +55,7 @@ La categoría $\mathds{1}$ es aquella tal que:
 \end{itemize}
 \end{ejemplo}
 
-Dentro de los objetos de una categoría, hay dos clases especiales de objetos: los iniciales y terminales. Estos se definen como sigue:
+Dentro de los objetos de una categoría, hay dos clases especiales de objetos: iniciales y terminales. Estos se definen como sigue:
 
 \begin{definition}[Objetos iniciales y terminales]
 Un objeto $\mathbf{0} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{inicial} si $\forall A \in \text{\bf ob} \ \mathscr{C}$, $\exists! \mathbf{0} \rightarrow A$. 
@@ -101,7 +101,7 @@ El \textbf{coproducto} de dos objetos $A, B$ de una categoría $\mathscr{C}$ es 
 Una última relación que puede establecerse entre dos objetos de una categoría es el exponencial. En \textbf{Set}, el exponencial de dos conjuntos $A$ y $B$ es el conjunto $B^A$ de todas las funciones que van de $A$ en $B$, es decir que toman un elemento de $A$ y devuelven un elemento de $B$. Esta noción puede generalizarse a una categoría arbitraria que tenga productos cartesianos.
 
 \begin{definition}[Exponencial]
-Sea $\mathscr{C}$ una categoría con productos binarios y sean $A,B \in \text{\bf ob} \ \mathscr{C}$. Un objeto $B^A$ es un \textbf{exponencial} si existe un morfismo $\varepsilon : B^A \times A \rightarrow B$ tal que para todo morfismo $g : C \times A \rightarrow B$ existe un único morfismo $\tilde{g} : C \rightarrow B^A$ tal que $g = \varepsilon \circ (\tilde{g} \times \text{id}_A)$.
+Sea $\mathscr{C}$ una categoría con productos binarios y sean $A,B \in \text{\bf ob} \ \mathscr{C}$. Un objeto $B^A$ es un \textbf{exponencial} si existe un morfismo $\varepsilon : B^A \times A \rightarrow B$ tal que para todo morfismo $g : C \times A \rightarrow B$ existe un único morfismo $\tilde{g} : C \rightarrow B^A$ tal que $g = \varepsilon \circ (\tilde{g} \times id_A)$.
 \end{definition}
 
 Si se quisiera construir una categoría cuyos objetos son categorías, se necesitaría contar con morfismos entre categorías. Estos existen y se llaman funtores, son en cierta manera una generalización del concepto de función de conjuntos para categorías. Un funtor permite construir una nueva categoría a partir de otra dada.
@@ -127,7 +127,7 @@ Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores
 \end{equation*}
 \end{definition}
 
-Para cerrar la sección, se introducirá la noción de monoide. Los monoides son un tipo de estructura algebraica abstracta y fueron introducidos por primera vez por Arthur Cayley \cite{}.
+Para cerrar la sección, se introducirá la noción de monoide. Los monoides son un tipo de estructura algebraica abstracta introducida por primera vez por Arthur Cayley \cite{}.
 
 \begin{definition}[Monoide]
 Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \times M \rightarrow M$, $(m,n) \rightarrow mn$ tal que existe un elemento neutro:
@@ -135,6 +135,8 @@ Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \t
 \exists e \in M, \forall m \in M, (em = me = m).
 \end{equation*}
 \end{definition}
+
+El elemento neutro de un monoide es único. Por esa razón, en general el elemento neutro es considerado una constante, es decir, una operación 0-aria (sin argumentos). Se utilizará esta representación en la formalización de los monoides.
 
 \section{Introducción a las mónadas}\label{monconc:monadas}
 
@@ -187,8 +189,8 @@ Un \textbf{sistema de extensión} sobre una categoría $\mathscr{C}$ es una tupl
 	\item y se cumplen las siguientes ecuaciones:
 	\begin{itemize}[noitemsep,label=$\bullet$]
 		\item $\eta^*_A = id_{\mathit{T}A}$
-		\item $\eta_A ; f^* = f$ para cada $f : A \rightarrow \mathit{T}B$
-		\item $f^* ; g^* = (f ; g^*)^*$ para cada $f : A \rightarrow \mathit{T}B$ y $g : B \rightarrow \mathit{T}C$.
+		\item $f^* \circ \eta_A = f$ para cada $f : A \rightarrow \mathit{T}B$
+		\item $g^* \circ f^* = (g^* \circ f)^*$ para cada $f : A \rightarrow \mathit{T}B$ y $g : B \rightarrow \mathit{T}C$.
 	\end{itemize}
 \end{itemize}
 \end{definition}
@@ -215,12 +217,12 @@ Tomando el funtor descripto en la versión clásica:
 
 \subsection{Funtores, mónadas y producto cartesiano}\label{monadas:cartesian}
 
-La fortaleza de los funtores es una forma de compatibilidad entre funtores y productos cartesianos. En adelante se trabajará con funtores y mónadas que son fuertes respecto del producto cartesiano. A continuación se definen las nociones de funtor fuerte y mónada fuerte.
+La fortaleza de los funtores es una forma de compatibilidad entre funtores y productos. En adelante se trabajará con funtores y mónadas que son fuertes respecto del producto cartesiano. A continuación se definen las nociones de funtor fuerte y mónada fuerte.
 
 \begin{definition}[Funtor fuerte]
 Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{C}$  es \textbf{fuerte} si viene equipado con una transformación natural $\sigma_{X,Y} : \mathit{F}X \times Y \rightarrow \mathit{F} (X \times Y)$, de manera que se cumplen las siguientes ecuaciones:
 \begin{equation*}
-	\pi_1 = \mathit{F}(\pi_1) \circ \sigma_{X,\mathbf{1}} \text{, \quad} \sigma \circ (\sigma \times \text{id}) \circ \alpha = \mathit{F}(\alpha) \circ \sigma 
+	\pi_1 = \mathit{F}(\pi_1) \circ \sigma_{X,\mathbf{1}} \text{, \quad} \sigma \circ (\sigma \times id) \circ \alpha = \mathit{F}(\alpha) \circ \sigma 
 \end{equation*} 
 donde $\pi_1$ y $\pi_2$ son las proyecciones del producto cartesiano y $\alpha = \langle \langle \pi_1 , \pi_1 \circ \pi_2 \rangle , \pi_2 \circ \pi_2 \rangle$ representa su asociatividad.
 \end{definition}
@@ -239,7 +241,14 @@ Otra forma en la que un funtor puede ser compatible con el producto cartesiano e
 
 \begin{definition}[Funtor monoidal]
 Un \textbf{funtor monoidal} es un funtor $\mathit{F}: \mathscr{C} \rightarrow \mathscr{C}$ equipado con una estructura monoidal $(m,e)$, donde $m : \mathit{F} X \times \mathit{F} Y \rightarrow \mathit{F} (X \times Y)$ es una transformación natural y $e : \mathbf
-{1} \rightarrow \mathit{F} \mathbf{1}$ es un morfismo tal que los diagramas de coherencia estándar conmutan. Además, si la estructura monoidal es compatible con $\gamma$, entonces el funtor monoidal es simétrico.
+{1} \rightarrow \mathit{F} \mathbf{1}$ es un morfismo tal que las siguientes ecuaciones se cumplen:
+\begin{equation*}
+\pi_1 = \mathit{F}(\pi_1) \circ m_{A,\mathbf{1}} \circ (id_{\mathit{F}A} \times e) \text{, \qquad} \pi_2 = \mathit{F}(\pi_2) \circ m_{\mathbf{1},A} \circ (e \times id_{\mathit{F}A}) \text{,}
+\end{equation*}
+\begin{equation*}
+\mathit{F}(\alpha) \circ m_{X \times Y, Z} \circ (m_{X,Y} \times id_{\mathit{F}Z}) = m_{X, Y \times Z} \circ (id_{\mathit{F}X} \times m_{Y,Z}) \circ \alpha
+\end{equation*}
+Además, si la estructura monoidal es compatible con $\gamma$, entonces el funtor monoidal es simétrico.
 \end{definition}
 
 \begin{definition}[Mónada monoidal]
