@@ -1,0 +1,69 @@
+\chapter{La Mónada \textit{Delay}}\label{chapter:delay}
+
+Como se discutió previamente, la teoría de tipos de Martin-Löf es un lenguaje de programación funcional rico con tipos dependientes y, a su vez, un sistema de lógica constructiva. Sin embargo, esto trae una limitación respecto de los lenguajes de programación funcional estándar, ya que obliga a que todas las computaciones deban terminar. Esta restricción tiene dos razones principales: hacer que el chequeo de tipos de los tipos dependientes sea decidible y representar pruebas como programas (una prueba que no termina es inconsistente). 
+
+El tipo de dato \textit{delay} fue introducido por Capretta \cite{capretta:2005} con el objetivo de facilitar la representación de la no-terminación de funciones en la teoría de tipos de Martin-Löf. Lo que busca es explotar los tipos coinductivos para modelar computaciones infinitas. Los habitantes del tipo \textit{delay} son valores ``demorados'', los cuales pueden no terminar y, por lo tanto, no retornar un valor nunca. El tipo de dato \textit{delay} es una mónada y constituye una alternativa constructiva de la mónada \textit{maybe}. 
+
+Se introducirá primero la noción de coinducción, junto con los soportes para coinducción que Agda proporciona. Luego se presentará la definición de la mónada \textit{delay} y sus principales características.
+
+\section{Introducción a la Coinducción}\label{delay:coind}
+
+El principio de inducción está bien establecido en el área de las matemáticas y las ciencias de la computación. En esta última, se utiliza principalmente para razonar sobre tipos de datos definidos inductivamente, tales como listas finitas, árboles finitos y números naturales. La coinducción es el pincipio dual de la inducción y puede ser utilizado para razonar sobre tipos de datos definidos coinductivamente, tales como flujos de datos, trazas infinitas o árboles infinitos, pero no está tan difundido ni se comprende tan bien en general. 
+
+Para ilustrar mejor el concepto de coinducción, se utilizarán algunos ejemplos presentados por Kozen y Silva \cite{kozen:2017} con el objetivo de promover este principio como una herramienta útil y hacerlo tan familiar e intuitivo como la inducción. 
+
+A continuación se considera el ejemplo del tipo \texttt{Lista de $A$} de listas finitas sobre un alfabeto $A$, definido inductivamente por:
+\begin{itemize}[label=$\blacktriangleright$]
+	\item \texttt{nil} $\in$ \texttt{Lista de $A$}
+	\item si $a \in A$ y $\ell \in$ \texttt{Lista de $A$}, entonces $a$ \texttt{::} $\ell \in$ \texttt{Lista de $A$}. 
+\end{itemize}
+
+El tipo de dato definido es la solución  mínima a la ecuación:
+\begin{equation}\label{list}
+\text{\tt Lista de $A$} = \text{\tt nil} + A \times \text{\tt Lista de $A$}
+\end{equation}
+Es decir, que es el mínimo conjunto tal que se cumplen las condiciones listadas más arriba. Esto significa que uno puede definir funciones con dominio \texttt{Lista de $A$} de manera única por inducción estructural. El tipo de las listas finitas e infinitas sobre $A$ se define coinductivamente como la solución máxima de la ecuación \ref{list}. Esto significa que es el máximo conjunto tal que se cumplen ambas condiciones. 
+
+Formalmente, el tipo de las listas finitas sobre $A$ es un álgebra inicial para una signatura que consiste en una constante (\texttt{nil}) y un constructor binario (\texttt{::}). El tipo de las listas finitas e infinitas sobre $A$ forman la coálgebra final de la signatura (\texttt{nil}, \texttt{::}). Se definen a continuación los conceptos de álgebra, coálgebra, álgebra inicial y coálgebra final:
+
+\begin{definition}[Álgebra de un funtor]
+Dado un endofuntor $\mathit{F}$ sobre una categoría $\mathscr{C}$, un \textbf{álgebra} de $\mathit{F}$ es un objeto $X$ de $\mathscr{C}$ junto con un morfismo $\alpha : \mathit{F}X \rightarrow X$. Dadas dos álgebras $(X, \alpha : \mathit{F}X \rightarrow X)$, $(Y, \beta : \mathit{F}Y \rightarrow Y)$ de $F$, $m : X \rightarrow Y$ es un morfismo de álgebras si se cumple la siguiente ecuación:
+\begin{equation*}
+m \circ \alpha = \beta \circ \mathit{F}(m)
+\end{equation*}
+Las álgebras de $\mathit{F}$ junto con sus morfismos forman una categoría llamada $\mathit{F}$-álgebras. 
+\end{definition}
+
+\begin{definition}[Coálgebra]
+Una \textbf{coálgebra} para un endofuntor $\mathit{F}$ sobre una categoría $\mathscr{C}$ es un objeto $A$ junto con un morfismo $u : A \rightarrow \mathit{F} A$. Dadas dos coálgebras $(A, \eta : A \rightarrow \mathit{F}A), \quad (B, \theta : B \rightarrow \mathit{F}B)$, $f : A \rightarrow B$ es un morfismo de coálgebras si respeta la estructura coalgebraica: 
+\begin{equation*}
+\theta \circ f = \mathit{F}(f) \circ \eta
+\end{equation*} 
+Las coálgebras de $\mathit{F}$ junto con sus morfismos generan una categoría llamada $\mathit{F}$-coálgebras.
+\end{definition}
+
+\begin{definition}[Álgebra inicial]
+Un \textbf{álgebra inicial} para un endofuntor $\mathit{F}$ sobre una categoría $\mathscr{C}$ es un objeto inicial en la categoría de las $\mathit{F}$-álgebras.
+\end{definition}
+
+\begin{definition}[Coálgebra final]
+Una \textbf{coálgebra final} para un endofuntor $\mathit{F}$ sobre una categoría $\mathscr{C}$ es un objeto terminal en la categoría de las $\mathit{F}$-coálgebras. 
+\end{definition}
+
+Formalmente, los tipos coinductivos se definen como elementos de una coálgebra final para un endofuntor dado en la categoría \textbf{Set}. 
+
+\begin{ejemplo}[Flujo de datos infinitos]
+El conjunto $A^{\omega}$ de flujos de datos (o \textit{streams} en inglés) infinitos sobre un alfabeto $A$ es (el conjunto soporte de) la coálgebra final del funtor $\mathit{F}X = A \times X$.
+\end{ejemplo}
+
+\begin{ejemplo}[Cadenas infinitas]
+El conjunto $A^{\infty}$ de las cadenas finitas e infinitas sobre un alfabeto $A$ es (el conjunto soporte de) la coálgebra final del funtor $\mathit{F}X = \mathds{1} + A \times X$.
+\end{ejemplo}
+
+Mientras que los tipos inductivos se definen mediante sus constructores, los tipos coinductivos usualmente se presentan junto con sus destructores. Por ejemplo, los flujos de datos o \textit{streams} admiten dos operaciones $hd: A^{\omega} \rightarrow A$ y $tl : A^{\omega} \rightarrow A^{\omega}$, los cuales representan la función $head$ que devuelve el primer elemento del \textit{stream} y la función $tail$ que devuelve la cola del \textit{stream}. La existencia de los destructores es una consecuencia del hecho de que $A^{\omega}$ es una coálgebra para el funtor $\mathit{F}X = A \times X$. Todas estas coálgebras vienen equipadas con una función estructural $\langle obs, cont \rangle  : X \rightarrow A \times X$; para $A^{\omega}$ se tiene que $obs = hd$ y $cont = tl$.
+
+Las pruebas por coinducción tienen un paso coinductivo (análogo al paso inductivo) pero no caso base. Aunque esto parezca incorrecto o genere cierta desconfianza en dichas pruebas, cualquier dificultad que haga que la propiedad a demostrar no se cumpla se manifiesta en el intento de probar el paso coinductivo.
+
+\subsection{Coinducción en Agda}\label{coind:agda}
+
+\section{Mónada \textit{Delay}}\label{delay:delay}
