@@ -66,4 +66,26 @@ Las pruebas por coinducción tienen un paso coinductivo (análogo al paso induct
 
 \subsection{Coinducción en Agda}\label{coind:agda}
 
+Se describirán a continuación los dos soportes de coinducción en Agda que se utilizaron en esta Tesina. El primero se basa en una notación particular, la notación musical, la cual permite manejar términos potencialmente infinitos. A pesar de ser una notación práctica e intuitiva, este soporte tiene algunos problemas con el chequeo de terminación de Agda, lo que limita bastante las propiedades que pueden demostrarse usándolo. Es por eso que se utilizó luego otro enfoque, basado en tipos de tamaño limitado (\textit{sized types} en inglés), el cual ayuda al chequeo de terminación de Agda haciendo un seguimiento de la profundidad de las estructuras de datos mediante la definición de límites en la profundidad. 
+
+\subsubsection{Notación Musical}\label{coind:agda:musical}
+
+Para mostrar la notación musical se utilizará como ejemplo el conjunto de los números \textit{conaturales}. Así como las coálgebras son el dual de las álgebras, los números conaturales son el dual de los números naturales y se definen en Agda como sigue:
+
+\ExecuteMetaData[latex/Coind.tex]{musconat}
+
+El operador \textit{delay} (\AgdaDatatype{$\infty$}) se utiliza para etiquetar ocurrencias coinductivas. El tipo \AgdaDatatype{$\infty$ A} se interpretea como una computación suspendida o demorada de tipo \AgdaDatatype{A}. Este operador viene equipado con funciones \textit{delay} y \textit{force}:
+
+\ExecuteMetaData[latex/Coind.tex]{delayforce}
+
+La función \textit{delay} (\AgdaFunction{$\sharp\_$}) toma un valor de tipo \AgdaDatatype{A} y lo devuelve suspendido dentro de un valor de tipo \AgdaDatatype{$\infty$ A}. Por el contrario, la función \textit{force} (\AgdaFunction{$\flat$}), toma un valor de tipo \AgdaDatatype{$\infty$ A} y lo desencapsula devolviendo un valor de tipo \AgdaDatatype{A}.
+
+Los valores de tipos coinductivos pueden ser construidos usando corecursión, la cual no debe necesariamente terminar, pero sí ser productiva. Como aproximación a la productividad, en el chequeo de terminación se pide que las definiciones corecursivas sean protegidas por constructores coinductivos. Por ejemplo, el infinito puede ser difinido como se muestra a continuación.
+
+\ExecuteMetaData[latex/Coind.tex]{inf}
+
+\subsubsection{\textit{Sized Types}}
+
+
+
 \section{Mónada \textit{Delay}}\label{delay:delay}
