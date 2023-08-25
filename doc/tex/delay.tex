@@ -22,7 +22,7 @@ El tipo de dato definido es la solución  mínima a la ecuación:
 \begin{equation}\label{list}
 \text{\tt Lista de $A$} = \text{\tt nil} + A \times \text{\tt Lista de $A$}
 \end{equation}
-Es decir, que es el mínimo conjunto tal que se cumplen las condiciones listadas más arriba. Esto significa que uno puede definir funciones con dominio \texttt{Lista de $A$} de manera única por inducción estructural. El tipo de las listas finitas e infinitas sobre $A$ se define coinductivamente como la solución máxima de la ecuación \ref{list}. Esto significa que es el máximo conjunto tal que se cumplen ambas condiciones. 
+Es decir que es el mínimo conjunto tal que se cumplen las condiciones listadas más arriba. Esto significa que uno puede definir funciones con dominio \texttt{Lista de $A$} de manera única por inducción estructural. El tipo de las listas finitas e infinitas sobre $A$ se define coinductivamente como la solución máxima de la ecuación \ref{list}. Esto significa que es el máximo conjunto tal que se cumplen ambas condiciones. 
 
 Formalmente, el tipo de las listas finitas sobre $A$ es un álgebra inicial para una signatura que consiste en una constante (\texttt{nil}) y un constructor binario (\texttt{::}). El tipo de las listas finitas e infinitas sobre $A$ forman la coálgebra final de la signatura (\texttt{nil}, \texttt{::}). Se definen a continuación los conceptos de álgebra, coálgebra, álgebra inicial y coálgebra final:
 
@@ -64,11 +64,11 @@ Mientras que los tipos inductivos se definen mediante sus constructores, los tip
 
 Las pruebas por coinducción tienen un paso coinductivo (análogo al paso inductivo) pero no caso base. Aunque esto parezca incorrecto o genere cierta desconfianza en dichas pruebas, cualquier dificultad que haga que la propiedad a demostrar no se cumpla se manifiesta en el intento de probar el paso coinductivo.
 
-\subsection{Coinducción en Agda}\label{coind:agda}
+\section{Coinducción en Agda}\label{coind:agda}
 
 Se describirán a continuación los dos soportes de coinducción en Agda que se utilizaron en esta Tesina. El primero se basa en una notación particular, la notación musical, la cual permite manejar términos potencialmente infinitos. A pesar de ser una notación práctica e intuitiva, este soporte tiene algunos problemas con el chequeo de terminación de Agda, lo que limita bastante las propiedades que pueden demostrarse usándolo. Es por eso que se utilizó luego otro enfoque, basado en tipos de tamaño limitado (\textit{sized types} en inglés), el cual ayuda al chequeo de terminación de Agda haciendo un seguimiento de la profundidad de las estructuras de datos mediante la definición de límites en la profundidad. 
 
-\subsubsection{Notación Musical}\label{coind:agda:musical}
+\subsection{Notación Musical}\label{coind:agda:musical}
 
 Para mostrar la notación musical se utilizará como ejemplo el conjunto de los números \textit{conaturales}. Así como las coálgebras son el dual de las álgebras, los números conaturales son el dual de los números naturales y se definen en Agda como sigue:
 
@@ -80,12 +80,76 @@ El operador \textit{delay} (\AgdaDatatype{$\infty$}) se utiliza para etiquetar o
 
 La función \textit{delay} (\AgdaFunction{$\sharp\_$}) toma un valor de tipo \AgdaDatatype{A} y lo devuelve suspendido dentro de un valor de tipo \AgdaDatatype{$\infty$ A}. Por el contrario, la función \textit{force} (\AgdaFunction{$\flat$}), toma un valor de tipo \AgdaDatatype{$\infty$ A} y lo desencapsula devolviendo un valor de tipo \AgdaDatatype{A}.
 
-Los valores de tipos coinductivos pueden ser construidos usando corecursión, la cual no debe necesariamente terminar, pero sí ser productiva. Como aproximación a la productividad, en el chequeo de terminación se pide que las definiciones corecursivas sean protegidas por constructores coinductivos. Por ejemplo, el infinito puede ser difinido como se muestra a continuación.
+Los valores de tipos coinductivos pueden ser construidos usando corecursión, la cual no debe necesariamente terminar, pero sí ser productiva. Por ejemplo, el infinito puede ser difinido como se muestra a continuación.
 
 \ExecuteMetaData[latex/Coind.tex]{inf}
 
-\subsubsection{\textit{Sized Types}}
+Como aproximación a la productividad, en el chequeo de terminación se pide que en la definición de funciones corecursivas las llamadas recursivas aparezcan bajo la aplicación directa de un construcor coinductivo. Esta restricción en general hace que programar con tipos coinductivos sea incómodo, y es por eso que se buscan técnicas alternativas para asegurar que las definiciones corecursivas estén bien definidas. 
 
+\subsection{\textit{Sized Types}}
+
+Agda tiene un soporte nativo para \textit{sized types}. Estos son tipos que cuentan con un índice que indica el número de desencapsulamientos que pueden realizarse sobre los habitantes de este tipo. Estos índices, llamados tamaños o \textit{sizes}, asisten al chequeo de terminación evaluando que las definiciones corecursivas estén bien definidas. 
+
+En Agda existe un tipo \AgdaPrimitiveType{Size} de tamaños y un tipo \AgdaPrimitiveType{Size<} \AgdaArgument{i} cuyos habitantes son los tamaños estrictamente menores a \AgdaArgument{i}. Si se tiene un tamaño \AgdaArgument{j} \AgdaSymbol{:} \AgdaPrimitiveType{Size<} \AgdaArgument{i}, este es forzado a ser \AgdaArgument{j} \AgdaSymbol{:} \AgdaPrimitiveType{Size}. La relación de orden de los tamaños es transitiva, lo que implica que si se tiene que \AgdaArgument{j} \AgdaSymbol{:} \AgdaPrimitiveType{Size<} \AgdaArgument{i} y \AgdaArgument{k} \AgdaSymbol{:} \AgdaPrimitiveType{Size<} \AgdaArgument{j}, entonces \AgdaArgument{k} \AgdaSymbol{:} \AgdaPrimitiveType{Size<} \AgdaArgument{i}. La relación de orden es, además, bien fundada, lo cual se usa para definir funciones corecursivas productivas. Existe también una operación sucesor de tamaños \AgdaFunction{$\uparrow$} y un tamaño ``infinito'' \AgdaArgument{$\infty$} tal que para cada tamaño \AgdaArgument{i}, \AgdaArgument{i} \AgdaSymbol{:} \AgdaPrimitiveType{Size<} \AgdaArgument{$\infty$}. Finalmente, un \textit{sized type} es un tipo indexado por \AgdaPrimitiveType{Size}.
+
+Para ejemplificar el uso de los \textit{sized types}, se definen a continuación los conaturales utilizando esta técnica.
+
+\ExecuteMetaData[latex/Coind.tex]{sizedconat}
+
+Ambos tipos, \AgdaDatatype{Conat} y \AgdaRecord{Conat$'$} están indexados por un tamaño \AgdaArgument{i}. Este índice debe entenderse como una cota superior del número de veces que puede aplicarse \AgdaField{force}. Más precisamente, cuando se aplica \AgdaField{force} a un \AgdaArgument{n$'$} \AgdaSymbol{:} \AgdaRecord{Conat$'$} \AgdaArgument{i} el valor resultante es es un \AgdaArgument{n} \AgdaSymbol{:} \AgdaDatatype{Conat} \AgdaArgument{j} de una profundidad estrictamente menor \AgdaArgument{j} \AgdaSymbol{<} \AgdaArgument{i}. Un caso especial es el valor \AgdaArgument{$\infty$n$'$} \AgdaSymbol{:} \AgdaRecord{Conat$'$} \AgdaArgument{$\infty$} de índice infinito, cuyo resultado de aplicar \AgdaField{force} es \AgdaArgument{$\infty$n} \AgdaSymbol{:} \AgdaDatatype{Conat} \AgdaArgument{$\infty$}, el cual también tiene índice infinito. De esta manera los tamaños establecen productividad en las definiciones recursivas. Al final, sólo interesan los valores \AgdaArgument{n} \AgdaSymbol{:} \AgdaDatatype{Conat} \AgdaArgument{$\infty$} de índice infinito.
+
+Si una función corecursiva en \AgdaDatatype{Conat} \AgdaArgument{i} sólo se llama a sí misma con índices menores \AgdaArgument{j} \AgdaSymbol{<} \AgdaArgument{i}, se garantiza la productividad y, por lo tanto, está bien definida. En la siguiente definición del valor \AgdaFunction{infty} se muestran los argumentos implícitos de tamaño explícitamente de manera que se evidencie cómo aseguran la productividad:
+
+\ExecuteMetaData[latex/Coind.tex]{sizedinf}
 
 
 \section{Mónada \textit{Delay}}\label{delay:delay}
+
+El tipo de dato \textit{delay} consituye una mónada fuerte, lo cual hace posible manejar computaciones que posiblemente no terminen como si fuera cualquier otra computación con efectos laterales. A continuación se presenta su definición formal siguiendo el estilo utilizado en \cite{chapman:2019}. 
+
+\begin{definition}[\textit{Delay}]
+Sea $X$ un tipo. Cada habitante de $\mathbf{D} X$ es una computación posiblemente infinita que, si termina, retorna un valor de tipo $X$. Se define $\mathbf{D} X$ como un tipo coinductivo mediante las siguientes reglas:
+\begin{equation*}
+\dfrac{}{\mathtt{now} \ x : \mathbf{D} X} 	\qquad  	\dfrac{c : \mathbf{D} X}{\mathtt{later} \ c : \mathbf{D} X}
+\end{equation*}
+\end{definition}
+
+Sea $R$ una relación de equivalencia sobre $X$. La relación se eleva a una relación de equivalencia $\sim_R$ sobre $\mathbf{D}X$ que se denomina $R$-bisemejanza fuerte (\textit{$R$-strong bisimilarity} en inglés). 
+
+\begin{definition}[$R$-bisemejanza fuerte]
+Dada una relación de equivalencia $R$ sobre $X$, se define la relación $\sim_R$ sobre $\mathbf{D}X$ coinductivamente mediante las siguientes reglas:
+\begin{equation*}
+\dfrac{p : x_1 \ R \ x_2}{\mathtt{now}_{\sim} \ p : \mathtt{now} \ x_1 \sim_R \mathtt{now} \ x_2}  	\qquad  	\dfrac{p : c_1 \sim_R c_2}{\mathtt{later}_{\sim} \ p : \mathtt{later} \ c_1 \sim_R \mathtt{later} \ c_2}
+\end{equation*}
+\end{definition}
+
+La $\equiv$-bisemejanza fuerte se denomina simplemente bisemejanza fuerte y se denota $\sim$.
+
+En algunos casos, uno está interesado en la terminación de las computaciones y no exactamente en el tiempo exacto en el cual terminan. Es deseable entonces tener una relación que considere iguales dos computaciones si terminan con valores iguales, aunque una tarde más en terminar que la otra. Es decir, que identifique computaciones que sólo difieren en una cantidad finita de aplicaciones del constructor \texttt{later}. Esta relación se llama $R$-bisemejanza débil (\textit{$R$-weak bisimilarity} en inglés) y se define en términos de \textit{convergencia}. Esta última es una relación binaria entre $\mathbf{D}X$ y $X$ que relaciona computaciones que terminan con sus valores de terminación. 
+
+\begin{definition}[Convergencia]
+La relación de \textbf{convergencia} denotada con $\downarrow$ entre $\mathbf{D}X$ y $X$ se define inductivamente mediante las siguientes reglas:
+\begin{equation*}
+\dfrac{p : x_1 \equiv x_2}{\mathtt{now}_{\downarrow}  \ p : \mathtt{now} \ x_1 \downarrow x_2}  	\qquad  	\dfrac{p : c \downarrow x}{\mathtt{later}_{\downarrow} \ p : \mathtt{later} \ c \downarrow x}
+\end{equation*}
+\end{definition}
+
+\begin{definition}[$R$-bisemejanza débil]
+Dada una relación de equivalencia $R$ sobre $X$, se define la relación $\approx_R$ sobre $\mathbf{D}X$ coinductivamente mediante las siguientes reglas:
+\begin{equation*}
+\dfrac{p_1 : c_1 \downarrow x_1 \quad p_2 : x_1 \ R \ x_2 \quad p_3 : c_2 \downarrow x_2}{\downarrow_{\approx} \ p_1 \ p_2 \ p_3 : c_1 \approx_R c_2}  	\qquad  	\dfrac{p : c_1 \approx_R c_2}{\mathtt{later}_{\approx} \ p : \mathtt{later} \ c_1 \approx_R \mathtt{later} \ c_2}
+\end{equation*}
+\end{definition}
+
+La $\equiv$-bisemejanza débil se denomina simplemente bisemejanza débil y se denota $\approx$. En este caso, se modifica el primer constructor por simplicidad:
+
+\begin{equation*}
+\dfrac{p_1 : c_1 \downarrow x \quad p_2 : c_2 \downarrow x}{\downarrow_{\approx} \ p_1 \ p_2 : c_1 \approx c_2}
+\end{equation*}
+
+El tipo \textit{delay} $\mathbf{D}$ es una mónada fuerte. La unidad $\eta$ es el constructor \texttt{now}, mientras que la multiplicación $\mu$ es la ``concatenación'' de constructores \texttt{later}:
+\begin{align*}
+& \mu : \mathbf{D} (\mathbf{D} X) \rightarrow \mathbf{D} X  \\
+& \mu \ (\mathtt{now} \ c) = c \\
+& \mu \ (\mathtt{later} \ c) = \mathtt{later} \ (\mu \ c)
+\end{align*}

@@ -2,6 +2,8 @@
 {-# OPTIONS --guardedness #-}
 
 module Coind where
+
+open import Size hiding (∞)
 \end{code}
 
 %<*delayforce>
@@ -38,3 +40,27 @@ inf : Coℕ
 inf = suc (♯ inf)
 \end{code}
 %</inf>
+
+%<*sizedconat>
+\begin{code}
+mutual
+
+  data Conat (i : Size) : Set where
+    zero : Conat i
+    suc  : Conat′ i → Conat i
+
+  record Conat′ (i : Size) : Set where
+    coinductive
+    field
+      force : {j : Size< i} → Conat j
+
+open Conat′ public
+\end{code}
+%</sizedconat>
+
+%<*sizedinf>
+\begin{code}
+infty : ∀ {i} → Conat′ i 
+force (infty {i}) {j} = suc (infty {j})
+\end{code}
+%</sizedinf>

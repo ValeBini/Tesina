@@ -941,3 +941,4 @@ zero⊑ (suc H) = sucr λ { .force → zero⊑ (H .force) }
 ≤⇒⊑ : ∀ {i} {n m} → [ i ] n ≤ m → [ i ] n ⊑ m
 ≤⇒⊑ {n} {.zero} zero = zero⊑ _
 ≤⇒⊑ {n} {.(suc _)} (suc H) = suc λ { .force → ≤⇒⊑ (H .force) }
+ 
