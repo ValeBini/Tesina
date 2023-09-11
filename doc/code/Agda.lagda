@@ -15,7 +15,7 @@ data Bool : Set where
 %<*not>
 \begin{code}
 not : Bool → Bool 
-not true = false 
+not true  = false 
 not false = true 
 \end{code}
 %</not>

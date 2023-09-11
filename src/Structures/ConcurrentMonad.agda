@@ -2,15 +2,18 @@
 
 open import Data.Product as Prod
 open import Data.Unit
+open import Relation.Binary.Structures
 
-module Structures.Concurrent where
+module Structures.ConcurrentMonad where
 
-  record Concurrent (M : Set → Set) : Set₁ where
+  record ConcurrentMonad (M : Set → Set) : Set₁ where
     constructor
-      makeConcurrent
+      makeConcurrentMonad
     field
       _≅ₘ_    : ∀ {A} → M A → M A → Set
+      eqₘ     : ∀ {A} → IsEquivalence (_≅ₘ_ {A})
       _≲ₘ_    : ∀ {A} → M A → M A → Set 
+      porderₘ : ∀ {A} → IsPreorder (_≅ₘ_ {A}) (_≲ₘ_ {A})
       return  : ∀ {A : Set} → A → M A
       _>>=_   : ∀ {A B : Set} → M B → (B → M A) → M A
       monad₁  : ∀ {A B : Set} → (x : B) (f : B → M A)
@@ -27,4 +30,4 @@ module Structures.Concurrent where
       ichange : ∀ {A B C D : Set} → (a : M A) (b : M B) (f : A → M C) (g : B → M D) 
                  → (merge (a >>= f) (b >>= g)) ≲ₘ ((merge a b) >>= (λ { (a , b) → (merge (f a) (g b)) }))
 
-  open Concurrent public
+  open ConcurrentMonad public

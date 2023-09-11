@@ -1,3 +1,5 @@
+open import Relation.Binary.Structures
+
 module Structures.Monad where
 
   record Monad (M : Set → Set) : Set₁ where
@@ -5,6 +7,7 @@ module Structures.Monad where
       makeMonad
     field
       _≅ₘ_   : ∀ {A} → M A → M A → Set
+      eqₘ    : ∀ {A} → IsEquivalence (_≅ₘ_ {A})
       return : ∀ {A : Set} → A → M A
       _>>=_  : ∀ {A B : Set} → M B → (B → M A) → M A
       law₁   : ∀ {A B : Set} → (x : B) (f : B → M A)
