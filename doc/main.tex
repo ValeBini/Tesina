@@ -1,5 +1,5 @@
 \documentclass[a4paper,spanish,fixlanguage]{book}
-\usepackage[spanish]{babel}
+\usepackage[spanish,es-noshorthands]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,mathtools}    
@@ -32,7 +32,8 @@
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{dsfont}
-
+\usepackage{tikz-cd}
+\usepackage{multicol}
 
 %\newcites{Intro}{Referencias hist\'{o}ricas}
 \newcommand{\gitcode}{\url{http://www.github.com/ValeBini/Tesina}}
@@ -60,7 +61,7 @@
 \include{tex/monconc}
 \include{tex/delay}
 
-\part{Formalización de Mónadas Concurrentes}\label{part:mc}
+\part{Formalización de Mónadas Concurrentes: el Caso de la Mónada Delay}\label{part:mc}
 
 \include{tex/form} 
 

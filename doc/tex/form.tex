@@ -6,7 +6,7 @@ Como se mencionó anteriormente, Agda es, además de un lenguaje de programació
 
 En este capítulo se mostrará el modo de formalizar estructuras algebraicas en Agda comenzando con un ejemplo simple: los monoides. Luego se agregará complejidad mostrando formalizaciones a nivel de funtores y mónadas, al igual que se fue escalando en los capítulos anteriores. Finalmente, se dará la formalización de los monoides y mónadas concurrentes.
 
-\section{Formalización de monoides}\label{form:monoids}
+\section{Formalización en Agda: los monoides}\label{form:monoids}
 
 Como se introdujo en la definición \ref{def:monoid}, un monoide consiste en un conjunto junto con una operación binaria asociativa tal que en el conjunto exista un elemento que actúe como neutro respecto de la operación. En Agda, se formaliza este concepto definiendo un tipo \textit{record} que lo representa. No hay una única forma de definir este tipo, por lo que al hacerlo se tomaron varias decisiones. A continuación se muestra cómo quedó la última versión de esta definición y se explican las principales decisiones tomadas junto con el significado y propósito de cada uno de los campos. 
 
@@ -16,8 +16,108 @@ Como se puede observar, el \textit{record} \AgdaRecord{Monoid} tiene un parámet
 
 Los \textit{records} son una especie de tupla en la cual cada campo puede depender de todos los anteriores. Esto hace que el orden en que se introducen los campos no pueda ser arbitrario. 
 
-El primer campo que aparece es \AgdaField{$\_\cong_m\_$}, el cual es una función que toma dos argumentos de tipo \AgdaBound{M} y devuelve un elemento de tipo \AgdaPrimitiveType{Set}. Este campo es una relación binaria entre elementos del conjunto \AgdaBound{M} y, como se indica en el segundo campo, debe ser una relación de equivalencia. En efecto, el campo \AgdaField{eq$_m$} es una prueba de que la relación \AgdaField{$\_\cong_m\_$} es una relación de equivalencia, es decir, que es reflexiva, simétrica y transitiva. Esto se prueba dando una instancia del \textit{record} \AgdaRecord{IsEquivalence} provisto por la librería \AgdaModule{Relation.Binary.Structures}. La razón de que se pidan estos dos campos es que para los siguientes se requiere una noción de igualdad, ya que algunos de ellos son ecuaciones entre elementos del conjunto \AgdaBound{M} que deben cumplirse para que tal conjunto sea un monoide. La noción de igualdad tradicional (igualdad proposicional en Agda) no siempre es suficiente ya que, como se vio en la sección \ref{delay:delay}, a veces nos interesan otros tipos de equivalencias como, por ejemplo, la bisemejanza en el caso del tipo \textit{delay}. Esto sucede con frecuencia cuando se trabaja con tipos coinductivos ya que una prueba de igualdad tradicional en general sería infinita. Es por esto que se decidió, tanto para esta como para las estructuras que siguen, que la noción de igualdad sea un campo, de manera que puedan definirse las estructuras con diferentes nociones de igualdad según sea conveniente. 
+El primer campo que aparece es \AgdaField{$\_\cong_m\_$}, el cual es una función que toma dos argumentos de tipo \AgdaBound{M} y devuelve un elemento de tipo \AgdaPrimitiveType{Set}. Este campo es una relación binaria entre elementos del conjunto \AgdaBound{M} y, como se indica en el segundo campo, debe ser una relación de equivalencia. En efecto, el campo \AgdaField{eq$_m$} es una prueba de que la relación \AgdaField{$\_\cong_m\_$} es una relación de equivalencia, es decir que es reflexiva, simétrica y transitiva. Esto se prueba dando una instancia del \textit{record} \AgdaRecord{IsEquivalence} provisto por la librería \AgdaModule{Relation.Binary.Structures}. La razón de que se pidan estos dos campos es que para los siguientes se requiere una noción de igualdad, ya que algunos de ellos son ecuaciones entre elementos del conjunto \AgdaBound{M} que deben cumplirse para que tal conjunto sea un monoide. La noción de igualdad tradicional (igualdad proposicional en Agda) no siempre es suficiente ya que, como se vio en la sección \ref{delay:delay}, a veces nos interesan otros tipos de equivalencias como, por ejemplo, la bisemejanza en el caso del tipo \textit{delay}. Esto sucede con frecuencia cuando se trabaja con tipos coinductivos ya que una prueba de igualdad tradicional en general sería infinita. Es por esto que se decidió, tanto para esta como para las estructuras que siguen, que la noción de igualdad sea un campo, de manera que puedan definirse las estructuras con diferentes nociones de igualdad según sea conveniente. 
 
 El tercer campo, \AgdaField{zero$_m$}, es un elemento particular del conjunto \AgdaBound{M}, el cual será el elemento neutro de la operación binaria. Esta última se introduce en el cuarto campo, \AgdaField{$\_+_m\_$}, como una función que toma dos elementos de \AgdaBound{M} y devuelve un nuevo elemento del mismo conjunto. 
 
 Los últimos tres campos son los más interesantes y son los que hacen que, al dar un habitante del tipo \AgdaRecord{Monoid}, quede demostrado que tal habitante es efectivamente un monoide. El primero de ellos, \AgdaField{idl}, representa la prueba de que \AgdaField{zero$_m$} es un neutro a izquierda respecto de la operación \AgdaField{$+_m$}. El tipo de este campo representa una proposición que indica que para todo elemento \AgdaBound{x : M}, se cumple la ecuación \hbox{\AgdaSymbol{(}\AgdaField{zero$_m$} \AgdaField{$+_m$} \AgdaBound{x}\AgdaSymbol{)} \AgdaField{$\cong_m$} \AgdaBound{x}}. El siguiente, \AgdaField{idr}, es análogo a \AgdaField{idl} y representa la prueba de que \AgdaField{zero$_m$} es neutro a derecha respecto de la operación \AgdaField{$+_m$}. Por último, \AgdaField{assoc} representa la prueba de que la operación \AgdaField{$+_m$} es asociativa. Esto es, para cualesquiera elementos dados \AgdaBound{x}, \AgdaBound{y} y \AgdaBound{z} del conjunto \AgdaBound{M}, se cumple que \AgdaSymbol{(}\AgdaBound{x} \AgdaField{$+_m$} \AgdaSymbol{(}\AgdaBound{y} \AgdaField{$+_m$} \AgdaBound{z}\AgdaSymbol{))} \AgdaField{$\cong_m$} \AgdaSymbol{((}\AgdaBound{x} \AgdaField{$+_m$} \AgdaBound{y}\AgdaSymbol) \AgdaField{$+_m$} \AgdaBound{z}\AgdaSymbol{)}. Estas pruebas se dan en torno a la noción de igualdad introducida en el primer campo.
+
+\section{Formalización a nivel de Funtores y Mónadas}\label{form:funtmon}
+
+Siguiendo con el camino hacia la formalización de los monoides y mónadas concurrentes, se expondrán en esta sección las formalizaciones de las estructuras de funtor monoidal y mónada. La elección de estas estructuras se debe a que cada una de ellas aporta un ingrediente que luego aparecerá en la formalización de las mónadas concurrentes. La formalización de mónadas, por su parte, agrega la estructura monádica, \textit{bind} y \textit{return}, junto con las leyes de mónada. Por otro lado, el funtor monoidal introduce la operación \textit{merge} y sus propiedades, que también aparecen en la formalización de mónadas concurrentes puesto que, como se expone en la definición \ref{def:monconc}, estas son mónadas cuyo funtor subyacente tiene una estructura monoidal.
+
+\subsection{Formalización de Mónadas}\label{funtmon:mon}
+
+La formalización de las mónadas está dada, al igual que la de los monoides, por un \textit{record} parametrizado. Sin embargo, en este caso el parámetro no es simplemente un conjunto sino que se trata de un funtor \AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. En el siguiente bloque de código se muestra la definición del \textit{record} \AgdaRecord{Monad}. 
+
+\ExecuteMetaData[latex/Structures.tex]{monad}
+
+Como se adelantó en la sección anterior, el primer campo de esta definición es una noción de igualdad. A diferencia de la que se pedía en \AgdaRecord{Monoid}, esta debe estar definida para elementos del conjunto \AgdaBound{M A}, para cualquier \AgdaBound{A}. De igual manera, la prueba de que esta relación es de equivalencia debe darse para un \AgdaBound{A} arbitrario. La arbitrariedad de \AgdaBound{A} se debe a que, como se puede ver en los siguientes campos, el funtor \AgdaBound{M} se aplica sobre diversos conjuntos y se necesita la igualdad definida para todos los conjuntos sobre los que \AgdaBound{M} se aplique. Esta necesidad se evidencia sobre todo al dar instancias de \AgdaRecord{Monad}.
+
+El tercer campo de este \textit{record} es la función \AgdaField{return} usual de las mónadas. Esta toma un elemento de algún conjunto \AgdaBound{A} arbitrario y lo encapsula en la mónada aplicando el funtor \AgdaBound{M}. El campo que sigue representa el operador \textit{bind} de mónadas que toma un elemento de \AgdaBound{M A} y una función que toma el resultado \AgdaBound{A} y genera un elemento de \AgdaBound{M B} y devuelve un \AgdaBound{M B}. Esta función usualmente representa la secuenciación de computaciones. 
+
+Los últimos tres campos representan las leyes de mónadas. Estos están dados por tipos que representan proposiciones. El primero de ellos, \AgdaField{law$_1$}, representa la primera ley de mónadas que dice que para cualquier elemento \AgdaBound{x} de un conjunto \AgdaBound{A} y cualquier función \AgdaBound{f} que dado un elemento de \AgdaBound{A} y genere una computación de tipo \AgdaBound{M B}, se debe cumplir que hacer el \textit{bind} de \AgdaField{return} \AgdaBound{x} con \AgdaBound{f} debe dar el mismo resultado que aplicar \AgdaBound{f} a \AgdaBound{x}. Cuando se da una instancia de \AgdaRecord{Monad} y se asigna al campo \AgdaField{law$_1$} un habitante de este tipo, se está demostrando que las expresiones asignadas a los campos \AgdaField{return} y \AgdaField{$\_\gg=\_$} cumplen con la primera ley de mónadas respecto de la igualdad provista por el primer campo del \textit{record}.
+
+De la misma manera, \AgdaField{law$_2$} representa la proposición que indica que se cumple la segunda ley de mónadas. Esta postula que dada una computación \AgdaBound{t} de tipo \AgdaBound{M A}, hacer \textit{bind} de \AgdaBound{t} con \AgdaField{return} es lo mismo que aplicar sólo \AgdaBound{t}. 
+
+Finalmente, el último campo, \AgdaField{law$_3$}, representa la asociatividad del operador \hbox{\AgdaField{$\_\gg=\_$}}. Este denota que dadas una computación \AgdaBound{t} de tipo \AgdaBound{M A} y dos funciones \AgdaBound{f} y \AgdaBound{g} que van de \AgdaBound{A} en \AgdaBound{M B} y de \AgdaBound{B} en \AgdaBound{M C} respectivamente, es lo mismo aplicar el \textit{bind} a \AgdaBound{t} con \AgdaBound{f} y luego al resultado obtenido aplicarle el \textit{bind} con \AgdaBound{g}, que aplicarlo a \AgdaBound{t} con la función que toma un \AgdaBound{x} de tipo \AgdaBound{A} y devuelve la aplicación de \AgdaBound{f x} \AgdaField{$\gg=$} \AgdaBound{g}.
+
+\subsection{Formalización de Funtor Monoidal}\label{funtmon:funt}
+
+Como se indica en la definición \ref{def:monoidalfuntor}, un funtor monoidal es un funtor que cuenta con una estructura monoidal de manera que se cumplen ciertas ecuaciones de congruencia. Su formalización queda definida como un \textit{record} que, al igual que \AgdaRecord{Monad}, está parametrizado por un funtor \AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. 
+
+\ExecuteMetaData[latex/Structures.tex]{monoidal}
+
+Los primeros dos campos del \textit{record} son iguales a los de \AgdaRecord{Monad} y brindan la noción de igualdad junto con la prueba de que tal noción es una relación de equivalencia. 
+
+Los dos campos que siguen conforman la estructura monoidal que el funtor requiere para ser un funtor monoidal. La transformación natural $m : \mathit{M} A \times \mathit{M} B \rightarrow \mathit{M} (A \times B)$ está dada por el campo \AgdaField{merge}. A diferencia de como se describe en la definición formal (\ref{def:monoidalfuntor}), en este caso \AgdaField{merge} no toma un elemento de \AgdaBound{M A} $\times$ \AgdaBound{M B}, sino que toma ambos elementos por separado, es decir que se encuentra currificada. 
+
+El otro ingrediente necesario para dar la estructura monoidal del funtor es el morfismo $e : \mathbf{1} \rightarrow \mathit{M} \mathbf{1}$. En la sección \ref{monadas:cartesian} se mencionó que en esta tesina se trabajaría siempre con la categoría \textbf{Set} considerando como objeto terminal el conjunto unitario $\mathbf{1} = \{\star\}$. Este conjunto tiene una representación propia en Agda y está dada por el tipo de dato \AgdaDatatype{$\top$} definido en el módulo \AgdaModule{Data.Unit.Base}. Este se define como un \textit{record} sin campos con un único constructor llamado \AgdaInductiveConstructor{tt}. En la formalización de funtor monoidal, en lugar de representar a $e$ con una función de tipo \AgdaDatatype{$\top$} \AgdaSymbol{$\rightarrow$} \AgdaBound{M} \AgdaDatatype{$\top$}, este se representa directamente como un habitante del tipo \AgdaBound{M} \AgdaDatatype{$\top$} llamado \AgdaField{unit}. Esto es porque sólo hay un habitante de tipo \AgdaDatatype{$\top$}, por lo que sólo habrá un habitante del tipo \AgdaBound{M} \AgdaDatatype{$\top$} y darlo como función sería redundante, ya que siempre habría que escribir \AgdaField{unit} \AgdaInductiveConstructor{tt}.
+
+El siguiente campo de \AgdaRecord{MonoidalFunctor} es \AgdaField{fmap}. Como se describió en la definición \ref{def:funtor}, un funtor $\mathit{F}$ de $\mathscr{C}$ en $\mathscr{D}$ no sólo asigna un objeto de $\mathscr{D}$ a cada objeto de $\mathscr{C}$, sino que también asigna a cada morfismo $f : A \rightarrow B \in \text{\bf mor} \ \mathscr{C}$ un morfismo $\mathit{F}(f) : \mathit{F} A \rightarrow \mathit{F} B$. El parámetro \AgdaBound{M} sólo representa la asignación de objetos del funtor, asigna a cada objeto de \textbf{Set} otro objeto de \textbf{Set}. La asignación de morfismos no está definida. El rol de \AgdaField{fmap} es representar esta asignación, es decir que es un mapeo que, dada una función que va de \AgdaBound{A} en \AgdaBound{B}, devuelve otra función que va de \AgdaBound{M A} en \AgdaBound{M B}. Este campo es necesario para poder definir las ecuaciones que la estructura monoidal debe cumplir, las cuales están dadas en los últimos tres campos del \textit{record}.
+
+Las primeras dos, \AgdaField{idr} e \AgdaField{idl}, son análogas puesto que representan las pruebas de que \AgdaField{unit} es neutro, a derecha e izquierda respectivamente, respecto de la operación \AgdaField{merge}. Por esta razón se explicará en profundidad sólo una de ellas, la elegida será \AgdaField{idr}. Volviendo a la definición formal, se muestra a continuación la ecuación correspondiente a \AgdaField{idr} junto con su versión vista como un diagrama conmutativo, el cual puede resultar más facil de comprender a la vista.
+\begin{equation*}
+\pi_1 = \mathit{F}(\pi_1) \circ m_{A,\mathbf{1}} \circ (id_{\mathit{F}A} \times e) 
+\qquad 
+\begin{tikzcd}[column sep = huge]
+\mathit{F} A \times \mathbf{1} \arrow[d, "\pi_1"] \arrow[r, "id_{\mathit{F} A} \times e"] & \mathit{F} A \times \mathit{F} \mathbf{1} \arrow[d, "m_{A,\mathbf{1}}"]  \\
+\mathit{F} A & \mathit{F} (A \times \mathbf{1}) \arrow[l, "\mathit{F}(\pi_1)"]
+\end{tikzcd}
+\end{equation*}
+
+Teniendo en cuenta que ya no se tiene $e$ que pasa de $\mathbf{1}$ a $\mathit{F} \mathbf{1}$, sino que se tiene directamente un elemento de $\mathit{F} \mathbf{1}$, la esquina superior izquierda del diagrama desaparece, quedando el como resultado el diagrama \ref{diagrama1}. Si luego se reemplaza $\mathit{F}$ por \AgdaBound{M}, $\mathbf{1}$ por \AgdaDatatype{$\top$} y $m_{A,\mathbf{1}}$ por \AgdaField{merge}, se obtiene el diagrama \ref{diagrama2}. 
+\vspace{-1.25\baselineskip}
+
+\begin{multicols}{2}
+\begin{equation}\label{diagrama1}
+\begin{tikzcd}[column sep = large]
+& \mathit{F} A \times \mathit{F} \mathbf{1} \arrow[d, "m_{A,\mathbf{1}}"] \arrow[dl, "\pi_1"]  \\
+\mathit{F} A & \mathit{F} (A \times \mathbf{1}) \arrow[l, "\mathit{F}(\pi_1)"]
+\end{tikzcd}
+\end{equation}
+
+\begin{equation}\label{diagrama2}
+\begin{tikzcd}[column sep = large]
+& \AgdaBound{M} A \times \AgdaBound{M} \ \AgdaDatatype{$\top$} \arrow[d, "\AgdaField{merge}"] \arrow[dl, "\pi_1"]  \\
+\AgdaBound{M} A & \AgdaBound{M} (A \times \AgdaDatatype{$\top$}) \arrow[l, "\AgdaBound{M}(\pi_1)"]
+\end{tikzcd}
+\end{equation}
+\end{multicols}
+
+El segundo diagrama da lugar a la ecuación: \AgdaBound{M}$(\pi_1) \ \circ$ \AgdaField{merge} \AgdaField{$\cong_m$} $\pi_1$. Si en lugar de utilizar $\pi_1$ se considera su inversa $\iota_1$, el diagrama y su ecuación correspondiente pasan a quedar como sigue:
+\vspace{-1.25\baselineskip}
+
+\begin{multicols}{2}
+\begin{equation}\label{diagrama3}
+\begin{tikzcd}[column sep = large]
+& \AgdaBound{M} A \times \AgdaBound{M} \ \AgdaDatatype{$\top$} \arrow[d, "\AgdaField{merge}"]  \\
+\AgdaBound{M} A \arrow[ur, "\iota_1"] \arrow{r}[below]{\AgdaBound{M}(\iota_1)} & \AgdaBound{M} (A \times \AgdaDatatype{$\top$}) 
+\end{tikzcd}
+\end{equation}
+
+\begin{equation}
+\AgdaField{merge} \circ \iota_1 \ \ \AgdaField{$\cong_m$} \ \ \AgdaBound{M} (\iota_1) 
+\end{equation}
+\end{multicols}
+
+Ahora, como en realidad \AgdaField{merge} no toma un producto cartesiano sino ambos elementos por separado, no es necesario utilizar $\iota_1$ antes de \AgdaField{merge}. Si se considera por último que \AgdaBound{M}$(\iota_1)$ se representa en Agda como \AgdaField{fmap} \AgdaSymbol{($\lambda$} \AgdaBound{a} \AgdaSymbol{$\rightarrow$ \ (}\AgdaBound{a} \AgdaInductiveConstructor{, \ tt}\AgdaSymbol{))}, se obtiene finalmente la ecuación \AgdaField{merge} \AgdaField{$\cong_m$} \AgdaField{fmap} \AgdaSymbol{($\lambda$} \AgdaBound{a} \AgdaSymbol{$\rightarrow$ \ (}\AgdaBound{a} \AgdaInductiveConstructor{, \ tt}\AgdaSymbol{))}, la cual al agregarle los argumentos correspondientes forma la ecuación del campo \AgdaField{idr}:  
+\begin{equation*}
+\AgdaSymbol{(}\AgdaField{merge} \ \AgdaBound{a} \ \AgdaField{unit}\AgdaSymbol{)} \   \AgdaField{$\cong_m$} \ \AgdaSymbol{(}\AgdaField{fmap} \AgdaSymbol{($\lambda$} \AgdaBound{a} \AgdaSymbol{$\rightarrow$ \ (}\AgdaBound{a} \AgdaInductiveConstructor{, \ tt} \AgdaSymbol{))} \ \AgdaBound{a}\AgdaSymbol{)}.
+\end{equation*}
+
+Queda sólo por analizar el campo \AgdaField{assoc}. Como su nombre lo indica, este representa la prueba de que la operación \AgdaField{merge} es asociativa. En la definición formal se requiere la siguiente ecuación en la cual $\alpha$ representa la asociatividad del producto cartesiano.
+\begin{equation*}
+\mathit{F}(\alpha) \circ m_{X \times Y, Z} \circ (m_{X,Y} \times id_{\mathit{F}Z}) = m_{X, Y \times Z} \circ (id_{\mathit{F}X} \times m_{Y,Z}) \circ \alpha
+\end{equation*}
+$\alpha$ se representa en Agda como la asignación \AgdaSymbol{($\lambda \{$((}\AgdaBound{a} \AgdaInductiveConstructor{,} \AgdaBound{b}\AgdaSymbol{)} \AgdaInductiveConstructor{,} \AgdaBound{c}\AgdaSymbol{) $\rightarrow$ (}\AgdaBound{a} \AgdaInductiveConstructor{,} \AgdaSymbol{(}\AgdaBound{b} \AgdaInductiveConstructor{,} \AgdaBound{c}\AgdaSymbol{))\})}. Luego $\mathit{F}(\alpha)$ en se escribe en Agda como: 
+\AgdaSymbol{(}\AgdaField{fmap} \AgdaSymbol{($\lambda \{$((}\AgdaBound{a} \AgdaInductiveConstructor{,} \AgdaBound{b}\AgdaSymbol{)} \AgdaInductiveConstructor{,} \AgdaBound{c}\AgdaSymbol{) $\rightarrow$ (}\AgdaBound{a} \AgdaInductiveConstructor{,} \AgdaSymbol{(}\AgdaBound{b} \AgdaInductiveConstructor{,} \AgdaBound{c}\AgdaSymbol{))\}))} siguiendo la representación dada.
+
+Por otro lado, $m_{X \times Y, Z} \circ (m_{X,Y} \times id_{\mathit{F}Z})$ se traduce  en la formalización propuesta aplicada a sus argumentos como \AgdaSymbol{(}\AgdaField{merge} \AgdaSymbol{(}\AgdaField{merge} \AgdaBound{a b}\AgdaSymbol{)} \AgdaBound{c}\AgdaSymbol{))}. La aplicación \AgdaSymbol{(}\AgdaField{merge} \AgdaBound{a b}\AgdaSymbol{)} se corresponde con $m_{X,Y}$ e $id_{\mathit{F}Z}$ se refleja simplemente en \AgdaBound{c}, ya que aplicar la identidad da el mismo resultado y no es necesario generar la función producto de estas dos puesto que \AgdaField{merge} toma sus argumentos por separado. Finalmente la segunda aplicación de \AgdaField{merge} se corresponde con $m_{X \times Y, Z}$.
+
+En el otro lado de la ecuación, de manera análoga, $m_{X, Y \times Z} \circ (id_{\mathit{F}X} \times m_{Y,Z})$ se corresponde con las siguientes aplicaciones de \AgdaField{merge}: \AgdaSymbol{(}\AgdaField{merge} \AgdaBound{a} \AgdaSymbol{(}\AgdaField{merge} \AgdaBound{b c}\AgdaSymbol{))}. Quedaría por agregar la aplicación de $\alpha$ al principio, pero esta no es necesaria en este lado de la ecuación puesto que \AgdaField{merge} toma sus argumentos por separado, por lo que no hace falta dar vuelta ningún producto cartesiano.
+
+Uniendo todas las partes traducidas y tomando la composición de funciones simplemente como la aplicación de una función al resultado de otra, se obtiene la ecuación presente en \AgdaField{assoc}:
+\begin{equation*}
+\AgdaSymbol{(}\AgdaField{fmap} \ \AgdaSymbol{($\lambda \ \{$((}\AgdaBound{a} \ \AgdaInductiveConstructor{,} \ \AgdaBound{b}\AgdaSymbol{)} \ \AgdaInductiveConstructor{,} \ \AgdaBound{c}\AgdaSymbol{) \ $\rightarrow$ \ (}\AgdaBound{a} \ \AgdaInductiveConstructor{,} \ \AgdaSymbol{(}\AgdaBound{b} \ \AgdaInductiveConstructor{,} \ \AgdaBound{c}\AgdaSymbol{))\}))} \ \AgdaSymbol{(}\AgdaField{merge} \ \AgdaSymbol{(}\AgdaField{merge} \ \AgdaBound{a b}\AgdaSymbol{)} \  \AgdaBound{c}\AgdaSymbol{))} \ \AgdaField{$\cong_m$} \ \AgdaSymbol{(}\AgdaField{merge} \ \AgdaBound{a} \ \AgdaSymbol{(}\AgdaField{merge} \ \AgdaBound{b c}\AgdaSymbol{))}.
+\end{equation*}

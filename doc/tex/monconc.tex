@@ -106,7 +106,7 @@ Sea $\mathscr{C}$ una categoría con productos binarios y sean $A,B \in \text{\b
 
 Si se quisiera construir una categoría cuyos objetos son categorías, se necesitaría contar con morfismos entre categorías. Estos existen y se llaman funtores, son en cierta manera una generalización del concepto de función de conjuntos para categorías. Un funtor permite construir una nueva categoría a partir de otra dada.
  
-\begin{definition}[Funtor]
+\begin{definition}[Funtor]\label{def:funtor}
 Sean $\mathscr{C}$ y $\mathscr{D}$ dos categorías. Un \textbf{funtor} $\mathit{F} : \mathscr{C} \rightarrow \mathscr{D}$ asigna:
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item a cada objeto $A \in \mathbf{ob} \ \mathscr{C}$, un objeto $\mathit{F}(A) \in \mathbf{ob} \ \mathscr{D}$;
@@ -241,7 +241,7 @@ Hay una definición similar de fortaleza $\bar{\sigma}_{X,Y} : X \times \mathit{
 %\subsection{Estructuras monoidales}\label{monadas:monoidal}
 Otra forma en la que un funtor puede ser compatible con el producto cartesiano es si es un funtor monoidal. A continuación se definen los conceptos de funtor monoidal y mónada monoidal.
 
-\begin{definition}[Funtor monoidal]
+\begin{definition}[Funtor monoidal]\label{def:monoidalfuntor}
 Un \textbf{funtor monoidal} es un funtor $\mathit{F}: \mathscr{C} \rightarrow \mathscr{C}$ equipado con una estructura monoidal $(m,e)$, donde $m : \mathit{F} X \times \mathit{F} Y \rightarrow \mathit{F} (X \times Y)$ es una transformación natural y $e : \mathbf
 {1} \rightarrow \mathit{F} \mathbf{1}$ es un morfismo tal que las siguientes ecuaciones se cumplen:
 \begin{equation*}
@@ -385,7 +385,7 @@ y una relación de orden $\sqsubseteq$ sobre $\mathit{T}$ compatible con $(m,e)$
 
 \textit{Aclaración: se escribe $f \star g$ para representar $m \circ (f \times g)$.}
 
-\begin{definition}[Mónada concurrente]
+\begin{definition}[Mónada concurrente]\label{def:monconc}
 Una mónada monoidal ordenada $\mathit{T}$ es una mónada concurrente si $e = \eta_{\mathbf{1}} : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ y se cumple la siguiente ley de intercambio:
 \begin{equation*}
 (h \star i) \bullet (f \star g) \sqsubseteq (h \bullet f) \star (i \bullet g)
