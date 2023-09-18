@@ -33,6 +33,7 @@
 \usepackage{dsfont}
 \usepackage{tikz-cd}
 \usepackage{multicol}
+\renewcommand{\baselinestretch}{1.15}
 
 %\newcites{Intro}{Referencias hist\'{o}ricas}
 \newcommand{\gitcode}{\url{http://www.github.com/ValeBini/Tesina}}
@@ -74,18 +75,11 @@
 
 \backmatter
 
-\chapter{Bibliograf\'{i}a}
-
-%\bibliographystyleIntro{babalpha}
-%\bibliographyIntro{bib/bibintro}
-%\addcontentsline{toc}{section}{Referencias históricas}
-
-%\newcommand{\nombredelabiblio}{Bibliograf\'{i}a general}
-%\renewcommand\bibname{\nombredelabiblio}
+%\chapter{Bibliograf\'{i}a}
 
 \bibliographystyle{babalpha}
 \bibliography{bib/biblio}
-%\addcontentsline{toc}{section}{\nombredelabiblio}
+\addcontentsline{toc}{chapter}{\bibname}
 
 
 \end{document}
