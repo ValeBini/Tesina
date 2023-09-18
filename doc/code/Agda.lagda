@@ -131,6 +131,15 @@ apply A B f a = f a
 \end{code}
 %</apply>
 
+%<*sigmadata>
+\begin{code}
+infixr 4 _,_
+
+data Σ′ (A : Set) (B : A → Set) : Set where
+  _,_ : (a : A) → (b : B a) → Σ′ A B
+\end{code}
+%</sigmadata>
+
 %<*id2>
 \begin{code}
 id : {A : Set} → A → A 
@@ -163,15 +172,25 @@ head (x ∷ xs) = x
 \end{code}
 %</head>
 
+%<*filtervec>
+\begin{code}
+filterVec : {A : Set} {n : ℕ} → (A → Bool) → Vec A n → Σ′ ℕ (Vec A)
+filterVec _ [] = zero , []
+filterVec f (x ∷ xs) with filterVec f xs | f x
+... | length , filtered | true = (suc length) , (x ∷ filtered) 
+... | length , filtered | false = length , filtered
+\end{code}
+%</filtervec>
+
 %<*moduleNumbers>
 \begin{code}
 module Numbers where
-        data Nat : Set where
-            zero : Nat 
-            suc : Nat → Nat
+    data Nat : Set where
+        zero : Nat 
+        suc : Nat → Nat
 
-        suc₂ : Nat → Nat 
-        suc₂ n = suc (suc n)
+    suc₂ : Nat → Nat 
+    suc₂ n = suc (suc n)
 \end{code}
 %</moduleNumbers>
 
@@ -309,8 +328,8 @@ getY p = let open Point p in y
 record Monad (M : Set → Set) : Set₁ where 
     constructor makeMonad
     field 
-        return : {A : Set} → A → M A 
-        _>>=_ : {A B : Set} → M A → (A → M B) → M B 
+      return : {A : Set} → A → M A 
+      _>>=_ : {A B : Set} → M A → (A → M B) → M B 
 
     mapM : {A B : Set} → (A → M B) → List A → M (List B) 
     mapM f [] = return [] 
@@ -318,27 +337,38 @@ record Monad (M : Set → Set) : Set₁ where
                       mapM f xs >>= \ys → 
                       return (y ∷ ys)
 
-mapM' : {M : Set → Set} → Monad M → {A B : Set} 
-        → (A → M B) → List A → M (List B) 
+mapM' : {M : Set → Set} → Monad M 
+      → {A B : Set} → (A → M B) → List A → M (List B) 
 mapM' {M} Mon f xs = Monad.mapM {M} Mon f xs
 \end{code}
 %</monad>
 
+%<*sigmarecord>
 \begin{code}
-open import Agda.Builtin.Sigma 
+record Σ (A : Set) (B : A → Set) : Set where
+  constructor _,_
+  field
+    fst : A
+    snd : B fst
+
+open Σ public
+\end{code}
+%</sigmarecord>
+
+\begin{code}
 open import Function.Equality
 \end{code}
 
 %<*ind-rec>
 \begin{code}
 mutual
-     data U : Set where
-         sig : (A : U) → (El A → U) → U 
-         pi  : (A : U) → (El A → U) → U 
+    data U : Set where
+        sig : (A : U) → (El A → U) → U 
+        pi  : (A : U) → (El A → U) → U 
 
-     El : U → Set
-     El (sig A B) = Σ (El A) (λ a → El (B a)) 
-     El (pi A B) = (a : (El A)) → (El (B a))   
+    El : U → Set
+    El (sig A B) = Σ (El A) (λ a → El (B a)) 
+    El (pi A B) = (a : (El A)) → (El (B a))   
 \end{code}
 %</ind-rec>
 
