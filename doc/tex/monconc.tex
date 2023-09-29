@@ -335,13 +335,13 @@ Como se va a utilizar un orden combinado con estructuras alegbraicas, se necesit
 Sea $(A, \sqsubseteq)$ un orden parcial, entonces una operación $\oplus : A \times A \rightarrow A$ es \textit{compatible} con el orden si $a \sqsubseteq b$ y $c \sqsubseteq d$ implica que $a \oplus c \sqsubseteq b \oplus d$. 
 Se define primero una aproximación a la noción de monoide concurrente, el cual tiene dos estructuras monoidales y un orden compatible con ellas, pero no incluye ninguna relación especial entre ellas.  
 
-\begin{definition}[Bimonoide ordenado]
-Un \textbf{bimonoide ordenado} es un conjunto parcialmente ordenado $(A,\sqsubseteq)$ junto con dos estructuras monoidales $(A,*,\mathtt{nothing})$ y $(A,;,\mathtt{skip})$ tal que $*$ y $;$ son compatibles con $\sqsubseteq$ y $*$ es conmutativa.
+\begin{definition}[Bimonoide ordenado]\label{def:bimonord}
+Un \textbf{bimonoide ordenado} es un conjunto parcialmente ordenado $(A,\sqsubseteq)$ junto con dos estructuras monoidales $(A,;,\mathtt{skip})$ y $(A,*,\mathtt{nothing})$ tal que $;$ y $*$ son compatibles con $\sqsubseteq$ y $*$ es conmutativa.
 \end{definition}
 
 Podría ser tentador requerir que ambos elementos neutros de un bimonoide ordenado sean iguales, pero, por ejemplo, en el Modelo de Recursos no lo son. El Modelo de Recursos es un ejemplo de un bimonoide ordenado que no es un monoide concurrente. A continuación se define la noción de monoide concurrente.
 
-\begin{definition}[Monoide concurrente]
+\begin{definition}[Monoide concurrente]\label{def:monoidconc}
 Un \textbf{monoide concurrente} es un bimonoide ordenado tal que los neutros coinciden, es decir $\mathtt{nothing} = \mathtt{skip}$, y la siguiente ley de intercambio se cumple:
 \begin{equation*}
 (a * b) ; (c * d) \sqsubseteq (a ; c) * (b ; d)

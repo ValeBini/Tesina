@@ -109,7 +109,7 @@ A continuación se muestra un ejemplo de una función dependiente menos trivial,
 
 \ExecuteMetaData[latex/Agda.tex]{apply}
 
-Existen otros tipos dependientes además de las funciones. Uno muy utilizado son los pares dependientes, los cuales consisten en un par ordenado o tupla de dos elementos en la cual el tipo del segundo elemento depende del valor del primero. Estos pares son llamados usualmente \textit{$\Sigma$-types} (\textit{sigma types}) y pueden definirse de dos maneras. La primera, utilizando una declaración \AgdaKeyword{data}, se muestra a continuación. La otra se define utilizando un tipo \AgdaKeyword{record} y se verá en la sección \ref{records:dep}.
+Existen otros tipos dependientes además de las funciones. Uno muy utilizado son los pares dependientes, los cuales consisten en un par ordenado o tupla de dos elementos en la cual el tipo del segundo elemento depende del valor del primero. Estos pares son llamados usualmente \textit{$\Sigma$-types} (\textit{sigma types}) y pueden definirse de dos maneras. La primera, utilizando una declaración \AgdaKeyword{data}, se muestra a continuación. La otra se define utilizando un tipo \AgdaKeyword{record} y se verá en la sección \ref{records:dep}. Se reserva el nombre \AgdaRecord{$\Sigma$} para esta segunda definición ya que es la más estándar y la más utilizada, su código fuente se encuentra en el módulo \href{https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html}{\AgdaModule{Agda.Builtin.Sigma}}. Para la versión que se presentará a continuación se utilizará el nombre alternativo \AgdaDatatype{$\Sigma'$}.
 
 \ExecuteMetaData[latex/Agda.tex]{sigmadata}
 
