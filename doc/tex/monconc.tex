@@ -182,7 +182,7 @@ Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{
 
 Se define ahora la noción de sistema de extensión, también llamado 3-tupla Kleisli. Esta definición también parte de la teoría de categorías pero no es la más utilizada en la literatura. Sin embargo, como se explica más adelante, es la que más se acerca a la forma de utilizar las mónadas en los lenguajes de programación funcional. 
 
-\begin{definition}[Sistema de extensión]
+\begin{definition}[Sistema de extensión]\label{def:sistext}
 Un \textbf{sistema de extensión} sobre una categoría $\mathscr{C}$ es una tupla $(\mathit{T},\eta,\_^*)$, donde 
 \begin{itemize}[noitemsep,label=$\blacktriangleright$]
 	\item $\mathit{T} : \mathbf{ob} \ \mathscr{C} \rightarrow \mathbf{ob} \ \mathscr{C}$,
@@ -375,7 +375,7 @@ Sea $\mathit{T}$ un funtor con una estructura monoidal $(m,e)$ y una asignación
 
 A partir de todas estas definiciones previas se definen las variantes monádicas de los bimonoides ordenados y monoides concurrentes como sigue:
 
-\begin{definition}[Mónada monoidal ordenada]
+\begin{definition}[Mónada monoidal ordenada]\label{def:monmonord}
 Una mónada $(\mathit{T},\eta,\_^*)$ es una mónada monoidal ordenada si está dotada de una estructura de funtor monoidal simétrico 
 \begin{equation*}
 m_{X,Y} : \mathit{T} X \times \mathit{T} Y \rightarrow \mathit{T} (X \times Y) \text{, \qquad} e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1} 
@@ -383,7 +383,7 @@ m_{X,Y} : \mathit{T} X \times \mathit{T} Y \rightarrow \mathit{T} (X \times Y) \
 y una relación de orden $\sqsubseteq$ sobre $\mathit{T}$ compatible con $(m,e)$.
 \end{definition}
 
-\textit{Aclaración: se escribe $f \star g$ para representar $m \circ (f \times g)$.}
+\textit{Aclaración: se escribe $f \star g$ para representar $m \circ (f \times g)$ y $f \bullet g$ para denotar $f^* \circ g$.}
 
 \begin{definition}[Mónada concurrente]\label{def:monconc}
 Una mónada monoidal ordenada $\mathit{T}$ es una mónada concurrente si $e = \eta_{\mathbf{1}} : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ y se cumple la siguiente ley de intercambio:

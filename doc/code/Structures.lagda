@@ -96,3 +96,34 @@ record ConcurrentMonoid (M : Set) : Set₁ where
 open ConcurrentMonoid public
 \end{code}
 %</monoidconc>
+
+%<*monconc>
+\begin{code}
+record ConcurrentMonad (M : Set → Set) : Set₁ where
+  constructor
+    makeConcurrentMonad
+  field
+    _≅ₘ_     : ∀ {A} → M A → M A → Set
+    eqₘ      : ∀ {A} → IsEquivalence (_≅ₘ_ {A})
+    _≲ₘ_     : ∀ {A} → M A → M A → Set 
+    porderₘ  : ∀ {A} → IsPreorder (_≅ₘ_ {A}) (_≲ₘ_ {A})
+    return   : ∀ {A : Set} → A → M A
+    _≫=_    : ∀ {A B : Set} → M A → (A → M B) → M B
+    monad₁   : ∀ {A B : Set} → (x : A) (f : A → M B) → (((return x) ≫= f) ≅ₘ (f x))
+    monad₂   : ∀ {A} → (t : M A) → (t ≫= return) ≅ₘ t
+    monad₃   : ∀ {A B C : Set} → (t : M A) (f : A → M B) (g : B → M C)
+                             → ((t ≫= f) ≫= g) ≅ₘ (t ≫= (λ x → f x ≫= g))
+    unit     : M ⊤
+    merge    : ∀ {A B : Set} → M A → M B → M (A × B)
+    idr      : ∀ {A : Set} → (a : M A) → (merge a unit) ≅ₘ (a ≫= (λ a → return (a , tt)))
+    idl      : ∀ {B : Set} → (b : M B) → (merge unit b) ≅ₘ (b ≫= (λ b → return (tt , b)))
+    assoc    : ∀ {A B C : Set} → (a : M A) (b : M B) (c : M C) 
+                 → ((merge (merge a b) c) ≫= (λ {((a , b) , c) → return (a , (b , c))})) 
+                                                                 ≅ₘ (merge a (merge b c))
+    ichange  : ∀ {A B C D : Set} → (a : M A) (b : M B) (f : A → M C) (g : B → M D) 
+                 → (merge (a ≫= f) (b ≫= g)) ≲ₘ 
+                           ((merge a b) ≫= (λ { (a , b) → (merge (f a) (g b)) }))
+
+open ConcurrentMonad public
+\end{code}
+%</monconc>
