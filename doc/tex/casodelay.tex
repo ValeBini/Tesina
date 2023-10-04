@@ -1,6 +1,37 @@
 \chapter{El caso de la Mónada Delay}\label{chapter:casodelay}
 
+Como se mencionó en el capítulo \ref{chapter:delay}, el tipo \textit{delay} fue introducido por Capretta \cite{capretta:2005} para representar la posible no terminación de programas en la teoría de tipos de Martin-Löf. Sus habitantes son valores ``demorados'', los cuales pueden no terminar nunca. El objetivo de este capítulo es hacer un análisis de este tipo respecto de las estructuras algebraicas previamente definidas. 
+
+Inicialmente se dará la definición de este tipo en Agda, utilizando para ello la notación musical para tipos coinductivos que fue descripta en la sección \ref{coind:agda:musical}. {\color{red} Comentario: agrego un link al repo de donde sacamos esto?} Junto con el tipo se definirán diversas relaciones sobre él, entre las que se encuentran las bisemejanzas débil y fuerte y una relación de orden. 
+
+Una vez introducido el tipo, se demostrará que este tiene estructura de mónada y de funtor monoidal. Para esto se crearán instancias de las estructuras correspondientes para el tipo \textit{delay}. El objetivo final de este capítulo es probar o refutar que el tipo definido tiene estructura de mónada concurrente. La principal dificultad para esto subyace en la prueba de la ley de intercambio, ya que los demás ingredientes están presentes en las pruebas de mónada y funtor monoidal. 
+
 \section{Definición del tipo \textit{delay} con notación musical}\label{casodelay:defmus}
+
+El tipo \textit{delay} se define con notación musical mediante una estructura \AgdaKeyword{data} parametrizada. El parámetro será un conjunto \AgdaBound{A} de tipo \AgdaPrimitiveType{Set}, el cual representa el tipo de los valores de retorno (en caso de que el programa termine). Dado entonces un \AgdaBound{A} \AgdaSymbol{:} \AgdaPrimitiveType{Set}, el tipo \AgdaBound{A} \AgdaDatatype{$\bot$} representa el tipo $\mathbf{D}$\AgdaBound{A} definido en la sección \ref{delay:delay}. 
+
+\ExecuteMetaData[latex/Delay.tex]{bottom}
+
+El constructor \AgdaInductiveConstructor{now} toma un valor \AgdaBound{x} \AgdaSymbol{:} \AgdaBound{A} y genera un valor de tipo \AgdaBound{A} \AgdaDatatype{$\bot$}. La expresión \AgdaInductiveConstructor{now} \AgdaBound{x} representa un programa que simplemente retorna el valor \AgdaBound{x} sin demoras. 
+El constructor \AgdaInductiveConstructor{later} toma un \AgdaBound{x} de tipo \AgdaFunction{$\infty$} (\AgdaBound{A} \AgdaDatatype{$\bot$}), es decir un valor de tipo \AgdaBound{A} \AgdaDatatype{$\bot$} suspendido o demorado. Que el valor este suspendido o demorado implica que puede ser potencialmente infinito. El constructor \AgdaInductiveConstructor{later} retorna otro valor de tipo \AgdaBound{A} \AgdaDatatype{$\bot$}. Intuitivamente, lo que hace este constructor es ``agregar una demora'' al valor recibido. 
+
+Un habitante del tipo \AgdaBound{A} \AgdaDatatype{$\bot$} puede ser una secuencia finita de constructores \AgdaInductiveConstructor{later} que finalmente retorna un valor \AgdaBound{x} \AgdaSymbol{:} \AgdaBound{A}, es decir algo del estilo \AgdaInductiveConstructor{later} (\AgdaFunction{$\sharp$} (\AgdaInductiveConstructor{later} (\AgdaFunction{$\sharp$} ... (\AgdaInductiveConstructor{now} \AgdaBound{x}) ...))); o puede ser una secuencia infinita de constructores \AgdaInductiveConstructor{later} que nunca retorna. Este último es el caso del valor \AgdaFunction{never} que se define a continuación. 
+
+\ExecuteMetaData[latex/Delay.tex]{never}
+
+El tipo \AgdaDatatype{\_$\bot$} viene con dos formas de igualdad (bisemejanza débil y fuerte) y una relación de orden. La bisemejanza fuerte es más fuerte que el orden y, a su vez, este último es más fuerte que la bisemejanza débil. Las tres relaciones se definen utilizando un único tipo \AgdaKeyword{data}, el cual estará indexado por un valor de tipo \AgdaDatatype{Kind} que indica qué tipo de relación es. Este último se define de la siguiente manera:
+
+\ExecuteMetaData[latex/Delay.tex]{kind}
+
+El constructor \AgdaInductiveConstructor{strong} representa la bisemejanza fuerte, mientras que \AgdaInductiveConstructor{other} \AgdaBound{k} representa la relación de orden si \AgdaBound{k} = \AgdaInductiveConstructor{geq}, o la bisemejanza débil si \AgdaBound{k} = \AgdaInductiveConstructor{weak}. La igualdad entre tipos de igualdad, es decir entre valores del tipo \AgdaDatatype{Kind}, es decidible. El operador \AgdaFunction{$\stackrel{?}{=}$-Kind} toma dos tipos de igualdad y decide si son iguales o no, dando a su vez una prueba de ello. 
+
+\ExecuteMetaData[latex/Delay.tex]{deckind} 
+
+Como se puede ver, la definición de esta función es muy sencilla. Para los casos en que ambos tipos son el mismo la prueba es simplemente \AgdaFunction{refl}, y en los casos en que no lo son, la prueba es el patrón absurdo, puesto que no hay manera de dar una prueba de igualdad entre ellos. Esta función sirve para definir un predicado que indica si la relación es de igualdad o no. Este predicado será verdadero para \AgdaInductiveConstructor{strong} y \AgdaInductiveConstructor{other weak}, pero no para \AgdaInductiveConstructor{other geq}. Será de utilidad tener este predicado a la hora de probar que las igualdades son relaciones de equivalencia.
+
+\ExecuteMetaData[latex/Delay.tex]{equality}
+
+
 
 \section{Prueba de que el tipo \textit{delay} es una mónada}
 

@@ -294,34 +294,34 @@ module _ {A : Set} {_∼_ : A → A → Set} where
     antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
     antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
 
--- Equational reasoning.
+-- -- Equational reasoning.
 
-  module Reasoning (isEquivalence : IsEquivalence _∼_) where
+--   module Reasoning (isEquivalence : IsEquivalence _∼_) where
 
-    private
-      module Pre {k}  = Preorder (preorder′ isEquivalence k)
-      module S {k eq} = Setoid (setoid isEquivalence k {eq})
+--     private
+--       module Pre {k}  = Preorder (preorder′ isEquivalence k)
+--       module S {k eq} = Setoid (setoid isEquivalence k {eq})
 
-    infix  3 _∎
-    infixr 2 _≡⟨_⟩_ _≅⟨_⟩_ _≳⟨_⟩_ _≈⟨_⟩_
+--     infix  3 _∎
+--     infixr 2 _≡⟨_⟩_ _≅⟨_⟩_ _≳⟨_⟩_ _≈⟨_⟩_
 
-    _≡⟨_⟩_ : ∀ {k} x {y z : A ⊥} → x ≡ y → Rel k y z → Rel k x z
-    _ ≡⟨ P.refl ⟩ y∼z = y∼z
+--     _≡⟨_⟩_ : ∀ {k} x {y z : A ⊥} → x ≡ y → Rel k y z → Rel k x z
+--     _ ≡⟨ P.refl ⟩ y∼z = y∼z
 
-    _≅⟨_⟩_ : ∀ {k} x {y z : A ⊥} → x ≅ y → Rel k y z → Rel k x z
-    _ ≅⟨ x≅y ⟩ y∼z = Pre.trans (≅⇒ x≅y) y∼z
+--     _≅⟨_⟩_ : ∀ {k} x {y z : A ⊥} → x ≅ y → Rel k y z → Rel k x z
+--     _ ≅⟨ x≅y ⟩ y∼z = Pre.trans (≅⇒ x≅y) y∼z
 
-    _≳⟨_⟩_ : ∀ {k} x {y z : A ⊥} →
-             x ≳ y → Rel (other k) y z → Rel (other k) x z
-    _ ≳⟨ x≳y ⟩ y∼z = Pre.trans (≳⇒ x≳y) y∼z
+--     _≳⟨_⟩_ : ∀ {k} x {y z : A ⊥} →
+--              x ≳ y → Rel (other k) y z → Rel (other k) x z
+--     _ ≳⟨ x≳y ⟩ y∼z = Pre.trans (≳⇒ x≳y) y∼z
 
-    _≈⟨_⟩_ : ∀ x {y z : A ⊥} → x ≈ y → y ≈ z → x ≈ z
-    _ ≈⟨ x≈y ⟩ y≈z = Pre.trans x≈y y≈z
+--     _≈⟨_⟩_ : ∀ x {y z : A ⊥} → x ≈ y → y ≈ z → x ≈ z
+--     _ ≈⟨ x≈y ⟩ y≈z = Pre.trans x≈y y≈z
 
-    sym : ∀ {k} {eq : Equality k} {x y : A ⊥} →
-          Rel k x y → Rel k y x
-    sym {eq = eq} = S.sym {eq = eq}
+--     sym : ∀ {k} {eq : Equality k} {x y : A ⊥} →
+--           Rel k x y → Rel k y x
+--     sym {eq = eq} = S.sym {eq = eq}
 
-    _∎ : ∀ {k} (x : A ⊥) → Rel k x x
-    x ∎ = Pre.refl
+--     _∎ : ∀ {k} (x : A ⊥) → Rel k x x
+--     x ∎ = Pre.refl
 
