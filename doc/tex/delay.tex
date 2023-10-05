@@ -176,7 +176,7 @@ Siendo $\equiv$ la igualdad proposicional, la $\equiv$-bisemejanza fuerte se den
 
 En algunos casos, uno está interesado en la terminación de las computaciones y no exactamente en el tiempo exacto en el cual terminan. Es deseable entonces tener una relación que considere iguales dos computaciones si terminan con valores iguales, aunque una tarde más en terminar que la otra. Es decir, que identifique computaciones que sólo difieren en una cantidad finita de aplicaciones del constructor \texttt{later}. Esta relación se llama $R$-bisemejanza débil (\textit{$R$-weak bisimilarity} en inglés) y se define en términos de \textit{convergencia}. Esta última es una relación binaria entre $\mathbf{D}X$ y $X$ que relaciona computaciones que terminan con sus valores de terminación. 
 
-\begin{definition}[Convergencia]
+\begin{definition}[Convergencia]\label{def:convergencia}
 La relación de \textbf{convergencia} denotada con $\downarrow$ entre $\mathbf{D}X$ y $X$ se define inductivamente mediante las siguientes reglas:
 \begin{equation*}
 \dfrac{p : x_1 \equiv x_2}{\mathtt{now}_{\downarrow}  \ p : \mathtt{now} \ x_1 \downarrow x_2}  	\qquad  	\dfrac{p : c \downarrow x}{\mathtt{later}_{\downarrow} \ p : \mathtt{later} \ c \downarrow x}
