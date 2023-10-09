@@ -848,7 +848,7 @@ interchange {i} (suc a) zero zero (suc d) = suc λ { .force →  transitive-≤ 
 interchange {i} (suc a) (suc b) zero (suc d) = suc λ { .force → transitive-≤ (interchange (force a) (suc b) zero (force d)) ((reflexive-≤ (max (force a) zero)) +-mono suc λ { .force → (reflexive-≤ (force b)) max-mono pred≤  }) }
 interchange {i} (suc a) b (suc c) d = suc λ { .force → interchange (force a) b (force c) d }
 
-open import Structures.Concurrent hiding (unit; merge)
+open import Structures.ConcurrentMonad hiding (unit; merge)
 open import Data.Product
 
 F : Set → Set
@@ -904,9 +904,9 @@ ichg : {A B C D : Set} (a : F A) (b : F B) (f : A → F C)
 ichg {A} {B} {C} {D} (n , a) (m , b) f g with f a | g b
 ... | (o , c) | (p , d) = (interchange n o m p) , refl
 
-conc : Concurrent F
-conc = makeConcurrent
-         _F≈_ _F≤_ η ext ext-left ext-right ext-assoc (zero , tt) mult mult-left mult-right mult-assoc ichg
+-- conc : ConcurrentMonad F
+-- conc = makeConcurrentMonad
+--          _F≈_ {!   !} _F≤_ {!   !} η ext {!   !} ext-left ext-right ext-assoc (zero , tt) mult {!   !} mult-left mult-right mult-assoc {!   !} ichg
 
 -- We can give an alternative definition in which the zero is only for zero
 

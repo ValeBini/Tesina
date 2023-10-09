@@ -269,6 +269,13 @@ module _ {A : Set} {_∼_ : A → A → Set} where
   -- The order is a partial order, with strong equality as the
   -- underlying equality.
 
+  antisym : {x y : A ⊥} → x ≳ y → x ≲ y → x ≅ y
+  antisym (now    x∼y)  (now    _)    = now x∼y
+  antisym (later  x≳y)  (later  x≲y)  = later (♯ antisym        (♭ x≳y)         (♭ x≲y))
+  antisym (later  x≳y)  (laterˡ x≲ly) = later (♯ antisym        (♭ x≳y)  (laterʳ⁻¹ x≲ly))
+  antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
+  antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
+
   ≳-poset : IsEquivalence _∼_ → Poset _ _ _
   ≳-poset equiv = record
     { Carrier        = A ⊥
@@ -287,12 +294,6 @@ module _ {A : Set} {_∼_ : A → A → Set} where
     module S   = Setoid (setoid equiv strong)
     module Pre = Preorder (preorder′ equiv (other geq))
 
-    antisym : {x y : A ⊥} → x ≳ y → x ≲ y → x ≅ y
-    antisym (now    x∼y)  (now    _)    = now x∼y
-    antisym (later  x≳y)  (later  x≲y)  = later (♯ antisym        (♭ x≳y)         (♭ x≲y))
-    antisym (later  x≳y)  (laterˡ x≲ly) = later (♯ antisym        (♭ x≳y)  (laterʳ⁻¹ x≲ly))
-    antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
-    antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
 
 -- -- Equational reasoning.
 

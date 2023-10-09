@@ -3,6 +3,7 @@ module Instances.Monad where
 open import Codata.Musical.Notation
 open import Relation.Binary as B hiding (Rel)
 open import Partiality
+open import Agda.Builtin.Unit
 
 private
   variable
@@ -12,7 +13,7 @@ bind : A ⊥ → (A → B ⊥) → B ⊥
 bind (now x)   f = f x
 bind (later x) f = later (♯ (bind (♭ x) f))
 
-module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+module Weak (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquivalence (_∼_ {A})) where
 
   module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
 
@@ -35,19 +36,28 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexi
   _≈⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
   _≈⊥_ {A} = Equality._≈_ {A} (_∼_ {A})
 
+  open Equivalence using (refl; sym; trans) 
+  
+  eq≈⊥ : ∀ {A} → IsEquivalence (_≈⊥_ {A})
+  eq≈⊥ = record 
+          { refl = refl (IsEquivalence.refl eq∼) ; 
+            sym = sym (IsEquivalence.sym eq∼) tt ; 
+            trans = trans (IsEquivalence.trans eq∼) }
+
   open import Structures.Monad
 
   partiality : Monad _⊥
   partiality = makeMonad 
                 _≈⊥_ 
+                eq≈⊥
                 now 
                 bind 
-                (left-identity refl∼) 
-                (right-identity refl∼) 
-                (associative refl∼)
+                (left-identity (IsEquivalence.refl eq∼)) 
+                (right-identity (IsEquivalence.refl eq∼)) 
+                (associative (IsEquivalence.refl eq∼))
 
 
-module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Reflexive (_∼_ {A})) where
+module Strong (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquivalence (_∼_ {A})) where
 
   module _ {A : Set} {_∼_ : A → A → Set} (refl∼ : Reflexive _∼_) where
 
@@ -72,12 +82,22 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (refl∼ : ∀ {A} → Refle
   _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
   _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
 
+  open Equivalence using (refl; sym; trans) 
+  
+  eq≅⊥ : ∀ {A} → IsEquivalence (_≅⊥_ {A})
+  eq≅⊥ = record 
+          { refl = refl (IsEquivalence.refl eq∼) ; 
+            sym = sym (IsEquivalence.sym eq∼) tt ; 
+            trans = trans (IsEquivalence.trans eq∼) }
+
+
   partiality : Monad _⊥
   partiality = makeMonad 
                 _≅⊥_ 
+                eq≅⊥
                 now 
                 bind 
-                (left-identity refl∼) 
-                (right-identity refl∼) 
-                (associative refl∼)
+                (left-identity (IsEquivalence.refl eq∼)) 
+                (right-identity (IsEquivalence.refl eq∼)) 
+                (associative (IsEquivalence.refl eq∼))
 
