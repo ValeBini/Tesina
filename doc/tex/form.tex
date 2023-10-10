@@ -10,7 +10,7 @@ En este capítulo se mostrará el modo de formalizar estructuras algebraicas en 
 
 Como se introdujo en la definición \ref{def:monoid}, un monoide consiste en un conjunto junto con una operación binaria asociativa tal que en el conjunto exista un elemento que actúe como neutro respecto de la operación. En Agda, se formaliza este concepto definiendo un tipo \AgdaKeyword{record} que lo representa. No hay una única forma de definir este tipo, por lo que al hacerlo se tomaron varias decisiones. A continuación se muestra cómo quedó la última versión de esta definición y se explican las principales decisiones tomadas junto con el significado y propósito de cada uno de los campos. 
 
-\ExecuteMetaData[latex/Structures.tex]{monoid}
+\ExecuteMetaData[latex/Structures/Monoid.tex]{monoid}
 
 Como se puede observar, el \AgdaKeyword{record} \AgdaRecord{Monoid} tiene un parámetro \AgdaBound{M} de tipo \AgdaPrimitiveType{Set}. Este representa el conjunto soporte del monoide. Se podría discutir si este debería ser un parámetro o un campo del \AgdaKeyword{record} pero, como indica Norell en su tesis \cite{norell:thesis}, es más fácil convertir un parámetro en un campo que al revés, por lo que en general se pone como parámetro a menos que se necesite que sea un campo por alguna razón.
 
@@ -29,7 +29,7 @@ Siguiendo con el camino hacia la formalización de los monoides y mónadas concu
 La formalización de las mónadas está dada, al igual que la de los monoides, por un \AgdaKeyword{record} parametrizado. Sin embargo, en este caso el parámetro no es simplemente un conjunto sino que se trata de un funtor \AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. 
 %En el siguiente bloque de código se muestra la definición del \AgdaKeyword{record} \AgdaRecord{Monad}. 
 
-\ExecuteMetaData[latex/Structures.tex]{monad}
+\ExecuteMetaData[latex/Structures/Monad.tex]{monad}
 
 Como se adelantó en la sección anterior, el primer campo de esta definición es una noción de igualdad. A diferencia de la que se pedía en \AgdaRecord{Monoid}, esta debe estar definida para elementos del conjunto \AgdaBound{M A}, para cualquier \AgdaBound{A}. De igual manera, la prueba de que esta relación es de equivalencia debe darse para un \AgdaBound{A} arbitrario. La arbitrariedad de \AgdaBound{A} se debe a que, como se puede ver en los siguientes campos, el funtor \AgdaBound{M} se aplica sobre diversos conjuntos y se necesita la igualdad definida para todos los conjuntos sobre los que \AgdaBound{M} se aplique. Esta necesidad se evidencia sobre todo al dar instancias de \AgdaRecord{Monad}.
 
@@ -45,7 +45,7 @@ Finalmente, el último campo, \AgdaField{law$_3$}, representa la asociatividad d
 
 Como se indica en la definición \ref{def:monoidalfuntor}, un funtor monoidal es un funtor que cuenta con una estructura monoidal de manera que se cumplen ciertas ecuaciones de congruencia. Su formalización queda definida como un \AgdaKeyword{record} que, al igual que \AgdaRecord{Monad}, está parametrizado por un funtor \AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. 
 
-\ExecuteMetaData[latex/Structures.tex]{monoidal}
+\ExecuteMetaData[latex/Structures/MonoidalFunctor.tex]{monoidal}
 
 Los primeros dos campos del \AgdaKeyword{record} son iguales a los de \AgdaRecord{Monad} y brindan la noción de igualdad junto con la prueba de que tal noción es una relación de equivalencia. 
 
@@ -129,7 +129,7 @@ En la definición formal hay una condición extra para los funtores monoidales q
 
 Como paso previo a la formalización de las mónadas concurrentes, se presenta en esta sección la formalización de los monoides concurrentes. Estos son una mezcla entre los monoides y los funtores monoidales e introducen un ingrediente nuevo que luego estará presente también en la formalización de las mónadas concurrentes: la ley de intercambio. Esta formalización está dada también por un tipo \AgdaKeyword{record} parametrizado, donde el parámetro es, al igual que en el caso de los monoides, un conjunto. 
 
-\ExecuteMetaData[latex/Structures.tex]{monoidconc}
+\ExecuteMetaData[latex/Structures/ConcurrentMonoid.tex]{monoidconc}
 
 En la definición \ref{def:bimonord} se presenta a un bimonoide ordenado como un conjunto parcialmente ordenado $(A,\sqsubseteq)$ junto con dos estructuras monoidales $(A,;,\mathtt{skip})$ y $(A,*,\mathtt{nothing})$ tales que $;$ y $*$ son compatibles con $\sqsubseteq$ y $*$ es conmutativa {\color{red} La compatibilidad de los operadores con el orden y la conmutatividad de $*$ no están, debería agregarlos?}. Luego, en la definición \ref{def:monoidconc} se define a un monoide concurrente como un bimonoide ordenado tal que los neutros coinciden y se cumple la ley de intercambio.
 
@@ -145,7 +145,7 @@ El último campo de esta estructura es la ley de intercambio. {\color{red} Comen
 
 Se introduce a continuación la formalización de las mónadas concurrentes. Esta estará dada, como en las estructuras algebraicas anteriores, por un tipo \AgdaKeyword{record} parametrizado. Como en el caso de la formalización de mónadas, el parámetro del \AgdaKeyword{record} \AgdaRecord{ConcurrentMonad} será una asignación \hbox{\AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}}, la cual representa la asignación de objetos a objetos de un funtor $\mathit{M} : \text{\bf Set} \rightarrow \text{\bf Set}$.
 
-\ExecuteMetaData[latex/Structures.tex]{monconc}
+\ExecuteMetaData[latex/Structures/ConcurrentMonad.tex]{monconc}
 
 Siguiendo el ejemplo de las mónadas, el primer campo de esta estructura es una noción de igualdad sobre el conjunto \AgdaBound{M A}, para un \AgdaBound{A} arbitrario. De igual manera, el segundo campo es la prueba de que la relación anterior es de equivalencia, y también debe darse para un \AgdaBound{A} arbitrario. Como se explicó anteriormente, es necesario que el conjunto \AgdaBound{A} pueda tomar diferentes valores ya que el funtor \AgdaBound{M} se aplicará a distintos conjuntos a lo largo de la estructura. Es por esta misma razón que los dos campos que siguen también deben definirse para cualquier conjunto \AgdaBound{A}. 
 

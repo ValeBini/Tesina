@@ -13,15 +13,15 @@ F S X = S × X
 -- paso como argumento solo lo que se necesita o la instancia completa de concurrent monoid de S?
 module _ {S : Set} {cmonoid : ConcurrentMonoid S} where 
 
-       open ConcurrentMonoid {S} cmonoid renaming (_≅ₘ_ to _≅_        ; _≲ₘ_ to _≲_ ; 
-                                                   zeroₘ to zero      ; _+ₘ_ to _+_ ; 
-                                                   eqₘ to eq          ; sidl to +idl ; 
-                                                   sidr to +idr       ; sassoc to +assoc ;
-                                                   maxₘ to max        ; porderₘ to porder ;
-                                                   midr to maxidr     ; midl to maxidl ;
-                                                   scomp≲ₘ to scomp≲  ; mcomp≲ₘ to mcomp≲ ;
-                                                   mcomm to maxcomm   ;
-                                                   massoc to maxassoc ; ichange to interchange) 
+       open ConcurrentMonoid {S} cmonoid renaming (_≅ₘ_ to _≅_        ; _≲ₘ_ to _≲_        ; 
+                                                   zeroₘ to zero      ; _+ₘ_ to _+_        ; 
+                                                   eqₘ to eq          ; sidl to +idl       ; 
+                                                   sidr to +idr       ; sassoc to +assoc   ;
+                                                   maxₘ to max        ; porderₘ to porder  ;
+                                                   midr to maxidr     ; midl to maxidl     ;
+                                                   scomp≲ₘ to scomp≲  ; mcomp≲ₘ to mcomp≲  ;
+                                                   mcomm to maxcomm   ; massoc to maxassoc ; 
+                                                   ichange to interchange) 
        open IsEquivalence eq renaming (refl to reflₛ ; trans to transₛ ; sym to symₛ)
        open IsPartialOrder porder renaming (isPreorder to preorderₛ ; antisym to antisymₛ 
                                           ; refl to preflₛ ; trans to ptransₛ)

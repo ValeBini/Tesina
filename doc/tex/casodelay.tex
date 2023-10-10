@@ -97,7 +97,60 @@ Podría darse también la prueba de antisimetría respecto de la bisemejanza dé
 
 \section{Prueba de que el tipo \textit{delay} es una mónada}
 
+Ya introducido el tipo \textit{delay} en Agda, se procede ahora a dar la prueba de que este tiene estructura de mónada. Esto se realizará mediante la creación de una instancia del \AgdaKeyword{record} \AgdaRecord{Monad} definido en la sección \ref{funtmon:mon}, cuyo parámetro será el funtor \AgdaFunction{\_$\bot$}. La mónada \textit{delay} puede definirse tanto para la bisemejanza fuerte como para la bisemejanza débil. Se detalla a continuación sólo una de estas pruebas puesto que la otra es análoga. 
+
+Lo primero a definir es el operador \textit{bind}, el cual es común a ambas pruebas y se define como sigue:
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{bind}
+
+El operador \AgdaFunction{bind} debe tomar un elemento de tipo $\mathit{M} A$ y una función $A \rightarrow \mathit{M} B$. Como en este caso el funtor $\mathit{M}$ está dado por el operador de tipos \AgdaDatatype{\_$\bot$}, los argumentos de \AgdaFunction{bind} serán un término \AgdaBound{t} de tipo \AgdaBound{A} \AgdaDatatype{$\bot$} y una función \AgdaBound{f} de tipo \AgdaBound{A} $\rightarrow$ \AgdaBound{B} \AgdaDatatype{$\bot$}. En caso de que el primer argumento esté formado por el un termino (\AgdaInductiveConstructor{now} \AgdaBound{x}), el resultado será simplemente aplicar la función \AgdaBound{f} a \AgdaBound{x}. En caso de que el primer argumento sea algo del estilo (\AgdaInductiveConstructor{later} \AgdaBound{x}), el resultado de aplicar \AgdaFunction{bind} será ``meter'' la aplicación hacia adentro del constructor, de manera que la definición es productiva.
+
+La función \AgdaField{return} estará representada por el constructor \AgdaInductiveConstructor{now}, por lo que no es necesario dar una definición de la misma. Este constructor tiene el comportamiento esperado del operador \AgdaField{return}, cuyo sentido usual es encapsular un valor del tipo de retorno dentro de la mónada.
+
+Una vez definidos los operadores básicos, comienza la prueba propiamente dicha. Se analizará la prueba para la bisemejanza débil, la cual se llevará a cabo dentro de un módulo parametrizado llamado \AgdaModule{Weak} que tendrá dos parámetros: una relación binaria \AgdaBound{$\_\sim\_$} $:$ $\forall$ \{\AgdaBound{A}\} $\rightarrow$ \AgdaBound{A} $\rightarrow$ \AgdaBound{A} $\rightarrow$ \AgdaPrimitiveType{Set} y una prueba de que dicha relación es una relación de equivalencia. El objetivo de estos parámetros es fijar una relación de igualdad para los tipos de retorno. 
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{module}
+
+Se demostrarán a continuación las tres leyes de las mónadas. Estas tres pruebas estarán encapsuladas dentro de otro módulo, en este caso anónimo, en el cual se fijará un tipo de retorno particular \AgdaBound{A} con una relación binaria de igualdad sobre el mismo y una prueba de que dicha relación es reflexiva. Este módulo interno sirve principalmente para agrupar los argumentos comunes que tendrán las demostraciones de las tres leyes dentro de él. 
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{props}
+
+Antes de comenzar a demostrar se abren ciertos módulos del tipo \textit{delay} que serán utilizados en las pruebas. Se abre primero el módulo \AgdaModule{Equality}, pasándole la relación \AgdaBound{$\_\sim\_$} sobre \AgdaBound{A} como argumento y extrayendo del mismo la bisemejanza débil (\AgdaFunction{$\_\approx\_$}). Luego se abre el tipo \AgdaKeyword{data} \AgdaDatatype{Rel} para tener acceso a sus constructores. Finalmente, se abre el módulo \AgdaModule{Equivalence} extrayendo de él la prueba \AgdaFunction{refl} de que todas las relaciones (y en particular la bisemejanza débil) son reflexivas. Con todos estos ingredientes la prueba de la primera ley de mónadas queda como sigue:
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{left-identity}
+
+El tipo de la prueba indica que se demuestra que la función \AgdaField{return}, en este caso el constructor \AgdaInductiveConstructor{now}, es neutro a izquierda de \AgdaFunction{bind}. La demostración es trivial ya que la definición de la función \AgdaFunction{bind} establece la igualdad postulada. Seguidamente se expone la demostración de la segunda ley de mónadas:
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{right-identity} 
+
+En este caso se prueba que el constructor \AgdaInductiveConstructor{now} es neutro a derecha de \AgdaFunction{bind}, es decir que para un término \AgdaBound{t} $:$ \AgdaBound{A} \AgdaDatatype{$\bot$}, \AgdaFunction{bind} \AgdaBound{t} \AgdaInductiveConstructor{now} \AgdaFunction{$\approx$} \AgdaBound{t}. En el caso de que \AgdaBound{t} sea de la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}), la definición de \AgdaFunction{bind} indica que el resultado del lado izquierdo será la aplicación de \AgdaInductiveConstructor{now} a \AgdaBound{x}, quedando una prueba trivial. En caso de tener algo de la forma (\AgdaInductiveConstructor{later} \AgdaBound{x}), así como la definición de \AgdaFunction{bind} es corecursiva, también lo será la prueba. 
+
+Queda por último la prueba de la tercera ley de mónadas: la asociatividad de \AgdaFunction{bind}. Al igual que en la segunda, el caso base es trivial, mientras que el otro es simplemente corecursivo. 
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{associative} 
+
+Se cierra entonces el módulo anónimo abierto más arriba y se pasa a definir los elementos faltantes para la prueba. La relación de igualdad será, para cualquier conjunto \AgdaBound{A}, la relación de bisemejanza débil \AgdaFunction{$\_\approx\_$} definida en el módulo \AgdaModule{Equality} con la relación subyacente \AgdaBound{$\_\sim\_$}.
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{eq}
+
+La prueba de que la relación establecida es de equivalencia se construye utilizando las demostraciones de reflexividad, simetría y transitividad presentes en el módulo \AgdaModule{Equivalence}, las cuales requieren la propiedad análoga para la relación subyacente. Las pruebas de estas propiedades análogas se extraen de la prueba \AgdaBound{eq$\sim$}. 
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{equivalence}
+
+Finalmente, habiendo definido todos los componentes necesarios, la instancia de \AgdaRecord{Monad} para el tipo \AgdaDatatype{$\_\bot$} queda como sigue:
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{instance}
+
+Se puede observar que a las pruebas de las tres leyes se les pasa como argumento el parámetro requerido por el módulo anónimo en el cual están encapsuladas. 
+
+La versión de la prueba para la bisemejanza fuerte es análoga a la primera, sólo cambiando la relación de igualdad que se utiliza. 
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{strong}
+
+
 \section{Prueba de que el tipo \textit{delay} es un funtor monoidal}
+
+En esta sección se dotará al tipo \textit{delay} de la estructura de funtor monoidal.
 
 \section{¿Se puede probar que \textit{delay} es una mónada concurrente?}
 

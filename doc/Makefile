@@ -4,10 +4,18 @@ LATEX=latexmk -pdf -use-make
 MAIN=main
 BIB=bibtex
 IDIR=code
-LHSFILE=$(wildcard $(IDIR)/*.lagda)
+CODE=$(wildcard $(IDIR)/*.lagda)
+INSTANCES=$(wildcard $(IDIR)/Instances/*.lagda)
+STRUCTURES=$(wildcard $(IDIR)/Structures/*.lagda)
 
 all:
-	for file in $(LHSFILE) ; do \
+	for file in $(CODE) ; do \
+	    	agda --latex  $$file --include-path=$(AGDA_STDLIB) --include-path=$(IDIR) ; \
+	done	
+	for file in $(INSTANCES) ; do \
+	    	agda --latex  $$file --include-path=$(AGDA_STDLIB) --include-path=$(IDIR) ; \
+	done	
+	for file in $(STRUCTURES) ; do \
 	    	agda --latex  $$file --include-path=$(AGDA_STDLIB) --include-path=$(IDIR) ; \
 	done	
 	$(LATEX) $(MAIN).tex
