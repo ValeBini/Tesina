@@ -95,7 +95,7 @@ Se introduce por último la prueba de antisimetría de la relación de desiguald
 Podría darse también la prueba de antisimetría respecto de la bisemejanza débil, pero esta es trivial puesto que, como se indica en el lema \AgdaFunction{$\gtrsim\Rightarrow$}, basta con sólo una de las relaciones de desigualdad para que \AgdaBound{x} e \AgdaBound{y} sean débilmente bisemejantes. Las pruebas de antisimetría en general tienen sentido cuando la igualdad está incluida en la relación de orden, y no al revés.
 
 
-\section{Prueba de que el tipo \textit{delay} es una mónada}
+\section{Prueba de que el tipo \textit{delay} es una mónada}\label{casodelay:monada}
 
 Ya introducido el tipo \textit{delay} en Agda, se procede ahora a dar la prueba de que este tiene estructura de mónada. Esto se realizará mediante la creación de una instancia del \AgdaKeyword{record} \AgdaRecord{Monad} definido en la sección \ref{funtmon:mon}, cuyo parámetro será el funtor \AgdaFunction{\_$\bot$}. La mónada \textit{delay} puede definirse tanto para la bisemejanza fuerte como para la bisemejanza débil. Se detalla a continuación sólo una de estas pruebas puesto que la otra es análoga. 
 
@@ -148,11 +148,59 @@ La versión de la prueba para la bisemejanza fuerte es análoga a la primera, s�
 \ExecuteMetaData[latex/Instances/Monad.tex]{strong}
 
 
-\section{Prueba de que el tipo \textit{delay} es un funtor monoidal}
+\section{Prueba de que el tipo \textit{delay} es un funtor monoidal}\label{casodelay:monoidal}
 
-En esta sección se dotará al tipo \textit{delay} de la estructura de funtor monoidal.
+En esta sección se dotará al tipo \textit{delay} de la estructura de funtor monoidal. El objetivo es acercarse de a poco a la estructura de mónada concurrente, teniendo ya la estructura monádica, el siguiente paso es la estructura monoidal. El primer elemento a definir es entonces la operación binaria que, para el funtor $\mathit{M}$, debe tener tipo $\mathit{M} A \rightarrow \mathit{M} B \rightarrow \mathit{M} (A \times B)$.  En este caso particular, como el funtor $\mathit{M}$ está dado por el operador de tipos \AgdaDatatype{$\_\bot$}, la operación \AgdaField{merge} tendrá el siguiente tipo: \AgdaBound{A} \AgdaDatatype{$\bot$} $\rightarrow$ \AgdaBound{B} \AgdaDatatype{$\bot$} $\rightarrow$ (\AgdaBound{A} $\times$ \AgdaBound{B}) \AgdaDatatype{$\bot$}.
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{merge}
+
+La función \AgdaFunction{merge} se define mediante \textit{pattern matching} sobre los dos argumentos. En el caso de que ambos sean términos de la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}), el resultado también será un término de la misma forma, donde el valor de retorno será el par formado por los valores de retorno de los argumentos. Cuando uno de los dos es de la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}) y el otro es de la forma (\AgdaInductiveConstructor{later} \AgdaBound{y}), el resultado se construye con un constructor \AgdaInductiveConstructor{later} que dentro tiene una llamada corecursiva suspendida. El término que tenía el constructor \AgdaInductiveConstructor{later} ya no lo tiene, haciendo productiva la corecursión, mientras que el que tenía el constructor \AgdaInductiveConstructor{now} queda igual. En caso de que ambos términos estén formados por un constructor \AgdaInductiveConstructor{later}, también se realiza una llamada corecursiva, donde ambos términos se achican, y por fuera sólo queda un único constructor \AgdaInductiveConstructor{later} en lugar de dos. Esto se debe a que \AgdaFunction{merge}, intuitivamente, representa el paralelismo de dos computaciones, por lo que ambos \AgdaInductiveConstructor{later} se fusionan en uno que realiza internamente el resto de ambas computaciones en paralelo (gracias a la llamada corecursiva de \AgdaFunction{merge}).
+
+El siguiente operador a definir es \AgdaField{fmap}, el cual representa, como se mencionó en la sección \ref{funtmon:funt}, la asignación de morfismos del funtor que en este caso está dado por \AgdaDatatype{$\_\bot$}. Este operador, por lo tanto, asignará, para cada función \AgdaBound{A} $\rightarrow$ \AgdaBound{B}, una función \AgdaBound{A} \AgdaDatatype{$\bot$} $\rightarrow$ \AgdaBound{B} \AgdaDatatype{$\bot$}. 
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{fmap}
+
+Dada la función \AgdaBound{f} $:$ \AgdaBound{A} $\rightarrow$ \AgdaBound{B}, si el elemento de tipo \AgdaBound{A} \AgdaDatatype{$\bot$} recibido es de la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}), entonces el resultado de aplicar \AgdaFunction{fmap} \AgdaBound{f} a tal elemento es un término construído también con \AgdaInductiveConstructor{now}, donde el valor de retorno será la aplicación de \AgdaBound{f} al valor de retorno del argumento. En caso de que el argumento tenga la forma (\AgdaInductiveConstructor{later} \AgdaBound{x}), el resultado de la aplicación de \AgdaFunction{fmap} \AgdaBound{f} a tal término estará formado también por un constructor \AgdaInductiveConstructor{later} que dentro propaga la aplicación de \AgdaFunction{fmap} \AgdaBound{f} al término (\AgdaField{$\flat$} \AgdaBound{x}). 
+
+Queda por definir el operador 0-ario \AgdaField{unit}. Este se definió en la formalización como un elemento de tipo \AgdaBound{M} \AgdaDatatype{$\top$}. En el caso del tipo \textit{delay}, será un habitante del tipo \AgdaDatatype{$\top$ $\bot$}. Se define entonces \AgdaFunction{unit} como el elemento más simple de tal tipo:
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{unit}
+
+Definidos estos tres operadores, lo que sigue son las demostraciones de las propiedades. La prueba de que el tipo \textit{delay} es un funtor monoidal puede darse, al igual que la de mónada, tanto para la bisemejanza fuerte como para la débil, sinendo ambas pruebas análogas. Se detalla entonces la versión de la bisemejanza débil. Esta prueba se dará dentro de un módulo llamado \AgdaModule{Weak} que recibirá como parámetro la relación de igualdad subyacente junto con una prueba de que es una relación de equivalencia. 
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{module}
+
+La primera propiedad que se demostrará será la asociatividad del operador \AgdaFunction{merge}. Esta se da dentro de un módulo anónimo en el cual se fija como tipo de retorno el producto cartesiano de tres conjuntos \AgdaBound{A}, \AgdaBound{B} y \AgdaBound{C}. Este módulo requiere como parámetro una relación de igualdad entre elementos de este conjunto y la prueba de que la misma es reflexiva. Dentro del módulo se abre, primero, el módulo \AgdaModule{Equality} para el conjunto de retorno \AgdaBound{A} \AgdaDatatype{$\times$} \AgdaBound{B} \AgdaDatatype{$\times$} \AgdaBound{C} con la igualdad subyacente recibida como argumento, del cual se extrae la relación de bisemejanza débil \AgdaFunction{$\_\approx\_$}. Luego se abre el tipo \AgdaDatatype{Rel} de manera que puedan usarse sus constructores sin prefijo. 
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{associative}
+
+La prueba no presenta mayores dificultades. En el caso base, donde los tres términos son de la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}), las aplicación (\AgdaFunction{merge} (\AgdaFunction{merge} (\AgdaInductiveConstructor{now} \AgdaBound{a}) (\AgdaInductiveConstructor{now} \AgdaBound{b})) (\AgdaInductiveConstructor{now} \AgdaBound{c})) genera el siguiente término: (\AgdaInductiveConstructor{now} ((\AgdaBound{a} \AgdaInductiveConstructor{,} \AgdaBound{b}) \AgdaInductiveConstructor{,} \AgdaBound{c})). Al aplicar \AgdaFunction{fmap} (\AgdaSymbol{$\lambda \{$}((\AgdaBound{a} \AgdaInductiveConstructor{,} \AgdaBound{b}) \AgdaInductiveConstructor{,} \AgdaBound{c})\AgdaSymbol{$\rightarrow$} (\AgdaBound{a} \AgdaInductiveConstructor{,} (\AgdaBound{b} \AgdaInductiveConstructor{,} \AgdaBound{c}))\}) a este resultado, se obtiene el término (\AgdaInductiveConstructor{now} (\AgdaBound{a} \AgdaInductiveConstructor{,} (\AgdaBound{b} \AgdaInductiveConstructor{,} \AgdaBound{c}))), el cual es también el resultado de la aplicación del lado derecho de la ecuación: (\AgdaFunction{merge} (\AgdaInductiveConstructor{now} \AgdaBound{a}) (\AgdaFunction{merge} (\AgdaInductiveConstructor{now} \AgdaBound{b}) (\AgdaInductiveConstructor{now} \AgdaBound{c}))), por lo que la prueba queda trivial. En los demás casos, la prueba se resuelve con una llamada corecursiva, donde los términos de la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}) quedan igual, mientras que los que se componen de un constructor \AgdaInductiveConstructor{later} se achican.
+
+Para la prueba del neutro a derecha del operador \AgdaFunction{merge}, se define otro módulo anónimo en el que la relación de igualdad pedida como parámetro y su respectiva prueba de que la relación dada es reflexiva deben estar definidas para elementos del conjunto \AgdaBound{A} \AgdaDatatype{$\times$ $\top$}, para algún conjunto \AgdaBound{A}. Dentro de este módulo se abren también el módulo \AgdaModule{Equality} y el tipo \AgdaDatatype{Rel} para el mismo conjunto.
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{rid}
+
+Para el caso en el que \AgdaBound{a} tiene la forma (\AgdaInductiveConstructor{now} \AgdaBound{x}), la aplicación (\AgdaFunction{merge} (\AgdaInductiveConstructor{now} \AgdaBound{x}) \AgdaFunction{unit}) tiene como resultado el término (\AgdaInductiveConstructor{now} (\AgdaBound{x} \AgdaInductiveConstructor{, tt})). Aplicar \AgdaFunction{fmap} (\AgdaSymbol{lambda} \AgdaBound{a} $\rightarrow$ (\AgdaBound{a} \AgdaInductiveConstructor{, tt})) a (\AgdaInductiveConstructor{now} \AgdaBound{x}) tiene el mismo resultado, por lo que la prueba de este caso es trivial. El otro caso se resuelve, al igual, que antes con una llamada corecursiva. 
+
+La prueba del neutro a izquierda de \AgdaFunction{merge} es análoga a la anterior, donde el módulo anónimo en el cual se encapsula es análogo también:
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{lid}
+
+Los elementos faltantes son la relación de igualdad para términos de tipo \AgdaBound{A} \AgdaDatatype{$\bot$}, para cualquier conjunto \AgdaBound{A}, y la prueba correspondiente de que tal relación es de equivalencia. La definición de estos elementos es igual a la construída para la estructura de mónada.
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{eq}
+
+Finalmente, la instancia de \AgdaRecord{MonoidalFunctor} para el operador de tipos \AgdaDatatype{$\_\bot$} queda como sigue:
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{instance}
+
+La estructura de funtor monoidal para la bisemejanza fuerte es análoga a la anterior, quedando como se muestra a continuación: 
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{strong}
 
 \section{¿Se puede probar que \textit{delay} es una mónada concurrente?}
+
+
 
 \section{Reduciendo el problema a los conaturales}
 
