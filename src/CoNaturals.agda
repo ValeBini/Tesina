@@ -171,6 +171,10 @@ inf≳ zero    = sucˡ (inf≳ zero)
 inf≳ (suc n) = suc (♯ (inf≳ (♭ n)))
 -} 
 
+inf≳ : ∀ (n : Coℕ) → inf ≳ n 
+inf≳ zero    = sucˡ (inf≳ zero)
+inf≳ (suc n) = suc (♯ (inf≳ (♭ n)))
+
 -- No natural number is greater than or equal to infinity.
 
 ¬_ : Set → Set 
@@ -295,6 +299,10 @@ suc≳ = sucˡ refl≳
 >→≳ (suc p)  = ≳→suc≳ (♭ p)
 >→≳ (sucˡ p) = ≳→suc≳ (≳suc→≳ p)
 
+≳zero : (n : Coℕ) → n ≳ zero
+≳zero zero = zero
+≳zero (suc n) = sucˡ (≳zero (♭ n))
+
 -- If you add something to a number, then you get something that is
 -- greater than or equal to what you started with.
 {-
@@ -366,12 +374,10 @@ mutual
   trans≳ {p = zero}  p q = trans≳zero p q
   trans≳ {p = suc x} p q = trans≳suc p q
 
-{-}
-{-# NON_TERMINATING #-}
 ≳zero : (n : Coℕ) → n ≳ zero
 ≳zero zero = zero
 ≳zero (suc n) = sucˡ (≳zero (♭ n))
--} 
+
 
 ≡⇒≳ : {n₁ n₂ : Coℕ} → n₁ ≡ n₂ → n₁ ≳ n₂
 ≡⇒≳ {zero}   {zero}    n≡   = zero

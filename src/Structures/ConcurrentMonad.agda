@@ -23,7 +23,7 @@ module Structures.ConcurrentMonad where
       monad₂  : ∀ {A} → (t : M A) → (t >>= return) ≅ₘ t
       monad₃  : ∀ {A B C : Set} → (t : M C) (f : C → M B) (g : B → M A)
                               → ((t >>= f) >>= g) ≅ₘ (t >>= (λ x → f x >>= g))
-      unit    : M ⊤
+      unit    : M ⊤ 
       merge   : ∀ {A B : Set} → M A → M B → M (A × B)
       mcomp≲ₘ : ∀ {A B : Set} → (a₁ a₂ : M A) → (b₁ b₂ : M B) → a₁ ≲ₘ a₂ → b₁ ≲ₘ b₂ 
                   → (merge a₁ b₁) ≲ₘ (merge a₂ b₂)
@@ -34,5 +34,7 @@ module Structures.ConcurrentMonad where
       comm    : ∀ {A B : Set} → (a : M A) (b : M B) → (merge a b) ≅ₘ ((merge b a) >>= (λ {(a , b) → return (b , a)}))
       ichange : ∀ {A B C D : Set} → (a : M A) (b : M B) (f : A → M C) (g : B → M D) 
                  → (merge (a >>= f) (b >>= g)) ≲ₘ ((merge a b) >>= (λ { (a , b) → (merge (f a) (g b)) }))
+
+
 
   open ConcurrentMonad public

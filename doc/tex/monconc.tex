@@ -4,7 +4,7 @@ En este capítulo se hará una introducción teórica sobre mónadas concurrente
 
 \section{Teoría de Categorías}\label{monconc:cat}
 
-La teoría de categorías fue desarrollada por Eilenberg y MacLane \cite{eilenberg:1945} en 1945. Esta teoría busca axiomatizar de forma abstracta diversas estructuras matemáticas como una sola, tales como los grupos y los espacios topológicos, mediante el uso de objetos y morfismos. A su vez, esta axiomatización se realiza de una manera nueva sin incluir las nociones de elemento o pertenencia, es decir, sin utilizar conjuntos. Con el concepto de categoría se pretende capturar la esencia de una clase de objetos matemáticos que se relacionan entre sí mediante aplicaciones, poniendo énfasis en la relación entre los objetos y no en la pertenencia como en la teoría de conjuntos.
+La teoría de categorías fue presentada por Eilenberg y MacLane \cite{eilenberg:1945} en 1945. Esta teoría busca axiomatizar de forma abstracta diversas estructuras matemáticas como una sola, tales como los grupos y los espacios topológicos, mediante el uso de objetos y morfismos. A su vez, esta axiomatización se realiza de una manera nueva sin incluir las nociones de elemento o pertenencia, es decir, sin utilizar conjuntos. Con el concepto de categoría se pretende capturar la esencia de una clase de objetos matemáticos que se relacionan entre sí mediante aplicaciones, poniendo énfasis en la relación entre los objetos y no en la pertenencia como en la teoría de conjuntos.
 
 \begin{definition}[Categoría]
 Una \textbf{categoría} $\mathscr{C}$ consiste de:
@@ -142,7 +142,7 @@ El elemento neutro de un monoide es único. Por esa razón, en general el elemen
 
 \section{Introducción a las mónadas}\label{monconc:monadas}
 
-Se considerarán dos variantes de la definición de mónadas. La primera es la definición clásica y la segunda define a una mónada como un sistema de extensión o 3-tupla Kleisli. La primera es muy utilizada en la literatura ya que es la definición matemática y está definida en torno a transformaciones naturales, pero la segunda es más fácil de utilizar desde una perspectiva computacional. Como ambas definiciones son equivalentes \cite{moggi:1991}, se utilizará una u otra según sea conveniente.
+Se considerarán dos variantes de la definición de mónadas. La primera es la definición clásica y la segunda define a una mónada como un sistema de extensión o 3-tupla Kleisli. La primera es muy utilizada en la literatura ya que es la definición matemática y está definida en torno a transformaciones naturales, pero la segunda es más fácil de utilizar desde una perspectiva computacional. Como ambas definiciones son equivalentes \cite{manes:1976}, se utilizará una u otra según sea conveniente.
 
 \subsection{Definición clásica de Mónadas}\label{monadas:usual}
 Se define a continuación el concepto de mónada de la manera clásica dentro de la teoría de categorías.
@@ -363,7 +363,7 @@ Un \textbf{orden} para un \textbf{funtor} $\mathit{F}$ es una asignación de un 
 
 A continuación se define la compatibilidad para la estructura de mónada. Para esto se utiliza una familia de estructuras ordenadas, lo cual es una instancia de lo que definieron Katsumata y Sato como una mónada ordenada \cite{katsumata:2013}.
 
-\begin{definition}[Mónada ordenada]
+\begin{definition}[Mónada ordenada]\label{def:ordmon}
 Un \textbf{orden} para una \textbf{mónada} $(\mathit{T},\mu,\eta)$ es una asignación de un orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, tal que la categoría Kleisli de $T$ se enriquece en la categoría de órdenes con el orden correspondiente a $\mathcal{K}\ell(\mathit{T})(A,B)$ definido por $f \sqsubseteq_{A,B} g$ si y sólo si $\forall a : \mathbf{1} \rightarrow A, f \circ a \sqsubseteq_B g \circ a$.
 \end{definition}
 
