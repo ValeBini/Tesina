@@ -136,67 +136,67 @@ module Weak (_∼_ : ∀ {A} → A → A → Set)
 module Strong (_∼_ : ∀ {A} → A → A → Set) 
               (eq∼ : ∀ {A} → IsEquivalence (_∼_ {A})) where
 
-    module _ {A B C : Set} {_∼_ : A × B × C → A × B × C → Set} 
-             (reflABC : Reflexive _∼_) where
+  module _ {A B C : Set} {_∼_ : A × B × C → A × B × C → Set} 
+            (reflABC : Reflexive _∼_) where
 
-      open Equality {A × B × C} _∼_ using (_≅_)
-      open Equality.Rel
+    open Equality {A × B × C} _∼_ using (_≅_)
+    open Equality.Rel
 
-      associative : (a : A ⊥) (b : B ⊥) (c : C ⊥)
-                    → (fmap (λ {((a , b) , c) → (a , (b , c))}) (merge (merge a b) c)) 
-                                                               ≅ (merge a (merge b c))
-      associative (now a)   (now b)   (now c)   = now reflABC
-      associative (now a)   (now b)   (later c) = later (♯ (associative (now a) (now b) (♭ c)))
-      associative (now a)   (later b) (now c)   = later (♯ (associative (now a) (♭ b) (now c)))
-      associative (now a)   (later b) (later c) = later (♯ (associative (now a) (♭ b) (♭ c)))
-      associative (later a) (now b)   (now c)   = later (♯ (associative (♭ a) (now b) (now c)))
-      associative (later a) (now b)   (later c) = later (♯ (associative (♭ a) (now b) (♭ c)))
-      associative (later a) (later b) (now c)   = later (♯ (associative (♭ a) (♭ b) (now c)))
-      associative (later a) (later b) (later c) = later (♯ (associative (♭ a) (♭ b) (♭ c)))
-  
+    associative : (a : A ⊥) (b : B ⊥) (c : C ⊥)
+                  → (fmap (λ {((a , b) , c) → (a , (b , c))}) (merge (merge a b) c)) 
+                                                              ≅ (merge a (merge b c))
+    associative (now a)   (now b)   (now c)   = now reflABC
+    associative (now a)   (now b)   (later c) = later (♯ (associative (now a) (now b) (♭ c)))
+    associative (now a)   (later b) (now c)   = later (♯ (associative (now a) (♭ b) (now c)))
+    associative (now a)   (later b) (later c) = later (♯ (associative (now a) (♭ b) (♭ c)))
+    associative (later a) (now b)   (now c)   = later (♯ (associative (♭ a) (now b) (now c)))
+    associative (later a) (now b)   (later c) = later (♯ (associative (♭ a) (now b) (♭ c)))
+    associative (later a) (later b) (now c)   = later (♯ (associative (♭ a) (♭ b) (now c)))
+    associative (later a) (later b) (later c) = later (♯ (associative (♭ a) (♭ b) (♭ c)))
 
-    module _ {A : Set} {_∼_ : (A × ⊤) → (A × ⊤) → Set} 
-             (reflA×⊤ : Reflexive _∼_) where
 
-      open Equality {A × ⊤} _∼_ using (_≅_)
-      open Equality.Rel
+  module _ {A : Set} {_∼_ : (A × ⊤) → (A × ⊤) → Set} 
+            (reflA×⊤ : Reflexive _∼_) where
 
-      rid : (a : A ⊥) → (merge a unit) ≅ (fmap (λ a → (a , tt)) a)
-      rid (now x)   = now reflA×⊤
-      rid (later x) = later (♯ (rid (♭ x)))
+    open Equality {A × ⊤} _∼_ using (_≅_)
+    open Equality.Rel
 
-    module _ {A : Set} {_∼_ : (⊤ × A) → (⊤ × A) → Set} 
-             (refl⊤×A : Reflexive _∼_) where
+    rid : (a : A ⊥) → (merge a unit) ≅ (fmap (λ a → (a , tt)) a)
+    rid (now x)   = now reflA×⊤
+    rid (later x) = later (♯ (rid (♭ x)))
 
-      open Equality {⊤ × A} _∼_ using (_≅_)
-      open Equality.Rel
+  module _ {A : Set} {_∼_ : (⊤ × A) → (⊤ × A) → Set} 
+            (refl⊤×A : Reflexive _∼_) where
 
-      lid : (a : A ⊥) → (merge unit a) ≅ (fmap (λ a → (tt , a)) a)
-      lid (now x)   = now refl⊤×A
-      lid (later x) = later (♯ (lid (♭ x)))
+    open Equality {⊤ × A} _∼_ using (_≅_)
+    open Equality.Rel
 
-    open import Structures.MonoidalFunctor hiding (unit; merge; fmap)
+    lid : (a : A ⊥) → (merge unit a) ≅ (fmap (λ a → (tt , a)) a)
+    lid (now x)   = now refl⊤×A
+    lid (later x) = later (♯ (lid (♭ x)))
 
-    _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
-    _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
+  open import Structures.MonoidalFunctor hiding (unit; merge; fmap)
 
-    open Equivalence using (refl; sym; trans) 
-  
-    eq≅⊥ : ∀ {A} → IsEquivalence (_≅⊥_ {A})
-    eq≅⊥ = record 
-            { refl = refl (IsEquivalence.refl eq∼) ; 
-              sym = sym (IsEquivalence.sym eq∼) tt ; 
-              trans = trans (IsEquivalence.trans eq∼) }
+  _≅⊥_ : ∀ {A} → A ⊥ → A ⊥ → Set
+  _≅⊥_ {A} = Equality._≅_ {A} (_∼_ {A})
 
-    delayMonoidal : MonoidalFunctor _⊥
-    delayMonoidal = makeMonoidalFunctor 
-                          _≅⊥_ 
-                          eq≅⊥
-                          unit 
-                          merge 
-                          fmap 
-                          (rid (IsEquivalence.refl eq∼))
-                          (lid (IsEquivalence.refl eq∼)) 
-                          (associative (IsEquivalence.refl eq∼))
+  open Equivalence using (refl; sym; trans) 
+
+  eq≅⊥ : ∀ {A} → IsEquivalence (_≅⊥_ {A})
+  eq≅⊥ = record 
+          { refl = refl (IsEquivalence.refl eq∼) ; 
+            sym = sym (IsEquivalence.sym eq∼) tt ; 
+            trans = trans (IsEquivalence.trans eq∼) }
+
+  delayMonoidal : MonoidalFunctor _⊥
+  delayMonoidal = makeMonoidalFunctor 
+                        _≅⊥_ 
+                        eq≅⊥
+                        unit 
+                        merge 
+                        fmap 
+                        (rid (IsEquivalence.refl eq∼))
+                        (lid (IsEquivalence.refl eq∼)) 
+                        (associative (IsEquivalence.refl eq∼))
 \end{code}
 %</strong>

@@ -570,7 +570,6 @@ module StrongProp where
     never≳ (later x) = later (♯ (never≳ (♭ x))) 
 
 
-
   open import Structures.ConcurrentMonad hiding (unit; merge)
 
   partiality : ConcurrentMonad _⊥
