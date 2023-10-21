@@ -145,7 +145,7 @@ Finalmente, habiendo definido todos los componentes necesarios, la instancia de 
 
 Se puede observar que a las pruebas de las tres leyes se les pasa como argumento el parámetro requerido por el módulo anónimo en el cual están encapsuladas. 
 
-La versión de la prueba para la bisemejanza fuerte es análoga a la primera, sólo cambiando la relación de igualdad que se utiliza. El código de la misma se encuentra en el \nameref{casodelay:apendice} de este capítulo.
+La versión de la prueba para la bisemejanza fuerte es análoga a la primera, sólo cambiando la relación de igualdad que se utiliza. El código de la misma se encuentra en el Apéndice \ref{apendice:fuerte}.
 
 
 \section{Prueba de que el tipo \textit{delay} es un funtor monoidal}\label{casodelay:monoidal}
@@ -196,7 +196,7 @@ Finalmente, la instancia de \AgdaRecord{MonoidalFunctor} para el operador de tip
 \ExecuteMetaData[latex/Instances/Monoidal.tex]{instance}
 \end{AgdaAlign} 
 
-La estructura de funtor monoidal para la bisemejanza fuerte es análoga a la anterior. El código de la misma se encuentra en el \nameref{casodelay:apendice} de este capítulo. 
+La estructura de funtor monoidal para la bisemejanza fuerte es análoga a la anterior. El código de la misma se encuentra en el Apéndice \ref{apendice:fuerte}. 
 
 \section{¿El tipo \textit{delay} es una mónada concurrente?}\label{casodelay:concmonad}
 
@@ -319,14 +319,61 @@ Luego de batallar bastante se obtuvieron los siguientes ejemplos, en los cuales 
 
 El primer lema, \AgdaFunction{$\equiv\sharp\flat$}, prueba que los operadores \AgdaField{$\flat$} y \AgdaCoinductiveConstructor{$\sharp$} son opuestos en el sentido de que si se tiene un \AgdaBound{s} $:$ \AgdaBound{S} \AgdaDatatype{$\bot$}, se lo suspende con \AgdaCoinductiveConstructor{$\sharp$} y luego se lo desencapsula con \AgdaField{$\flat$}, se obtiene como resultado el término inicial. La prueba de este lema es trivial. Al intentar probar el lema complementario, \AgdaFunction{$\equiv\flat\sharp$}, que toma un \AgdaBound{s} $:$ \AgdaFunction{$\infty$} (\AgdaBound{S} \AgdaDatatype{$\bot$}) y postula que (\AgdaCoinductiveConstructor{$\sharp$} (\AgdaField{$\flat$} \AgdaBound{s})) \AgdaFunction{$\equiv$} \AgdaBound{s}, surgen los problemas. Agda no acepta la prueba trivial y, al observar el tipo objetivo de la prueba en el modo interactivo, aparece lo siguiente: \AgdaHole{Instances.ConcurrentMonad.♯-54 s ≡ s}. Se evidencia entonces que hay problemas a la hora de igualar elementos construídos con \AgdaCoinductiveConstructor{$\sharp$}. Más aún, en el tercer lema, \AgdaFunction{$\equiv\Rightarrow\sharp\equiv$}, se intenta probar que si se tienen dos términos, \AgdaBound{s$_1$} y \AgdaBound{s$_2$}, que son iguales según la igualdad proposicional, entonces los resultados de aplicar \AgdaCoinductiveConstructor{$\sharp$} a ambos términos también son iguales según la misma igualdad. Una vez más Agda no acepta la prueba trivial y el tipo objetivo que se observa en el modo interactivo es: \AgdaHole{Instances.ConcurrentMonad.♯-56 s₁ s₁ ≡ Instances.ConcurrentMonad.♯-57 s₁ s₁}. Con estos ejemplos se evidencia que esta notación, en particular el operador \AgdaCoinductiveConstructor{$\sharp$}, tiene problemas para deducir la igualdad de los términos, es como si hubiera diferentes tipos de \AgdaCoinductiveConstructor{$\sharp$}, con diferentes números cada uno. 
 
-\section{Reduciendo el problema a los conaturales}
+\section{Reduciendo el problema a los conaturales}\label{casodelay:conat}
 
-A raíz de las dificultades encontradas en el intento de probar la ley de intercambio para la mónada \textit{delay}, se decidió simplificar el problema e intentar probar que los números conaturales forman un monoide concurrente, lo cual implica probar la ley de intercambio para dicho conjunto. Los números conaturales pueden verse como una versión simplificada del tipo \textit{delay}, en donde no hay un tipo de retorno, o bien, este tipo es \AgdaDatatype{$\top$}. Así, cada constructor \AgdaInductiveConstructor{later} se correspondería con un constructor \AgdaInductiveConstructor{suc}. El objetivo de esta simplificación es ver si el problema para reconocer términos iguales se debe al valor que (posiblemente) retornan los términos de tipo \AgdaBound{A} \AgdaDatatype{$\bot$}. 
+Los números conaturales pueden verse como una versión simplificada del tipo \textit{delay} en la que no hay un tipo de retorno, o bien, este tipo es \AgdaDatatype{$\top$}, el cual tiene un único habitante. Así, cada constructor \AgdaInductiveConstructor{later} se correspondería con un constructor \AgdaInductiveConstructor{suc}. 
 
+A raíz de las dificultades encontradas en el intento de probar la ley de intercambio para la mónada \textit{delay}, se decidió simplificar el problema e intentar probar la ley de intercambio para los números conaturales, en este caso la ley a demostrar sería la ley de intercambio de los monoides concurrentes. El objetivo de esta simplificación es ver si el problema para reconocer términos iguales se debe al valor que (posiblemente) retornan los términos de tipo \AgdaBound{A} \AgdaDatatype{$\bot$} o si el problema está en el soporte para coinducción utilizado.
 
-\subsection{Definición de los conaturales con notación musical}
+\subsection{Definición de los conaturales con notación musical}\label{casodelay:conat:defmus}
 
-\subsection{¿Se puede probar que los conaturales forman un monoide concurrente?}
+En la sección \ref{coind:agda:musical} se introdujo la siguiente definición para los números conaturales:
+\ExecuteMetaData[latex/ConaturalsM.tex]{def}
+
+Se definen para el tipo dado dos relaciones: una de igualdad, a la cual se la llamará bisemejanza, y la otra de orden. Como se puede observar, estas relaciones se definen de manera análoga a las relaciones de bisemejanza fuerte y desigualdad definidas para el tipo \textit{delay}. 
+\ExecuteMetaData[latex/ConaturalsM.tex]{rels}
+
+A continuación se prueba que la relación de igualdad definida es una relación de equivalencia, es decir que es reflexiva simétrica y transitiva. Las demostraciones de tales propiedades son bastante simples, los casos base son triviales y los demás se resuelven mediante co-recursión.
+\ExecuteMetaData[latex/ConaturalsM.tex]{equiv}
+
+Siendo la igualdad una relación de equivalencia, se prueba seguidamente que la relación de orden es un orden parcial respecto de la bisemejanza. Para ello se definen algunos operadores que facilitan la manipulación de los constructores \AgdaInductiveConstructor{suc}. La función \AgdaFunction{suc$^{r-1}$} es la inversa del constructor \AgdaInductiveConstructor{suc$^l$} y sirve para quitar un constructor \AgdaInductiveConstructor{suc} del lado derecho de la desigualdad. La función \AgdaFunction{suc$^{-1}$} es la inversa del constructor \AgdaInductiveConstructor{suc} de la desigualdad y quita un constructor de ambos lados de la misma. Por último, \AgdaFunction{$\gtrsim$suc} demuestra que, para cualquier valor \AgdaBound{n} de tipo \AgdaDatatype{$\infty$ Co$\mathbb{N}$}, \AgdaInductiveConstructor{suc} \AgdaBound{n} \AgdaFunction{$\gtrsim$} \AgdaField{$\flat$} \AgdaBound{n}.
+\ExecuteMetaData[latex/ConaturalsM.tex]{partial}
+
+La prueba de transitividad es la única que tiene una dificultad un poco mayor ya que se definió en tres partes. \AgdaFunction{trans$\gtrsim$zero} prueba la transitividad para el caso en que el elemento más pequeño es \AgdaInductiveConstructor{zero}. Esta tiene pocos casos y se define co-recursivamente. Luego están \AgdaFunction{trans$\gtrsim$suc} y \AgdaFunction{trans$\gtrsim$} que son mutuamente co-recursivas. La primera prueba el caso particular en el que el elemento más chico es sucesor de algún número y la segunda es la prueba general, la cual utiliza las dos anteriores. Son mutuamente co-recursivas puesto que para probar \AgdaFunction{trans$\gtrsim$suc} se necesita también utilizar \AgdaFunction{trans$\gtrsim$}. 
+
+Por último, se definen las dos operaciones que forman las estructuras monoidales de \AgdaDatatype{Co$\mathbb{N}$} junto con el neutro \AgdaInductiveConstructor{zero}. \begin{itemize}[noitemsep]
+\item \AgdaFunction{max} se define como el máximo de dos co-números y es la versión simplificada del operador \AgdaFunction{merge} definido para el tipo \textit{delay}. Esto se puede notar ya que en \AgdaFunction{merge}, en el caso de tener dos valores de la forma (\AgdaInductiveConstructor{later} \AgdaBound{x}), el resultado se construye con un sólo \AgdaInductiveConstructor{later} y ambos términos reducidos dentro de la llamada co-recursiva. Se puede pensar que el resultado de aplicar \AgdaFunction{merge} es el par de los valores de retorno de sus argumentos con una cantidad de constructores \AgdaInductiveConstructor{later} equivalente al máximo de las cantidades que tenía cada argumento. 
+
+\item \AgdaFunction{sum} calcula la suma de dos conúmeros. En este caso, a diferencia de \AgdaFunction{max}, todos los constructores \AgdaInductiveConstructor{suc} persisten. En el caso de que ambos conúmeros sean de la forma (\AgdaInductiveConstructor{suc} \AgdaBound{x}), el resultado consta de dos constructores \AgdaInductiveConstructor{suc} consecutivos y dentro de ellos la llamada co-recursiva con ambos números reducidos. Aunque es un poco más difícil ver el paralelistmo, esta función se corresponde con el operador \AgdaFunction{bind} definido para el tipo \textit{delay}. Si se observa su definición, se puede ver que la función \AgdaBound{f} queda intacta hasta el caso en el que el primer argumento es de tipo (\AgdaInductiveConstructor{now} \AgdaBound{x}), en el cual se aplica al valor \AgdaBound{x}. Si se piensa el comportamiento global de la función, la cantidad de constructores \AgdaInductiveConstructor{later} que tiene el resultado de aplicar \AgdaFunction{bind}, es la suma de la cantidad que posee el primer argumento y la cantidad que posee \AgdaBound{f x}. Todos los \AgdaInductiveConstructor{later} de \AgdaBound{f x} quedan dentro de los del primer argumento.  
+\end{itemize}
+
+\ExecuteMetaData[latex/ConaturalsM.tex]{ops}
+
+\subsection{¿Se puede probar la ley de intercambio?}\label{casodelay:conat:ichange}
+
+Contando con las definiciones básicas introducidas en la sección anterior, se analiza la prueba de la ley de intercambio para los números conaturales. En ella se utilizan varios lemas cuyas pruebas se encuentran en el Apéndice \ref{apendice:lemasmus}. Se listan a continuación sólo los tipos de las propiedades que se utilizan. 
+
+\begin{itemize}[noitemsep]
+\item \AgdaFunction{$\equiv\Rightarrow\gtrsim$} $:$ \{\AgdaBound{n$_1$ n$_2$} $:$ \AgdaDatatype{Co$\mathbb{N}$}\} $\rightarrow$ \AgdaBound{n$_1$} \AgdaFunction{$\equiv$} \AgdaBound{n$_2$} $\rightarrow$ \AgdaBound{n$_1$} \AgdaFunction{$\gtrsim$} \AgdaBound{n$_2$} \\ prueba que la desigualdad es reflexiva respecto de la igualdad proposicional.
+
+\item \AgdaFunction{sumzero$_2$} $:$ \{\AgdaBound{m} $:$ \AgdaDatatype{Co$\mathbb{N}$}\} $\rightarrow$ \AgdaFunction{sum} \AgdaBound{m} \AgdaInductiveConstructor{zero} \AgdaFunction{$\gtrsim$} \AgdaBound{m} \\ prueba que sumar \AgdaInductiveConstructor{zero} a un conúmero \AgdaBound{m} es mayor o igual a \AgdaBound{m}.
+
+\item \AgdaFunction{$\gtrsim$sum} $:$ \{\AgdaBound{m$_1$ m$_2$ n$_1$ n$_2$} $:$ \AgdaDatatype{Co$\mathbb{N}$}\} $\rightarrow$ \AgdaBound{m$_1$} \AgdaFunction{$\gtrsim$} \AgdaBound{m$_2$} $\rightarrow$ \AgdaBound{n$_1$} \AgdaFunction{$\gtrsim$} \AgdaBound{n$_2$} $\rightarrow$ \AgdaFunction{sum} \AgdaBound{m$_1$ n$_1$} \AgdaFunction{$\gtrsim$} \AgdaFunction{sum} \AgdaBound{m$_2$ n$_2$} \\ prueba que la suma es compatible con la relación de orden.
+
+\item \AgdaFunction{$\gtrsim$max} $:$ \{\AgdaBound{m$_1$ m$_2$ n$_1$ n$_2$} $:$ \AgdaDatatype{Co$\mathbb{N}$}\} $\rightarrow$ \AgdaBound{m$_1$} \AgdaFunction{$\gtrsim$} \AgdaBound{m$_2$} $\rightarrow$ \AgdaBound{n$_1$} \AgdaFunction{$\gtrsim$} \AgdaBound{n$_2$} $\rightarrow$ \AgdaFunction{max} \AgdaBound{m$_1$ n$_1$} \AgdaFunction{$\gtrsim$} \AgdaFunction{max} \AgdaBound{m$_2$ n$_2$} \\ prueba que el operador \AgdaFunction{max} es compatible con la relación de orden.
+\end{itemize}
+
+En el siguiente código se puede observar el esqueleto de la prueba de \AgdaFunction{interchange} en el cual muchos casos están resueltos de manera trivial. Algunos de los demás casos se pueden probar mediante el uso de lemas extra pero, para este análisis, se centrará el foco en los últimos dos casos. 
+
+\ExecuteMetaData[latex/ConaturalsM.tex]{interchange}
+
+En el penúltimo caso se puede observar que el problema para reconocer términos iguales cuando se utiliza la estructura \AgdaKeyword{with} persiste aún eliminando los tipos de retorno. Una vez más uno se ve obligado a utilizar la cláusula \AgdaFunction{inspect} para ``obligar'' a Agda a notar que dos términos son iguales por definición. Esto hace, además, que la prueba sea mucho más larga de lo necesario, puesto que hay que incluir muchas veces un conector \AgdaFunction{trans$\gtrsim$} extra que agrega una prueba más sólo para que se unifiquen términos iguales. Aún haciendo todas las pruebas necesarias, surge otro problema: a la hora de realizar la llamada co-recursiva, Agda lanza un error que dice que falló el chequeo de terminación, aún cuando la llamada está suspendida dentro de un operador \AgdaCoinductiveConstructor{$\sharp$} y todos los términos se reducen (salvo \AgdaInductiveConstructor{zero} que es el caso base), por lo que uno pensaría que la prueba sí es productiva. Esto mismo sucede en el último caso, el cual se resuelve simplemente utilizando dos constructores \AgdaInductiveConstructor{suc} y dentro la llamada co-recursiva en la cual todos los términos se reducen. 
+
+Esta falla en el chequeo de terminación se repitió en varios lemas que fueron parte de diferentes intentos realizados para demostrar \AgdaFunction{interchange}. Llamadas que parecen productivas y válidas no pasan el chequeo. Como ejemplo básico de una propiedad que, intuitivamente, debería poder demostrarse sin problemas, se presenta el caso de \AgdaFunction{$\gtrsim$zero} que postula que cualquier conúmero es mayor o igual a \AgdaInductiveConstructor{zero}. Una vez más, la prueba de este lema no pasa el chequeo de terminación.
+
+\ExecuteMetaData[latex/ConaturalsM.tex]{zero}
+
+Dada la dificultad de reconocimiento de términos iguales y el problema con el chequeo de terminación, se decidió después de muchos intentos, idas y vueltas, descartar la notación musical como soporte para coinducción.
 
 \section{Cambio de paradigma: \textit{sized types}}
 
@@ -336,12 +383,3 @@ A raíz de las dificultades encontradas en el intento de probar la ley de interc
 
 \subsection{Prueba alternativa de que \textit{delay} es una mónada concurrente}
 
-\section*{Apéndice}\label{casodelay:apendice}
-
-En la sección \ref{casodelay:monada} se prueba que el tipo \textit{delay} es una mónada tomando como relación de igualdad la bisemejanza débil. El siguiente bloque de código corresponde a la prueba análoga, tomando en este caso como relación de igualdad la bisemejanza fuerte. 
-
-\ExecuteMetaData[latex/Instances/Monad.tex]{strong}
-
-La estructura de funtor monoidal para el mismo tipo de dato fue introducida en la sección \ref{casodelay:monoidal}, también considerando como relación de igualdad la bisemejanza débil. A continuación se muestra el código correspondiente a la estructura de funtor monoidal para el tipo \textit{delay} con la bisemejanza fuerte como igualdad.
-
-\ExecuteMetaData[latex/Instances/Monoidal.tex]{strong}

@@ -1,0 +1,30 @@
+\chapter{Pruebas complementarias}\label{apendice:pruebas}
+
+\section{Pruebas análogas para bisemejanza fuerte}\label{apendice:fuerte}
+ 
+En la sección \ref{casodelay:monada} se prueba que el tipo \textit{delay} es una mónada tomando como relación de igualdad la bisemejanza débil. El siguiente bloque de código corresponde a la prueba análoga, tomando en este caso como relación de igualdad la bisemejanza fuerte. 
+
+\ExecuteMetaData[latex/Instances/Monad.tex]{strong}
+
+La estructura de funtor monoidal para el mismo tipo de dato fue introducida en la sección \ref{casodelay:monoidal}, también considerando como relación de igualdad la bisemejanza débil. A continuación se muestra el código correspondiente a la estructura de funtor monoidal para el tipo \textit{delay} con la bisemejanza fuerte como igualdad.
+
+\ExecuteMetaData[latex/Instances/Monoidal.tex]{strong}
+
+\section{Lemas para la prueba de interchange para conaturales con notación musical}\label{apendice:lemasmus}
+
+Los siguientes lemas se utilizan en la sección \ref{casodelay:conat:ichange} para mostrar los intentos de prueba de la ley de intercambio para números conaturales definidos con notación musical. 
+
+\AgdaFunction{$\equiv\Rightarrow\gtrsim$} prueba que la desigualdad es reflexiva respecto de la igualdad proposicional:
+\ExecuteMetaData[latex/ConaturalsM.tex]{propmayor}
+
+Los lemas \AgdaFunction{maxzero$_1$}, \AgdaFunction{maxzero$_2$}, \AgdaFunction{sumzero$_1$} y \AgdaFunction{sumzero$_2$} prueban que \AgdaInductiveConstructor{zero} es neutro a derecha de \AgdaFunction{max} y \AgdaFunction{sum} probando las dos desigualdades (ya que en los demás lemas se necesitaba de esta manera):
+\ExecuteMetaData[latex/ConaturalsM.tex]{zerolemas}
+
+\AgdaFunction{sym-sum} y \AgdaFunction{sym-max} prueban que ambas operaciones son simétricas:
+\ExecuteMetaData[latex/ConaturalsM.tex]{syms}
+
+\AgdaFunction{$\gtrsim$sum} prueba que la suma es compatible con la relación de orden, para ello se prueba también \AgdaFunction{$\gtrsim$sumzero} que prueba lo mismo para el caso en que el argumento \AgdaBound{n$_2$} es \AgdaInductiveConstructor{zero}:
+\ExecuteMetaData[latex/ConaturalsM.tex]{sumcong}
+
+Análogamente, \AgdaFunction{$\gtrsim$max} prueba que \AgdaFunction{max} es compatible con la relación de orden, utilizando \AgdaFunction{$\gtrsim$maxzero} para el caso en que \AgdaBound{n$_2$} $=$ \AgdaInductiveConstructor{zero}:
+\ExecuteMetaData[latex/ConaturalsM.tex]{maxcong}

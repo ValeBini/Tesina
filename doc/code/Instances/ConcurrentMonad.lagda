@@ -345,7 +345,6 @@ module Strong where
                   left-identity 
                   right-identity
                   bind-assoc
-                  unit
                   merge
                   merge-comp
                   rid
