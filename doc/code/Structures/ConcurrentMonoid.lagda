@@ -1,4 +1,6 @@
 \begin{code}
+{-# OPTIONS --without-K #-}
+
 module Structures.ConcurrentMonoid where
 
 open import Relation.Binary.Structures

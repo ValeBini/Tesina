@@ -333,25 +333,25 @@ module Strong where
 \begin{code}
   open import Structures.ConcurrentMonad hiding (unit; merge)
 
-  partiality : ConcurrentMonad _⊥
-  partiality = makeConcurrentMonad 
-                  _≅⊥_
-                  eq≅⊥ 
-                  _≲⊥_
-                  porder≲⊥
-                  now 
-                  bind 
-                  bind-comp
-                  left-identity 
-                  right-identity
-                  bind-assoc
-                  merge
-                  merge-comp
-                  rid
-                  lid
-                  merge-assoc
-                  merge-comm
-                  {!   !}    
+  delayConcurrent : ConcurrentMonad _⊥
+  delayConcurrent = makeConcurrentMonad 
+                      _≅⊥_
+                      eq≅⊥ 
+                      _≲⊥_
+                      porder≲⊥
+                      now 
+                      bind 
+                      bind-comp
+                      left-identity 
+                      right-identity
+                      bind-assoc
+                      merge
+                      merge-comp
+                      rid
+                      lid
+                      merge-assoc
+                      merge-comm
+                      {!   !}    
 \end{code}
 %</instance> 
 

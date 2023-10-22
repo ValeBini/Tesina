@@ -41,10 +41,10 @@
 \begin{document}
 
 \include{tex/titlepage}
-%\thispagestyle{empty}
+\thispagestyle{empty}
 
 \include{tex/resumen}
-%\thispagestyle{empty}
+\thispagestyle{empty}
 
 \frontmatter
 
@@ -66,16 +66,11 @@
 \include{tex/form} 
 \include{tex/casodelay}
 
-\bookmarksetup{startatroot}
+%\bookmarksetup{startatroot}
 
 \include{tex/conclusiones}
 
-\begin{appendices}
-\include{tex/apendice}
-\include{tex/guia}
-\end{appendices}
-
-\backmatter
+%\backmatter
 
 %\chapter{Bibliograf\'{i}a}
 
@@ -83,6 +78,10 @@
 \bibliography{bib/biblio}
 \addcontentsline{toc}{chapter}{\bibname}
 
+\begin{appendices}
+\include{tex/apendice}
+\include{tex/guia}
+\end{appendices}
 
 \end{document}
 
