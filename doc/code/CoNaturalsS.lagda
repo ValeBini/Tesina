@@ -140,12 +140,16 @@ antisymmetric-≤ (suc p) (suc q) =
   helper zero    _    = zero
   helper (suc m) 1+m≡ = suc λ { .force {j = j} →
                           subst ([ j ] _ ≤_) 1+m≡ ≤suc }
+\end{code} 
+%</menorsuc>
 
+%<*pasosuc>
+\begin{code} 
 ≤-step : ∀ {m n i} → [ i ] m ≤′ force n → [ i ] m ≤ suc n
 ≤-step {zero}      _ = zero
 ≤-step {suc m} {n} p = suc λ { .force → transitive-≤ ≤suc (force p) }
 \end{code}
-%</menorsuc>
+%</pasosuc>
 
 %<*predmenor>
 \begin{code}
@@ -154,3 +158,45 @@ pred≤ {i} {zero} = zero
 pred≤ {i} {suc m} = ≤suc
 \end{code} 
 %</predmenor>
+
+%<*ordenalt>
+\begin{code} 
+mutual
+
+  infix 4 [_]_⊑_ [_]_⊑′_
+
+  data [_]_⊑_ (i : Size) : Conat ∞ → Conat ∞ → Set where
+    zero : [ i ] zero ⊑ zero
+    sucr : ∀ {m n} → [ i ] m ⊑′ force n → [ i ] m ⊑ suc n
+    suc  : ∀ {m n} → [ i ] force m ⊑′ force n → [ i ] suc m ⊑ suc n
+
+  record [_]_⊑′_ (i : Size) (m n : Conat ∞) : Set where
+    coinductive
+    field
+      force : {j : Size< i} → [ j ] m ⊑ n
+
+open [_]_⊑′_ public
+\end{code} 
+%</ordenalt>
+
+%<*zeromenor>
+\begin{code} 
+zero⊑ : ∀ {i} n → [ i ] zero ⊑ n
+zero⊑ zero = zero
+zero⊑ (suc H) = sucr λ { .force → zero⊑ (H .force) }
+\end{code} 
+%</zeromenor> 
+
+%<*ordeneseq>
+\begin{code}
+⊑⇒≤ : ∀ {i} {n m} → [ i ] n ⊑ m → [ i ] n ≤ m
+⊑⇒≤ zero = zero
+⊑⇒≤ {n = zero} {m = suc m} (sucr H) = zero
+⊑⇒≤ {n = suc n} {m = suc m} (sucr H) = suc λ { .force → transitive-≤ ≤suc (⊑⇒≤ (H .force)) }
+⊑⇒≤ (suc H) = suc λ { .force {j} → ⊑⇒≤ (force H) }
+
+≤⇒⊑ : ∀ {i} {n m} → [ i ] n ≤ m → [ i ] n ⊑ m
+≤⇒⊑ {n} {.zero} zero = zero⊑ _
+≤⇒⊑ {n} {.(suc _)} (suc H) = suc λ { .force → ≤⇒⊑ (H .force) }
+\end{code} 
+%</ordeneseq>

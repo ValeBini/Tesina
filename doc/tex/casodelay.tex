@@ -377,20 +377,67 @@ Dada la dificultad de reconocimiento de términos iguales y el problema con el c
 
 \section{Cambio de paradigma: \textit{sized types}}
 
+Luego de descartar la notación musical como soporte para la coinducción, los \textit{sized types} fueron la opción elegida. Como se introdujo en la sección \ref{coind:agda:sized}, estos poseen índices que ayudan en el chequeo de terminación, por lo que el objetivo de esta sección es ver si los problemas con tal chequeo encontrados en la notación musical están presentes también en esta notación o no. 
+
+En caso de que no se presenten dificultades con la notación, se intentará demostrar que los números conaturales forman un monoide concurrente con la suma y el máximo, demostrando la ley de intercambio para este conjunto que es una versión simplificada del tipo \textit{delay}. La implementación de números conaturales que se presenta a continuación está basada en \ref{} {\color{red} No encontré el link a la implementación}.
+
 \subsection{Definición de los conaturales utilizando \textit{sized types}}
 
+En la sección \ref{coind:agda:sized} se definieron los números conaturales utilizando \textit{sized types} de la siguiente manera:
 \ExecuteMetaData[latex/CoNaturalsS.tex]{conat}
+
+Esta definición consta de dos partes mutuamente recursivas que trabajan juntas para asegurar la terminación de los programas, tal como se explicó cuando se introdujo esta definición. En general muchas de las definiciones sobre este tipo de dato se darán de la misma manera. 
+
+Antes de pasar a definir las relaciones entre números conaturales, se definen dos operaciones que serán de mucha utilidad más adelante. La primera de ellas es \AgdaFunction{pred}, la cual calcula el predecesor de un conúmero, donde el predecesor de \AgdaInductiveConstructor{zero} es sí mismo y el predecesor de cualquier otro número se calcula quitando un constructor \AgdaInductiveConstructor{suc}.
 \ExecuteMetaData[latex/CoNaturalsS.tex]{pred}
+
+La segunda función que se define es una conversión de números naturales a números conaturales. Esta función se define, al igual que el tipo \AgdaDatatype{Conat}, en dos partes mutuamente recursivas.
 \ExecuteMetaData[latex/CoNaturalsS.tex]{natconat}
+
+Se define ahora entonces la primera de las relaciones entre conúmeros: la bisemejanza. Esta relación está dada también en dos partes y se define únicamente para números de tipo \AgdaDatatype{Conat $\infty$} que son los conúmeros completamente definidos. La segunda definición, \AgdaFunction{$[\_]\_\sim '\_$}, está dada por un tipo \AgdaKeyword{record} coinductivo que tiene un único campo: \AgdaField{force}. Dados un tamaño \AgdaBound{i} y dos conúmeros \AgdaBound{m} y \AgdaBound{n} de tipo \AgdaDatatype{Conat $\infty$}, este campo da una prueba de que \AgdaBound{m} y \AgdaBound{n} son iguales según la primera definición (\AgdaFunction{$[\_]\_\sim\_$}) para un tamaño \AgdaBound{j} menor a \AgdaBound{i}. 
+
+La primera definición, \AgdaFunction{$[\_]\_\sim\_$}, está dada por un tipo \AgdaKeyword{data} y consta de dos constructores. \AgdaInductiveConstructor{zero} postula que \AgdaInductiveConstructor{zero} es igual a sí mismo. Por otra parte,  \AgdaInductiveConstructor{suc} dice que, dados \AgdaBound{m n} $:$ \AgdaDatatype{Conat $\infty$}, si se tiene que \AgdaField{force} \AgdaBound{m} y \AgdaField{force} \AgdaBound{n} son iguales según la segunda definición para un cierto tamaño \AgdaBound{i}, es decir que son iguales según la definición actual para un tamaño \AgdaBound{j} menor a \AgdaBound{i}, entonces \AgdaInductiveConstructor{suc} \AgdaBound{m} y \AgdaInductiveConstructor{suc} \AgdaBound{n} son iguales en la primera relación para el índice \AgdaBound{i}. 
 \ExecuteMetaData[latex/CoNaturalsS.tex]{igualdad}
+
+La bisemejanza es una relación de equivalencia, es decir que es reflexiva, simétrica y transitiva, tal como se muestra en los lemas que siguen. Estas demostraciones se resuelven todas de la misma manera: el caso base se prueba con el costructor \AgdaInductiveConstructor{zero} y el caso coinductivo se prueba con el constructor \AgdaInductiveConstructor{suc} y una llamada co-recursiva dentro.
 \ExecuteMetaData[latex/CoNaturalsS.tex]{propseq}
+
+Es el turno ahora de definir la relación de orden, la cual está dada también en dos partes y se define sólo para los conúmeros completamente definidos (\AgdaDatatype{Conat $\infty$}). Al igual que para la bisemejanza, la segunda definición da, para un cierto tamaño \AgdaBound{i} y conúmeros \AgdaBound{m n}, una prueba de que \AgdaBound{m} es menor o igual a \AgdaBound{n} según la primera definición pero para un tamaño \AgdaBound{j} menor a \AgdaBound{i}. 
+
+La primera definición, la cual es la principal, tiene dos constructores. El constructor \AgdaInductiveConstructor{zero} postula que para cualquier conúmero \AgdaBound{n}, \AgdaInductiveConstructor{zero} es menor o igual a \AgdaBound{n} para el tamaño dado \AgdaBound{i}. El constructor \AgdaInductiveConstructor{suc}, dada una prueba de que \AgdaField{force} \AgdaBound{m} es menor o igual a \AgdaField{force} \AgdaBound{n} para un tamaño \AgdaBound{j} menor a \AgdaBound{i}, asegura que \AgdaInductiveConstructor{suc} \AgdaBound{m} es menor o igual a \AgdaInductiveConstructor{suc} \AgdaBound{n} para el tamaño \AgdaBound{i}.
 \ExecuteMetaData[latex/CoNaturalsS.tex]{orden}
+
+Esta relación es un orden parcial, es decir que es reflexiva, antisimétrica y transitiva. Se prueban a continuación estos tres lemas. La reflexividad está dada respecto de la igualdad proposicional, mientras que la antisimetría se prueba respecto de la bisemejanza. Las tres pruebas se resuelven sin dificultades. 
 \ExecuteMetaData[latex/CoNaturalsS.tex]{propsorden}
+
+Para probar que el orden es un orden parcial respecto de la bisemejanza falta un ingrediente más: la reflexividad respecto de la bisemejanza. Es decir que la relación de bisemejanza implica la relación de orden. Se prueba este lema a continuación:
 \ExecuteMetaData[latex/CoNaturalsS.tex]{reflorden}
+
+Luego de dar las definiciones básicas se demuestran tres lemas elementales en relación al orden que serán de utilidad para las pruebas que se llevarán a cabo más adelante. El primero de ellos postula que, para cualquier \AgdaBound{n} $:$ \AgdaDatatype{Conat$'$ $\infty$} y tamaño \AgdaBound{i}, \AgdaField{force} \AgdaBound{n} es menor o igual a \AgdaInductiveConstructor{suc} \AgdaBound{n} para el tamaño \AgdaBound{i}. Para esta prueba es necesario utilizar la función \AgdaFunction{helper} que toma un conúmero \AgdaBound{m} y una prueba de que \hbox{\AgdaBound{m} \AgdaFunction{$\equiv$} \AgdaField{force} \AgdaBound{n}} y hace la demostración valiéndose de esta prueba. Esto se debe a que en esta notación también hay un pequeño conflicto para unificar términos (en este caso con el campo \AgdaField{force}), pero se puede solucionar sin mayores dificultades y no vuelve a repetirse este problema en ninguna de las demostraciones que siguen.
 \ExecuteMetaData[latex/CoNaturalsS.tex]{menorsuc}
+
+El segundo lema también tiene que ver con la relación entre \AgdaField{force} y \AgdaInductiveConstructor{suc}. En este caso, para cualesquiera \AgdaBound{m} $:$ \AgdaDatatype{Conat $\infty$}, \AgdaBound{n} $:$ \AgdaDatatype{Conat$'$ $\infty$} e \AgdaBound{i} $:$ \AgdaPrimitiveType{Size}, se prueba que si se tiene una prueba de que \hbox{\AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaBound{m} \AgdaFunction{$\leq'$} \AgdaField{force} \AgdaBound{n}}, entonces \AgdaBound{m} es menor o igual a \AgdaInductiveConstructor{suc} \AgdaBound{n} para el mismo tamaño \AgdaBound{i}. El caso base de esta prueba se da con el constructor \AgdaInductiveConstructor{zero}. En el otro caso se utiliza el constructor \AgdaInductiveConstructor{suc} y dentro la propiedad transitiva entre el lema anterior (que prueba que \AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]} \AgdaField{force} \AgdaBound{m} \AgdaFunction{$\leq$} \AgdaInductiveConstructor{suc} \AgdaBound{m}) y (\AgdaField{force} \AgdaBound{p}) (que prueba que \AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]} \AgdaInductiveConstructor{suc} \AgdaBound{m} \AgdaFunction{$\leq$} \AgdaField{force} \AgdaBound{n}). 
+\ExecuteMetaData[latex/CoNaturalsS.tex]{pasosuc}
+
+Por último, el tercer lema que se prueba indica que el predecesor de un conúmero es menor o igual a dicho conúmero. Esta prueba se resuelve utilizando también el lema \AgdaFunction{$\leq$suc}.
 \ExecuteMetaData[latex/CoNaturalsS.tex]{predmenor}
 
+Antes de intentar demostrar la ley de intercambio y dar la instancia de \AgdaRecord{ConcurrentMonoid} para el tipo \AgdaDatatype{Conat $\infty$}, es importante saber si esta representación tiene también problemas con el chequeo de terminación o no. Si bien no se puede asegurar por completo, es deseable corroborar al menos el ejemplo dado para la notación musical. En este caso, la prueba de que todo conúmero es mayor o igual a \AgdaInductiveConstructor{zero} está dada por la definición de la relación de orden. Uno podría pensar entonces que la forma de dar tal definición influye en el desarrollo de las demostraciones a realizar. Para refutar esto, se muestra una definición alternativa de la relación de orden, la cual es análoga a la utilizada en la notación musical. 
+\ExecuteMetaData[latex/CoNaturalsS.tex]{ordenalt}
+
+Usando esta relación alternativa, se prueba a continuación que \AgdaInductiveConstructor{zero} es menor o igual a todo conúmero, prueba que se puede hacer sin problemas gracias a los índices que ayudan en el chequeo de terminación. 
+\ExecuteMetaData[latex/CoNaturalsS.tex]{zeromenor}
+
+Más aún, se puede probar que ambas relaciones de orden son equivalentes. 
+\ExecuteMetaData[latex/CoNaturalsS.tex]{ordeneseq}
+
+Se utiliza entonces la primera por cuestiones de practicidad.
+
 \subsection{Prueba de que los conaturales forman un monoide concurrente}
+
+Una vez definidos los números conaturales y sus relaciones y con bastante seguridad de que esta notación no generará tantos conflictos como la primera, se procede a demostrar que los conúmeros forman un monoide concurrente. 
+
+
 
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{suma}
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{propsuma}

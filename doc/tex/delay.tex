@@ -226,7 +226,7 @@ Los valores de tipos coinductivos pueden ser construidos usando corecursión, la
 
 Como aproximación a la productividad, en el chequeo de terminación se pide que en la definición de funciones corecursivas las llamadas recursivas aparezcan bajo la aplicación directa de un construcor coinductivo. Esta restricción en general hace que programar con tipos coinductivos sea incómodo, y es por eso que se buscan técnicas alternativas para asegurar que las definiciones corecursivas estén bien definidas. 
 
-\subsection{\textit{Sized Types}}
+\subsection{\textit{Sized Types}}\label{coind:agda:sized}
 
 Agda tiene un soporte nativo para \textit{sized types}. Estos son tipos que cuentan con un índice que indica el número de desencapsulamientos que pueden realizarse sobre los habitantes de este tipo. Estos índices, llamados tamaños o \textit{sizes}, asisten al chequeo de terminación evaluando que las definiciones corecursivas estén bien definidas. 
 
