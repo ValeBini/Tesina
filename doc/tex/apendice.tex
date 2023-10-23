@@ -28,3 +28,19 @@ Los lemas \AgdaFunction{maxzero$_1$}, \AgdaFunction{maxzero$_2$}, \AgdaFunction{
 
 Análogamente, \AgdaFunction{$\gtrsim$max} prueba que \AgdaFunction{max} es compatible con la relación de orden, utilizando \AgdaFunction{$\gtrsim$maxzero} para el caso en que \AgdaBound{n$_2$} $=$ \AgdaInductiveConstructor{zero}:
 \ExecuteMetaData[latex/ConaturalsM.tex]{maxcong}
+
+\section{Lemas para probar que los conaturales con \textit{sized types} forman un monoide concurrente}\label{apendice:lemassz}
+
+Los lemas que se presentan a continuación se utlizan en la sección \ref{casodelay:sized:concurrent} para probar que los números conaturales bajo la representación que utiliza \textit{sized types} forman un monoide concurrente.
+
+El primer lema representa la conmutatividad de la suma. Para probar tal propiedad se requiere un lema extra que postula que sumar $1$ a la suma \AgdaBound{m} \AgdaFunction{+} \AgdaField{force} \AgdaBound{n} es igual a realizar la suma \hbox{\AgdaBound{m} \AgdaFunction{+} \AgdaInductiveConstructor{suc} \AgdaBound{m}}, lo cual es similar a definir la suma al revés en el sentido de ir reduciendo el conúmero de la derecha en lugar del de la izquierda. Este lema se prueba junto con otro que permite cambiar el constructor \AgdaInductiveConstructor{suc} de lado en la suma de manera mutuamente recursiva.
+\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{commsuma}
+
+El lema \AgdaFunction{\_+-cong\_} representa la propiedad que indica que si se tienen dos pares de conúmeros bisemejantes \AgdaBound{m$_1$} \AgdaFunction{$\sim$} \AgdaBound{m$_2$} y \AgdaBound{n$_1$} \AgdaFunction{$\sim$} \AgdaBound{n$_2$}, la suma de los dos primeros es bisemejante a la suma de los dos segundos.
+\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{congsuma}
+
+El lema \AgdaFunction{\_max-cong\_} representa la propiedad análoga a la anterior para el operador \AgdaFunction{max}.
+\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{congmax}
+
+El siguiente lema, \AgdaFunction{pred-max}, demuestra que el máximo de los predecesores de dos conúmeros es igual al predecesor del máximo de los mismos.
+\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{predmax}

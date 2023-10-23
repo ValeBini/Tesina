@@ -375,13 +375,13 @@ Esta falla en el chequeo de terminación se repitió en varios lemas que fueron 
 
 Dada la dificultad de reconocimiento de términos iguales y el problema con el chequeo de terminación, se decidió después de muchos intentos, idas y vueltas, descartar la notación musical como soporte para coinducción.
 
-\section{Cambio de paradigma: \textit{sized types}}
+\section{Cambio de paradigma: \textit{sized types}}\label{casodelay:sized}
 
 Luego de descartar la notación musical como soporte para la coinducción, los \textit{sized types} fueron la opción elegida. Como se introdujo en la sección \ref{coind:agda:sized}, estos poseen índices que ayudan en el chequeo de terminación, por lo que el objetivo de esta sección es ver si los problemas con tal chequeo encontrados en la notación musical están presentes también en esta notación o no. 
 
 En caso de que no se presenten dificultades con la notación, se intentará demostrar que los números conaturales forman un monoide concurrente con la suma y el máximo, demostrando la ley de intercambio para este conjunto que es una versión simplificada del tipo \textit{delay}. La implementación de números conaturales que se presenta a continuación está basada en \ref{} {\color{red} No encontré el link a la implementación}.
 
-\subsection{Definición de los conaturales utilizando \textit{sized types}}
+\subsection{Definición de los conaturales utilizando \textit{sized types}}\label{casodelay:sized:def}
 
 En la sección \ref{coind:agda:sized} se definieron los números conaturales utilizando \textit{sized types} de la siguiente manera:
 \ExecuteMetaData[latex/CoNaturalsS.tex]{conat}
@@ -433,22 +433,38 @@ Más aún, se puede probar que ambas relaciones de orden son equivalentes.
 
 Se utiliza entonces la primera por cuestiones de practicidad.
 
-\subsection{Prueba de que los conaturales forman un monoide concurrente}
+\subsection{Prueba de que los conaturales forman un monoide concurrente}\label{casodelay:sized:concurrent}
 
-Una vez definidos los números conaturales y sus relaciones y con bastante seguridad de que esta notación no generará tantos conflictos como la primera, se procede a demostrar que los conúmeros forman un monoide concurrente. 
-
-
-
+Una vez definidos los números conaturales y sus relaciones, y con bastante seguridad de que esta notación no generará tantos conflictos como la primera, se procede a demostrar que los conúmeros forman un monoide concurrente. Para comenzar, se define la operación correspondiente a la suma como sigue:
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{suma}
+
+La suma junto con el valor especial \AgdaInductiveConstructor{zero} forman una estructura monoidal. Es decir que \AgdaInductiveConstructor{zero} es neutro a izquierda y derecha de la suma y que, además, la suma es asociativa. Estas tres propiedades se demuestran sin mayores dificultades.
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{propsuma}
-\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{commsuma}
-\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{congsuma}
-\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{monosuma}
+
+Se prueba a continuación la compatibilidad de la suma con de la relación de orden, es decir que la suma es monótona respecto de \AgdaFunction{$\leq$}. Para ello se prueba antes un lema que indica que un número siempre es menor o igual a sí mismo sumado con otro. En la prueba de \AgdaFunction{\_max-mono\_} sólo se requiere dicho lema con la suma a uno de los lados, se prueba también su simétrico ya que será utilizado más adelante. Estos dos lemas no podían probarse para la notación musical puesto que fallaba el chequeo de terminación, con \textit{sized types} no se tiene este problema.\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{monosuma}
+
+La compatibilidad de la suma con el orden se prueba por coinducción en el primer argumento: \AgdaBound{m$_1$} \AgdaFunction{$\leq$} \AgdaBound{m$_2$}. En el caso base, cuando esta prueba está dada por el constructor \AgdaInductiveConstructor{zero}, se tiene que \AgdaBound{m$_1$} $=$ \AgdaInductiveConstructor{zero}, por lo que se quiere probar es que \AgdaBound{n$_1$} \AgdaFunction{$\leq$} \AgdaBound{m$_2$} \AgdaFunction{+} \AgdaBound{n$_2$}. Se utiliza primero el argumento \AgdaBound{q} para probar que \AgdaBound{n$_1$} \AgdaFunction{$\leq$} \AgdaBound{n$_2$} y luego el lema \AgdaFunction{m$\leq$n+m} para probar que \AgdaBound{n$_2$} \AgdaFunction{$\leq$} \AgdaBound{m$_2$} \AgdaFunction{+} \AgdaBound{n$_2$}, uniendo ambas pruebas con la transitividad de \AgdaFunction{$\leq$}. 
+
+El caso en el que el primer argumento es \AgdaInductiveConstructor{suc} \AgdaBound{p}, se tiene que \AgdaBound{m$_1$} $=$ \AgdaInductiveConstructor{suc} \AgdaBound{m$_1'$}, \AgdaBound{m$_2$} $=$ \AgdaInductiveConstructor{suc} \AgdaBound{m$_2'$} y \hbox{\AgdaBound{p} $:$ \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaField{force} \AgdaBound{m$_1'$} \AgdaFunction{$\leq'$} \AgdaField{force} \AgdaBound{m$_2'$}}. El objetivo es probar que \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaInductiveConstructor{suc} $\lambda$ \{ $.$\AgdaField{force} $\rightarrow$ \AgdaField{force} \AgdaBound{m$_1'$} \AgdaFunction{+} \AgdaBound{n$_1$} \} \AgdaFunction{$\leq$} \AgdaInductiveConstructor{suc} $\lambda$ \{ $.$\AgdaField{force} $\rightarrow$ \AgdaField{force} \AgdaBound{m$_2'$} \AgdaFunction{+} \AgdaBound{n$_2$} \}. Quitando el constructor \AgdaInductiveConstructor{suc} a ambos lados (lo cual se realiza al aplicar en la prueba el constructor de la desigualdad que tiene el mismo nombre) queda por probar que \AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]} \AgdaField{force} \AgdaBound{m$_1'$} \AgdaFunction{+} \AgdaBound{n$_1$} \AgdaFunction{$\leq$} \AgdaField{force} \AgdaBound{m$_2'$} \AgdaFunction{+} \AgdaBound{n$_2$}, para algún \AgdaBound{j} menor a \AgdaBound{i}. Esta última prueba es el resultado de aplicar \AgdaFunction{\_+-mono\_} a \AgdaField{force} \AgdaBound{p} y \AgdaBound{q}.
+
+Terminadas las propiedades respectivas a la suma, se pasa a definir el operador \AgdaFunction{max}. Para evitar tener tres casos en la definición como se tenía en la notación musical, se agrupan los últimos dos en uno sólo. El máximo entre (\AgdaInductiveConstructor{suc} \AgdaBound{m}) y \AgdaBound{n} se define como el sucesor del máximo entre (\AgdaField{force} \AgdaBound{m}) y (\AgdaFunction{pred} \AgdaBound{n}). Al aplicar el predecesor al segundo argumento lo que se hace es unificar el caso en que \AgdaBound{n} $=$ \AgdaInductiveConstructor{zero} y el caso en que \AgdaBound{n} $=$ \AgdaInductiveConstructor{suc} \AgdaBound{n$'$}. En el primer caso la función \AgdaFunction{pred} no hace nada y se obtiene el sucesor de (\AgdaField{force} \AgdaBound{m}) y \AgdaInductiveConstructor{zero}, al igual que se definió para la notación musical. En el segundo caso aplicar el predecesor quita un constructor \AgdaInductiveConstructor{suc} al segundo argumento, lo cual se condice con el comportamiento que se tenía en la notación musical donde, cuando ambos conúmeros eran sucesores de otros, se dejaba un único constructor \AgdaInductiveConstructor{suc} y se reducían ambos argumentos en la llamada co-recursiva.
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{max}
+
+El operador \AgdaFunction{max} junto con el valor especial \AgdaInductiveConstructor{zero} deben formar también una estructura monoidal. Se prueban a continuación ambas identidades de forma muy simple. 
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{idsmax}
-\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{congmax}
-\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{monomax}
+
+Para demostrar la asociatividad del operador \AgdaFunction{max}, se necesitan dos lemas extra:
+\begin{itemize}[noitemsep]
+\item \AgdaFunction{\_max-cong\_} $:$ $\forall$ \{\AgdaBound{i m$_1$ m$_2$ n$_1$ n$_2$}\} $\rightarrow$ \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaBound{m$_1$} \AgdaFunction{$\sim$} \AgdaBound{m$_2$} $\rightarrow$ \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaBound{n$_1$} \AgdaFunction{$\sim$} \AgdaBound{n$_2$} $\rightarrow$ \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaFunction{max} \AgdaBound{m$_1$ n$_1$} \AgdaFunction{$\sim$} \AgdaFunction{max} \AgdaBound{m$_2$ n$_2$} que prueba que el operador \AgdaFunction{max} es compatible con la bisemejanza 
+\item y \AgdaFunction{pred-max} $:$ $\forall$ \{\AgdaBound{i}\} \AgdaBound{m n} $\rightarrow$ \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaFunction{max} (\AgdaFunction{pred} \AgdaBound{m}) (\AgdaFunction{pred} \AgdaBound{n}) \AgdaFunction{$\sim$} \AgdaFunction{pred} (\AgdaFunction{max} \AgdaBound{m n}) que prueba que el máximo de los predecesores es igual al predecesor del máximo. 
+\end{itemize}
+Las demostraciones de estos lemas se encuentran en el apéndice \ref{apendice:lemassz} para no extender demasiado esta sección.
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{assocmax}
+Se prueba \AgdaFunction{max-assoc} por coinducción en el primer argumento. En el caso en que \AgdaBound{n} $=$ \AgdaInductiveConstructor{zero}, el objetivo pasa a ser probar que \AgdaFunction{[} \AgdaBound{i} \AgdaFunction{]} \AgdaFunction{max} \AgdaBound{m o} \AgdaFunction{$\sim$} \AgdaFunction{max} \AgdaBound{m o}, puesto que \AgdaFunction{max} \AgdaInductiveConstructor{zero} \AgdaBound{m} $=$ \AgdaBound{m} y \hbox{\AgdaFunction{max} \AgdaInductiveConstructor{zero} (\AgdaFunction{max} \AgdaBound{m o}) $=$ \AgdaFunction{max} \AgdaBound{m o}}. Luego se resuelve ese caso mediante la reflexividad de la bisemejanza. 
+
+
+
+\ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{monomax}
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{commmax}
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{interchange}
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{eqpartial}

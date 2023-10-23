@@ -171,9 +171,9 @@ inf≳ zero    = sucˡ (inf≳ zero)
 inf≳ (suc n) = suc (♯ (inf≳ (♭ n)))
 -} 
 
-inf≳ : ∀ (n : Coℕ) → inf ≳ n 
-inf≳ zero    = sucˡ (inf≳ zero)
-inf≳ (suc n) = suc (♯ (inf≳ (♭ n)))
+-- inf≳ : ∀ (n : Coℕ) → inf ≳ n 
+-- inf≳ zero    = sucˡ (inf≳ zero)
+-- inf≳ (suc n) = suc (♯ (inf≳ (♭ n)))
 
 -- No natural number is greater than or equal to infinity.
 
@@ -299,9 +299,9 @@ suc≳ = sucˡ refl≳
 >→≳ (suc p)  = ≳→suc≳ (♭ p)
 >→≳ (sucˡ p) = ≳→suc≳ (≳suc→≳ p)
 
-≳zero : (n : Coℕ) → n ≳ zero
-≳zero zero = zero
-≳zero (suc n) = sucˡ (≳zero (♭ n))
+-- ≳zero : (n : Coℕ) → n ≳ zero
+-- ≳zero zero = zero
+-- ≳zero (suc n) = sucˡ (≳zero (♭ n))
 
 -- If you add something to a number, then you get something that is
 -- greater than or equal to what you started with.

@@ -121,6 +121,23 @@ suc p max-cong suc q = suc λ { .force → (force p) max-cong (force q) }
 \end{code} 
 %</congmax>
 
+%<*predmax>
+\begin{code} 
+pred-max : ∀ {i} m n → [ i ] max (pred m) (pred n) ∼ pred (max m n)
+pred-max zero n = reflexive-∼ (pred n)
+pred-max (suc m) n = reflexive-∼ (max (force m) (pred n))
+\end{code} 
+%</predmax> 
+
+%<*assocmax>
+\begin{code} 
+max-assoc : ∀ {i} n m o → [ i ] max (max n m) o ∼ max n (max m o)
+max-assoc zero m o = reflexive-∼ (max m o)
+max-assoc (suc n) m o = suc λ { .force → transitive-∼ (max-assoc (force n) (pred m) (pred o)) 
+                                        (reflexive-∼ (force n) max-cong pred-max m o) }
+\end{code} 
+%</assocmax>
+
 %<*monomax>
 \begin{code} 
 ˡ≤max : ∀ {i} m n → [ i ] m ≤ max m n
@@ -141,19 +158,6 @@ suc p max-mono zero = suc λ { .force → (force p) max-mono zero }
 suc p max-mono suc q = suc λ { .force → (force p) max-mono (force q) }
 \end{code} 
 %</monomax>
-
-%<*assocmax>
-\begin{code} 
-pred-max : ∀ {i} m n → [ i ] max (pred m) (pred n) ∼ pred (max m n)
-pred-max zero n = reflexive-∼ (pred n)
-pred-max (suc m) n = reflexive-∼ (max (force m) (pred n))
-
-max-assoc : ∀ {i} n m o → [ i ] max (max n m) o ∼ max n (max m o)
-max-assoc zero m o = reflexive-∼ (max m o)
-max-assoc (suc n) m o = suc λ { .force → transitive-∼ (max-assoc (force n) (pred m) (pred o)) 
-                                        (reflexive-∼ (force n) max-cong pred-max m o) }
-\end{code} 
-%</assocmax>
 
 %<*commmax>
 \begin{code}
