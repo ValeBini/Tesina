@@ -1,7 +1,7 @@
 \begin{code}
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module ConaturalsM where
+module CoNaturalsM where
 
 open import Codata.Musical.Notation
 open import Relation.Binary.PropositionalEquality 

@@ -59,9 +59,8 @@ mutual
 \begin{code} 
 infixl 6 _+-cong_
 
-_+-cong_ :
-  ∀ {i m₁ m₂ n₁ n₂} →
-  [ i ] m₁ ∼ m₂ → [ i ] n₁ ∼ n₂ → [ i ] m₁ + n₁ ∼ m₂ + n₂
+_+-cong_ : ∀ {i m₁ m₂ n₁ n₂} → [ i ] m₁ ∼ m₂ → [ i ] n₁ ∼ n₂ 
+          → [ i ] m₁ + n₁ ∼ m₂ + n₂
 zero  +-cong q = q
 suc p +-cong q = suc λ { .force → force p +-cong q }
 \end{code} 
@@ -134,7 +133,7 @@ pred-max (suc m) n = reflexive-∼ (max (force m) (pred n))
 max-assoc : ∀ {i} n m o → [ i ] max (max n m) o ∼ max n (max m o)
 max-assoc zero m o = reflexive-∼ (max m o)
 max-assoc (suc n) m o = suc λ { .force → transitive-∼ (max-assoc (force n) (pred m) (pred o)) 
-                                        (reflexive-∼ (force n) max-cong pred-max m o) }
+                             (reflexive-∼ (force n) max-cong pred-max m o) }
 \end{code} 
 %</assocmax>
 
@@ -169,47 +168,93 @@ max-comm (suc n) (suc m) = suc λ { .force → max-comm (force n) (force m) }
 \end{code} 
 %</commmax>
 
-%<*interchange>
+%<*maxmenorsuma>
 \begin{code} 
 max≤+ : ∀ {i m n} → [ i ] max m n ≤ m + n
 max≤+ {i} {zero} {n} = reflexive-≤ (max zero n)
 max≤+ {i} {suc x} {n} = suc λ { .force → transitive-≤ (max≤+ {m = force x} {n = pred n}) 
                                         (reflexive-≤ (force x) +-mono pred≤) }
+\end{code} 
+%</maxmenorsuma> 
 
+%<*itipo>
+\begin{code}
 interchange : ∀ {i} a b c d → [ i ] max (a + b) (c + d) ≤ (max a c) + (max b d)
-interchange {i} zero b zero d = reflexive-≤ (max (zero + b) (zero + d))
-interchange {i} zero zero (suc c) d = reflexive-≤ (max (zero + zero) (suc c + d))
-interchange {i} zero (suc b) (suc c) zero = 
+\end{code}
+%</itipo>
+
+%<*icaso1>
+\begin{code}
+interchange {i} zero b zero d = reflexive-≤ (max b d)
+\end{code}
+%</icaso1>
+
+%<*icaso2>
+\begin{code}
+interchange {i} zero zero (suc c) d = reflexive-≤ (suc c + d)
+\end{code}
+%</icaso2>
+
+%<*icaso3>
+\begin{code}
+interchange {i} zero (suc b) (suc c) zero =
             suc λ { .force → (transitive-≤ (∼→≤ (reflexive-∼ (force b) 
                                                 max-cong +-right-identity (force c))) 
                              (transitive-≤ (max≤+ {_} {force b} {force c}) 
                              (transitive-≤ (∼→≤ (+-comm (force b))) 
-                             ((reflexive-≤ (force c)) +-mono transitive-≤ (≤suc {_} {b}) 
-                             (suc λ { .force → ∼→≤ (symmetric-∼ (max-right-identity (force b))) 
-                                                                                      })) ))) }
+                                           ((reflexive-≤ (force c)) +-mono 
+                                           transitive-≤ (≤suc {_} {b}) 
+                                            (suc λ { .force → ∼→≤ (symmetric-∼ 
+                                                      (max-right-identity (force b))) 
+                                                                            })) ))) }
+\end{code} 
+%</icaso3> 
+
+%<*icaso4>
+\begin{code}
 interchange {i} zero (suc b) (suc c) (suc d) = 
             suc λ { .force → transitive-≤ (interchange zero (force b) (force c) (suc d)) 
-                             ((reflexive-≤ (force c)) +-mono transitive-≤ 
-                             (∼→≤ (max-comm (force b) (suc d))) 
-                             (suc λ { .force → transitive-≤ (∼→≤ (max-comm (force d) 
-                                                                  (pred (force b)))) 
-                             (pred≤ max-mono reflexive-≤ (force d)) })) }
-interchange {i} (suc x) b zero zero = 
-            suc λ { .force → ∼→≤ (transitive-∼ (max-right-identity (force x + b)) 
-                                 ((symmetric-∼ (max-right-identity (force x))) +-cong 
+                             ((reflexive-≤ (force c)) +-mono 
+                             transitive-≤ (∼→≤ (max-comm (force b) (suc d))) 
+                                 (suc λ { .force → transitive-≤ 
+                                            (∼→≤ (max-comm (force d) (pred (force b)))) 
+                                            (pred≤ max-mono reflexive-≤ (force d)) })) }
+\end{code} 
+%</icaso4>
+
+%<*icaso5>
+\begin{code}
+interchange {i} (suc a) b zero zero = 
+            suc λ { .force → ∼→≤ (transitive-∼ (max-right-identity (force a + b)) 
+                                 ((symmetric-∼ (max-right-identity (force a))) +-cong 
                                   (symmetric-∼ (max-right-identity b)))) }
+\end{code}
+%</icaso5>
+
+%<*icaso6>
+\begin{code}
 interchange {i} (suc a) zero zero (suc d) = 
             suc λ { .force →  transitive-≤ (∼→≤ ((+-right-identity (force a)) max-cong 
                                                              (reflexive-∼ (force d)))) 
                               (transitive-≤ (max≤+ {_} {force a}) 
                               (ˡ≤max (force a) zero +-mono ≤suc)) }
+\end{code} 
+%</icaso6>
+
+%<*icaso7> 
+\begin{code}
 interchange {i} (suc a) (suc b) zero (suc d) = 
             suc λ { .force → transitive-≤ (interchange (force a) (suc b) zero (force d)) 
                              ((reflexive-≤ (max (force a) zero)) +-mono 
                              suc λ { .force → (reflexive-≤ (force b)) max-mono pred≤  }) }
+\end{code}
+%</icaso7>
+
+%<*icaso8>
+\begin{code}
 interchange {i} (suc a) b (suc c) d = suc λ { .force → interchange (force a) b (force c) d }
 \end{code} 
-%</interchange>
+%</icaso8>
 
 %<*eqpartial>
 \begin{code} 
