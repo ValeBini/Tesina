@@ -226,18 +226,20 @@ interchange {i} zero (suc b) (suc c) (suc d) =
 \begin{code}
 interchange {i} (suc a) b zero zero = 
             suc λ { .force → ∼→≤ (transitive-∼ (max-right-identity (force a + b)) 
-                                 ((symmetric-∼ (max-right-identity (force a))) +-cong 
-                                  (symmetric-∼ (max-right-identity b)))) }
+                                               ((symmetric-∼ (max-right-identity (force a))) 
+                                               +-cong 
+                                               (symmetric-∼ (max-right-identity b)))) }
 \end{code}
 %</icaso5>
 
 %<*icaso6>
 \begin{code}
 interchange {i} (suc a) zero zero (suc d) = 
-            suc λ { .force →  transitive-≤ (∼→≤ ((+-right-identity (force a)) max-cong 
-                                                             (reflexive-∼ (force d)))) 
-                              (transitive-≤ (max≤+ {_} {force a}) 
-                              (ˡ≤max (force a) zero +-mono ≤suc)) }
+            suc λ { .force →  transitive-≤ (∼→≤ ((+-right-identity (force a)) 
+                                                 max-cong 
+                                                 (reflexive-∼ (force d)))) 
+                             (transitive-≤ (max≤+ {_} {force a}) 
+                                           (ˡ≤max (force a) zero +-mono ≤suc)) }
 \end{code} 
 %</icaso6>
 
@@ -245,8 +247,10 @@ interchange {i} (suc a) zero zero (suc d) =
 \begin{code}
 interchange {i} (suc a) (suc b) zero (suc d) = 
             suc λ { .force → transitive-≤ (interchange (force a) (suc b) zero (force d)) 
-                             ((reflexive-≤ (max (force a) zero)) +-mono 
-                             suc λ { .force → (reflexive-≤ (force b)) max-mono pred≤  }) }
+                                          ((reflexive-≤ (max (force a) zero)) 
+                                          +-mono 
+                                          suc λ { .force → (reflexive-≤ (force b)) 
+                                                           max-mono pred≤  }) }
 \end{code}
 %</icaso7>
 
