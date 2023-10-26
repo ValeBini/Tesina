@@ -210,7 +210,7 @@ Se importa entonces el módulo de la igualdad proposicional, renombrando \AgdaIn
 
 \ExecuteMetaData[latex/Instances/ConcurrentMonad.tex]{propeq} 
 
-Los operadores que se utlizarán son los mismos que se definieron en las secciones anteriores: \AgdaFunction{bind} y \AgdaFunction{return} para la estructura monádica y \AgdaFunction{merge} y \AgdaFunction{unit} $=$ \AgdaInductiveConstructor{now tt} para la estructura monoidal. 
+Los operadores que se utlizarán son los mismos que se definieron en las secciones anteriores: \AgdaFunction{bind} y \AgdaFunction{return} para la estructura monádica y \AgdaFunction{merge} y \AgdaFunction{unit} $=$ \AgdaInductiveConstructor{now tt} para la estructura monoidal. Es preciso notar que la definición de \AgdaFunction{unit} dada para la instancia de funtor monoidal se puede reutilizar en esta sección debido a que coincide con la expresión \AgdaFunction{return} \AgdaInductiveConstructor{tt}, puesto que \AgdaFunction{unit} no es un campo a definir sino que es una constante del \AgdaKeyword{record} \AgdaRecord{ConcurrentMonad}.
 
 Al igual que antes, se desarrolla la prueba dentro de un módulo llamado, en este caso, \AgdaModule{Strong}, el cual no estará parametrizado ya que, como se explicó, se utilizará la igualdad proposicional para los tipos de retorno. 
 
