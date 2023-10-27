@@ -10,7 +10,7 @@ open import Size
 
 %<*altconcurrent>
 \begin{code}
-altDelayConcurrent : ConcurrentMonad (F (Conat ∞)) 
-altDelayConcurrent = cmonoid⇒cmonad conatConcurrent
+writerConatConcurrent : ConcurrentMonad (F (Conat ∞)) 
+writerConatConcurrent = cmonoid⇒cmonad conatConcurrent
 \end{code}
 %</altconcurrent>

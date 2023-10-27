@@ -406,8 +406,8 @@ Sea $(\mathit{T},\mu,\eta)$ una mónada monoidal ordenada (mónada concurrente).
 
 Como en el caso de los monoides, hay dos estructuras de bimonoide ordenado sobre $\mathit{T} \mathbf{1}$, que resultan de la simetría de los axiomas de los bimonoides ordenados.  En esta estructura, como en los monoides, se puede también ir en la dirección contraria: dado un bimonoide ordenado, este puede ser elevado a una mónada monoidal ordenada.
 
-\begin{lema}
-Sea $(A,\sqsubseteq,*,\mathtt{nothing},;,\mathtt{skip})$ un bimonoide ordenado. Este puede convertirse en una mónada monoidal ordenada con funtor soporte $\mathit{T}_A X = A \times X$, operaciones y orden. Más aún, si $\mathtt{nothing} = \mathtt{skip}$ (es decir que es un monoide concurrente), entonces $e = \eta_{\mathbf{1}}$ (es decir que es una mónada concurrente).
+\begin{lema}\label{concmonoid->concmonad}
+Sea $(A,\sqsubseteq,*,\mathtt{nothing},;,\mathtt{skip})$ un bimonoide ordenado. Este puede convertirse en una mónada monoidal ordenada con funtor soporte $\mathit{T}_A \ X = A \times X$, operaciones y orden. Más aún, si $\mathtt{nothing} = \mathtt{skip}$ (es decir que es un monoide concurrente), entonces $e = \eta_{\mathbf{1}}$ (es decir que es una mónada concurrente).
 \end{lema}
 
 Este resultado será utilizado más adelante en este trabajo para dar una representación alternativa de la mónada delay. 
