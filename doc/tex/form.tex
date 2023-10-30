@@ -20,11 +20,11 @@ El tercer campo, \AgdaField{zero$_m$}, es un elemento particular del conjunto \A
 
 Los últimos tres campos son los más interesantes y son los que hacen que, al dar un habitante del tipo \AgdaRecord{Monoid}, quede demostrado que tal habitante es efectivamente un monoide. El primero de ellos, \AgdaField{idl}, representa la prueba de que \AgdaField{zero$_m$} es un neutro a izquierda respecto de la operación \AgdaField{$+_m$}. El tipo de este campo representa una proposición que indica que para todo elemento \AgdaBound{x : M}, se cumple la ecuación \hbox{\AgdaSymbol{(}\AgdaField{zero$_m$} \AgdaField{$+_m$} \AgdaBound{x}\AgdaSymbol{)} \AgdaField{$\cong_m$} \AgdaBound{x}}. El siguiente, \AgdaField{idr}, es análogo a \AgdaField{idl} y representa la prueba de que \AgdaField{zero$_m$} es neutro a derecha respecto de la operación \AgdaField{$+_m$}. Por último, \AgdaField{assoc} representa la prueba de que la operación \AgdaField{$+_m$} es asociativa. Esto es, para cualesquiera elementos dados \AgdaBound{x}, \AgdaBound{y} y \AgdaBound{z} del conjunto \AgdaBound{M}, se cumple que \AgdaSymbol{(}\AgdaBound{x} \AgdaField{$+_m$} \AgdaSymbol{(}\AgdaBound{y} \AgdaField{$+_m$} \AgdaBound{z}\AgdaSymbol{))} \AgdaField{$\cong_m$} \AgdaSymbol{((}\AgdaBound{x} \AgdaField{$+_m$} \AgdaBound{y}\AgdaSymbol) \AgdaField{$+_m$} \AgdaBound{z}\AgdaSymbol{)}. Estas pruebas se dan en torno a la noción de igualdad introducida en el primer campo.
 
-\section{Formalización a nivel de Funtores y Mónadas}\label{form:funtmon}
+\section{Formalización a nivel de funtores y mónadas}\label{form:funtmon}
 
 Siguiendo con el camino hacia la formalización de los monoides y mónadas concurrentes, se expondrán en esta sección las formalizaciones de las estructuras de funtor monoidal y mónada. La elección de estas estructuras se debe a que cada una de ellas aporta un ingrediente que luego aparecerá en la formalización de las mónadas concurrentes. La formalización de mónadas, por su parte, agrega la estructura monádica, \textit{bind} y \textit{return}, junto con las leyes de mónada. Por otro lado, el funtor monoidal introduce la operación \textit{merge} y sus propiedades, que también aparecen en la formalización de mónadas concurrentes puesto que, como se expone en la definición \ref{def:monconc}, estas son mónadas cuyo funtor subyacente tiene una estructura monoidal.
 
-\subsection{Formalización de Mónada}\label{funtmon:mon}
+\subsection{Formalización de mónada}\label{funtmon:mon}
 
 La formalización de las mónadas está dada, al igual que la de los monoides, por un \AgdaKeyword{record} parametrizado. Sin embargo, en este caso el parámetro no es simplemente un conjunto sino que se trata de un funtor \AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. 
 %En el siguiente bloque de código se muestra la definición del \AgdaKeyword{record} \AgdaRecord{Monad}. 
@@ -41,7 +41,7 @@ De la misma manera, \AgdaField{law$_2$} representa la proposición que indica qu
 
 Finalmente, el último campo, \AgdaField{law$_3$}, representa la asociatividad del operador \hbox{\AgdaField{$\_\gg=\_$}}. Esta denota que, dadas una computación \AgdaBound{t} de tipo \AgdaBound{M A} y dos funciones \AgdaBound{f} y \AgdaBound{g} que van de \AgdaBound{A} en \hbox{\AgdaBound{M B}} y de \AgdaBound{B} en \AgdaBound{M C} respectivamente, es lo mismo aplicar el \textit{bind} a \AgdaBound{t} con \AgdaBound{f} y luego al resultado obtenido aplicarle el \textit{bind} con \AgdaBound{g}, que aplicarlo a \AgdaBound{t} con la función que toma un \AgdaBound{x} de tipo \AgdaBound{A} y devuelve la aplicación de \AgdaBound{f x} \AgdaField{$\gg=$} \AgdaBound{g}. Esta última ley se corresponde con la ecuación que indica que $g^* \circ f^* = (g^* \circ f)^*$. 
 
-\subsection{Formalización de Funtor Monoidal}\label{funtmon:funt}
+\subsection{Formalización de funtor monoidal}\label{funtmon:funt}
 
 Como se indica en la definición \ref{def:monoidalfuntor}, un funtor monoidal es un funtor que cuenta con una estructura monoidal de manera que se cumplen ciertas ecuaciones de congruencia. Su formalización queda definida como un \AgdaKeyword{record} que, al igual que \AgdaRecord{Monad}, está parametrizado por un funtor \AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. 
 
@@ -125,7 +125,7 @@ Uniendo todas las partes traducidas y tomando la composición de funciones simpl
 
 En la definición formal hay una condición extra para los funtores monoidales que dice que si la estructura monoidal es además compatible con $\gamma$, la cual intercambia los elementos del producto cartesiano, entonces el funtor monoidal es simétrico. Si se piensa al funtor monoidal como un mecanismo para encapsular efectos de computaciones, entonces que el funtor sea simétrico significaría que el orden de los efectos no importa, es decir que los efectos conmutan. Esta condición extra se refleja en el campo final que se encuentra comentado, \AgdaField{comm}, el cual postula la conmutatividad del operador \AgdaField{merge}. Esta proposición indica que para cualesquiera computaciones \AgdaBound{a} y \AgdaBound{b} de tipo \AgdaBound{M A} y \AgdaBound{M B} respectivamente, la aplicación \AgdaField{merge} \AgdaBound{a b} da el mismo resultado que la aplicación \AgdaField{merge} \AgdaBound{b a} seguida de un \AgdaFunction{swap} que representa a la función $\gamma$. Agregando este último campo se obtiene entonces la formalización de los funtores monoidales simétricos.
 
-\section{Formalización de Monoides Concurrentes}\label{form:monoidconc}
+\section{Formalización de monoides concurrentes}\label{form:monoidconc}
 
 Como paso previo a la formalización de las mónadas concurrentes, se presenta en esta sección la formalización de los monoides concurrentes. Estos son una mezcla entre los monoides y los funtores monoidales e introducen un ingrediente nuevo que luego estará presente también en la formalización de las mónadas concurrentes: la ley de intercambio. Esta formalización está dada también por un tipo \AgdaKeyword{record} parametrizado, donde el parámetro es, al igual que en el caso de los monoides, un conjunto. 
 
@@ -143,7 +143,7 @@ A continuación se introduce otra operación binaria sobre el conjunto \AgdaBoun
 
 El último campo de esta estructura representa la ley de intercambio. El tipo del campo \AgdaField{ichange} se obtiene de forma casi directa de la ecuación de la ley de intercambio introducida en la definición \ref{def:monoidconc}: $(x * z) ; (y * w) \sqsubseteq (x ; y) * (z ; w)$. Si se reemplazan los operadores $*$ y $;$ por \AgdaField{max$_m$} y \AgdaField{$+_m$}, respectivamente, y se invierte el orden de la desigualdad como se explicó previamente, se llega a la siguiente ecuación: (\AgdaField{max$_m$} (\AgdaBound{x} \AgdaField{$+_m$} \AgdaBound{y}) (\AgdaBound{z} \AgdaField{$+_m$} \AgdaBound{w})) \AgdaField{$\lesssim_m$} ((\AgdaField{max$_m$} \AgdaBound{x z}) \AgdaField{$+_m$} (\AgdaField{max$_m$} \AgdaBound{y w})).
 
-\section{Formalización de Mónadas Concurrentes}\label{form:monconc}
+\section{Formalización de mónadas concurrentes}\label{form:monconc}
 
 Se introduce a continuación la formalización de las mónadas concurrentes. Esta estará dada, como en las estructuras algebraicas anteriores, por un tipo \AgdaKeyword{record} parametrizado. Como en el caso de la formalización de mónadas, el parámetro del \AgdaKeyword{record} \AgdaRecord{ConcurrentMonad} será una asignación \hbox{\AgdaBound{M} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}}, la cual representa la asignación de objetos a objetos de un funtor $\mathit{M} : \text{\bf Set} \rightarrow \text{\bf Set}$.
 

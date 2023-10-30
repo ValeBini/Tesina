@@ -6,7 +6,7 @@ El tipo de dato \textit{delay} fue introducido por Capretta \cite{capretta:2005}
 
 Se introducirá primero la noción de coinducción y un conjunto coinductivo muy especial: los números conaturales. Luego se presentará la definición de la mónada \textit{delay} y sus principales características. Finalmente, se describirán algunos de los distintos soportes para coinducción que Agda proporciona. 
 
-\section{Introducción a la Coinducción}\label{delay:coind}
+\section{Introducción a la coinducción}\label{delay:coind}
 
 El principio de inducción está bien establecido en el área de las matemáticas y las ciencias de la computación. En esta última, se utiliza principalmente para razonar sobre tipos de datos definidos inductivamente, tales como listas finitas, árboles finitos y números naturales. La coinducción es el pincipio dual de la inducción y puede ser utilizado para razonar sobre tipos de datos definidos coinductivamente, tales como flujos de datos, trazas infinitas o árboles infinitos, pero no está tan difundido ni se comprende tan bien en general. Es por esta razón que esta sección comenzará primero con un repaso de lo conocido: la inducción, para luego introducir la coinducción haciendo un paralelismo entre ambas. A continuación se desarrolla la noción de definición inductiva. 
 
@@ -121,7 +121,7 @@ El conjunto $A^{\infty}$ de las cadenas finitas e infinitas sobre un alfabeto $A
 
 Mientras que los tipos inductivos se definen mediante sus constructores, los tipos coinductivos usualmente se presentan junto con sus destructores. Por ejemplo, los flujos de datos o \textit{streams} admiten dos operaciones $hd: A^{\omega} \rightarrow A$ y $tl : A^{\omega} \rightarrow A^{\omega}$, los cuales representan la función $head$ que devuelve el primer elemento del \textit{stream} y la función $tail$ que devuelve la cola del \textit{stream}. La existencia de los destructores es una consecuencia del hecho de que $A^{\omega}$ es una coálgebra para el funtor $\mathit{F}X = A \times X$. Todas estas coálgebras vienen equipadas con una función estructural $\langle obs, cont \rangle  : X \rightarrow A \times X$; para $A^{\omega}$ se tiene que $obs = hd$ y $cont = tl$.
 
-\section{Números Conaturales}\label{delay:conat}
+\section{Los números conaturales}\label{delay:conat}
 
 Un conjunto coinductivo muy importante es el de los números conaturales, también llamados conúmeros. Como su nombre lo indica, es el conjunto dual al de los números naturales. Para introducir este conjunto, al igual que en la sección anterior, se partirá de lo conocido, siguiendo el estilo utilizado por Mike Gordon \cite{gordon:2017}.
 
@@ -152,7 +152,7 @@ La coálgebra $(\bar{\mathbb{N}},is0,P)$ es entonces una coálgebra terminal o f
 Intuitivamente, un número conatural puede ser o bien el sucesor de otro (está en el dominio de la función $P$ y se puede obtener su predecesor) o bien $0$ (está en el dominio de $is0$), de manera que se evidencia el paralelismo entre ambas definiciones. La diferencia con los naturales es que, en este caso, un conatural puede ser sucesor de otro ``infinitamente'', puesto que no hay condición alguna que indique que al aplicar la función predecesor sucesivamente debe llegarse obligatoriamente a $0$. Esto da lugar a un valor especial $\infty$ tal que $P(\infty) = \infty$. El conjunto soporte $\bar{\mathbb{N}}$ sería entonces de alguna manera equivalente a $\mathbb{N} \cup \{\infty\}$. 
 
 
-\section{Mónada \textit{Delay}}\label{delay:delay}
+\section{La mónada \textit{delay}}\label{delay:delay}
 
 El tipo de dato \textit{delay} consituye una mónada fuerte, lo cual hace posible manejar computaciones que posiblemente no terminen como si fuera cualquier otra computación con efectos laterales. A continuación se presenta su definición formal siguiendo el estilo utilizado por Chapman et al \cite{chapman:2019}. 
 
@@ -208,7 +208,7 @@ El tipo \textit{delay} $\mathbf{D}$ es una mónada fuerte. La unidad $\eta$ es e
 
 Se describirán a continuación los dos soportes de coinducción en Agda que se utilizaron en esta Tesina. El primero se basa en una notación particular, la notación musical, la cual permite manejar términos potencialmente infinitos. A pesar de ser una notación práctica e intuitiva, este soporte tiene algunos problemas con el chequeo de terminación de Agda, lo que limita bastante las propiedades que pueden demostrarse usándolo. Es por eso que se utilizó luego otro enfoque, basado en tipos de tamaño limitado (\textit{sized types} en inglés), el cual ayuda al chequeo de terminación de Agda haciendo un seguimiento de la profundidad de las estructuras de datos mediante la definición de límites en la profundidad. 
 
-\subsection{Notación Musical}\label{coind:agda:musical}
+\subsection{Notación musical}\label{coind:agda:musical}
 
 Para mostrar la notación musical se utilizará como ejemplo el conjunto de los números \textit{conaturales}, los cuales se definen en Agda como sigue:
 
@@ -226,7 +226,7 @@ Los valores de tipos coinductivos pueden ser construidos usando corecursión, la
 
 Como aproximación a la productividad, en el chequeo de terminación se pide que en la definición de funciones corecursivas las llamadas recursivas aparezcan bajo la aplicación directa de un construcor coinductivo. Esta restricción en general hace que programar con tipos coinductivos sea incómodo, y es por eso que se buscan técnicas alternativas para asegurar que las definiciones corecursivas estén bien definidas. 
 
-\subsection{\textit{Sized Types}}\label{coind:agda:sized}
+\subsection{\textit{Sized types}}\label{coind:agda:sized}
 
 Agda tiene un soporte nativo para \textit{sized types}. Estos son tipos que cuentan con un índice que indica el número de desencapsulamientos que pueden realizarse sobre los habitantes de este tipo. Estos índices, llamados tamaños o \textit{sizes}, asisten al chequeo de terminación evaluando que las definiciones corecursivas estén bien definidas. 
 

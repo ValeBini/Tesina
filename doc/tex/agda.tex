@@ -8,7 +8,7 @@ Para poder utilizar a Agda como una lógica se necesita que sea consistente, y e
 
 El objetivo de esta sección es presentar una introducción a Agda, haciendo énfasis en las características necesarias para exponer la temática de esta tesina. 
 
-\section{Tipos de datos y \textit{Pattern Matching}}\label{agda:tipos}
+\section{Tipos de datos y \textit{pattern matching}}\label{agda:tipos}
 
 Un concepto clave en Agda es el \textit{pattern matching} sobre tipos de datos algebraicos. Al agregar los tipos dependientes el \textit{pattern matching} se hace aún más poderoso. Se verá este tema más en detalle en la sección \ref{agda:dependent}. Para comenzar, en esta sección se describirán las funciones y tipos de datos con tipos simples. 
 
@@ -115,7 +115,7 @@ Existen otros tipos dependientes además de las funciones. Uno muy utilizado son
 
 Como se puede observar, el tipo del segundo elemento es \AgdaBound{B} y depende de un valor de tipo \AgdaBound{A} que se le pase como argumento. Para construir un par de este tipo se utiliza el constructor \AgdaInductiveConstructor{$\_$,$\_$}. Este toma un valor \AgdaBound{a} de tipo \AgdaBound{A} y luego un valor \AgdaBound{b} de tipo \AgdaBound{B a}, por lo cual queda evidenciado que el tipo del valor \AgdaBound{b} depende del valor de \AgdaBound{a}.
 
-\subsection{Argumentos Implícitos}\label{dependent:implicit}
+\subsection{Argumentos implícitos}\label{dependent:implicit}
 
 Los tipos dependientes sirven, entre otras cosas, para definir funciones polimórficas. En los ejemplos provistos en la sección anterior se da de forma explícita el tipo al cual cierta función polimórfica se debe aplicar. Usualmente esto es diferente. En general se espera que el tipo sobre el cual se va a aplicar una función polimórfica sea inferido por el \textit{type checker}. Para solucionar este problema, Agda utiliza un mecanismo de \textit{argumentos implícitos}. 
 
@@ -133,7 +133,7 @@ Si se desea, por el contrario, que el verificador de tipos infiera un término q
 
 \ExecuteMetaData[latex/Agda.tex]{one'}
 
-\section{Familias de Tipos de datos}\label{agda:family}
+\section{Familias de tipos de datos}\label{agda:family}
 
 Se definió en el apartado \ref{tipos:parametrized} el tipo de las listas de tipo arbitrario parametrizado por \AgdaArgument{A}. Estas listas pueden tener cualquier largo, tanto una lista vacía como una lista con un millón de elementos son de tipo \AgdaDatatype{List} \AgdaArgument{A}. En ciertos casos es útil que el tipo restrinja el largo que tiene la lista, y es así como surgen las listas de largo definido, llamadas comúnmente vectores, que se definen como sigue:
 
@@ -155,7 +155,7 @@ Un ejemplo en el cual es necesaria la unión disjunta de todos los vectores es p
 
 \ExecuteMetaData[latex/Agda.tex]{filtervec} 
 
-\section{Sistema de Módulos}\label{agda:modules}
+\section{Sistema de módulos}\label{agda:modules}
 
 El objetivo del sistema de módulos de Agda es manejar el espacio de nombres. Un programa se estructura en diversos archivos, cada uno de los cuales tiene un módulo \textit{top-level}, dentro del cual van todas las definiciones. El nombre del módulo principal de un archivo debe coincidir con el nombre de dicho archivo. Si se tiene, por ejemplo, un archivo llamado \texttt{Agda.agda}, al comienzo del archivo se debería encontrar la siguiente línea:
 
@@ -184,7 +184,7 @@ Al abrir un módulo, se puede controlar qué definiciones se muestran y cuáles 
 
 \ExecuteMetaData[latex/Agda.tex]{hidingrenaming}
 
-\subsection{Módulos Parametrizados}\label{modules:parametrized}
+\subsection{Módulos parametrizados}\label{modules:parametrized}
 
 Los módulos pueden ser parametrizados por cualquier tipo de dato. En caso de que se quiera definir un módulo para ordenar listas, por ejemplo, puede ser conveniente asumir que las listas son de tipo $A$ y que tenemos una relación de orden sobre $A$. A continuación se presenta dicho ejemplo: 
 
@@ -287,7 +287,7 @@ Si bien no hay un número de niveles específico, se sabe que existe un nivel m�
 \AgdaFunction{$\_\sqcup\_$} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaDatatype{$n$ $m$} \AgdaSymbol{:} \AgdaPrimitiveType{Level}\AgdaSymbol{)} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Level}
 
 
-\subsection{Inducción-Recursión}\label{additional:ind-rec}
+\subsection{Inducción-recursión}\label{additional:ind-rec}
 
 Una característica fundamental de Agda que la distingue de otros lenguajes similares es el soporte para \textit{inducción-recursión} (en inglés \textit{induction-recursion}). En la teoría de tipos intuicionista, la inducción-recursión es una propiedad que permite declarar simultáneamente un tipo y una función sobre dicho tipo, haciendo posible la creación de tipos más grandes que los tipos inductivos como, por ejemplo, los universos. En una definición inductiva, se dan reglas para generar habitantes de un tipo y luego pueden definirse funciones de ese tipo por inducción en dichos habitantes. En inducción-recursión se permite que las reglas que generan los habitantes de un tipo hagan referencia a la función que a su vez es definida por inducción en los habitantes del tipo. A continuación se muestra un ejemplo de una definición inductiva-recursiva para ilustrar mejor esta característica. 
 

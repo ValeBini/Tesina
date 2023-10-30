@@ -2,7 +2,7 @@
 
 En este capítulo se hará una introducción teórica sobre mónadas concurrentes. Se definirán al comienzo algunos conceptos previos de la teoría de categorías sobre la cual se definen las mónadas. En la segunda sección se hará una introducción a las mónadas en sí mismas, en la cual se darán varias definiciones y ejemplos. Por último, en la tercera, se introducirán los conceptos específicos necesarios para definir una mónada concurrente. 
 
-\section{Teoría de Categorías}\label{monconc:cat}
+\section{Teoría de categorías}\label{monconc:cat}
 
 La teoría de categorías fue presentada por Eilenberg y MacLane \cite{eilenberg:1945} en 1945. Esta teoría busca axiomatizar de forma abstracta diversas estructuras matemáticas como una sola, tales como los grupos y los espacios topológicos, mediante el uso de objetos y morfismos. A su vez, esta axiomatización se realiza de una manera nueva sin incluir las nociones de elemento o pertenencia, es decir, sin utilizar conjuntos. Con el concepto de categoría se pretende capturar la esencia de una clase de objetos matemáticos que se relacionan entre sí mediante aplicaciones, poniendo énfasis en la relación entre los objetos y no en la pertenencia como en la teoría de conjuntos.
 
@@ -144,7 +144,7 @@ El elemento neutro de un monoide es único. Por esa razón, en general el elemen
 
 Se considerarán dos variantes de la definición de mónadas. La primera es la definición clásica y la segunda define a una mónada como un sistema de extensión o 3-tupla Kleisli. La primera es muy utilizada en la literatura ya que es la definición matemática y está definida en torno a transformaciones naturales, pero la segunda es más fácil de utilizar desde una perspectiva computacional. Como ambas definiciones son equivalentes \cite{manes:1976}, se utilizará una u otra según sea conveniente.
 
-\subsection{Definición clásica de Mónadas}\label{monadas:usual}
+\subsection{Definición clásica de mónadas}\label{monadas:usual}
 Se define a continuación el concepto de mónada de la manera clásica dentro de la teoría de categorías.
 
 \begin{definition}[Mónada]
@@ -178,7 +178,7 @@ Sea $\mathit{T} : \text{\bf Set} \rightarrow \text{\bf Set}$ el funtor $\mathit{
 \end{itemize}
 \end{ejemplo}
 
-\subsection{Definición alternativa de Mónadas}\label{monadas:alt}
+\subsection{Definición alternativa de mónadas}\label{monadas:alt}
 
 Se define ahora la noción de sistema de extensión, también llamado 3-tupla Kleisli. Esta definición también parte de la teoría de categorías pero no es la más utilizada en la literatura. Sin embargo, como se explica más adelante, es la que más se acerca a la forma de utilizar las mónadas en los lenguajes de programación funcional. 
 
@@ -274,7 +274,7 @@ En esta tesina se utilizará la categoría \textbf{Set}, la cual es la categorí
 
 Por ejemplo, la mónada del conjunto partes $\mathcal{P}$ (y su variante finita $\mathcal{P}_f$) tiene fortaleza $\sigma(X,y) = X \times \{y\}$. En general, la fórmula de fortaleza de un funtor sobre \textbf{Set} puede ser expresada como $\sigma(v,y) = \mathit{F}(\lambda x : X . (x,y))(v)$. Cuando la mónada es conmutativa, hay sólo una estructura monoidal posible. En consecuencia, si una mónada es monoidal entonces es conmutativa \cite{kock:1970}. 
 
-\section{Mónadas Concurrentes}\label{monconc:mc}
+\section{Mónadas concurrentes}\label{monconc:mc}
 
 La teoría de concurrencia está compuesta por una amplia variedad de modelos basados en diferentes conceptos. Hoare et al. \cite{hoare:2011} se plantearon si es posible tener un tratamiento comprensible de la concurrencia en el cual la memoria compartida, el pasaje de mensajes y los modelos de intercalación e independencia de computaciones puedan ser vistos como parte de la misma teoría con el mismo núcleo de axiomas. Con esta motivación crearon un modelo simple de concurrencia basado en estructuras algebraicas, dos de las cuales resultan interesantes para este trabajo: bimonoides ordenados y monoides concurrentes. Más tarde, Rivas y Jaskelioff \cite{rivas:2019} extendieron este modelo al nivel de funtores y mónadas, dando lugar a las mónadas concurrentes. En las siguientes secciones se detallarán las características principales de cada uno de estos modelos.
 
