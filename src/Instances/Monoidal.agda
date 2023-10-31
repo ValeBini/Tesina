@@ -79,16 +79,16 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquival
               sym = sym (IsEquivalence.sym eq∼) tt ; 
               trans = trans (IsEquivalence.trans eq∼) }
 
-    monoidalPartiality : MonoidalFunctor _⊥
-    monoidalPartiality = makeMonoidalFunctor 
-                          _≈⊥_ 
-                          eq≈⊥
-                          unit 
-                          merge 
-                          fmap 
-                          (rid (IsEquivalence.refl eq∼))
-                          (lid (IsEquivalence.refl eq∼)) 
-                          (associative (IsEquivalence.refl eq∼))
+    delayMonoidal : MonoidalFunctor _⊥
+    delayMonoidal = makeMonoidalFunctor 
+                      _≈⊥_ 
+                      eq≈⊥
+                      unit 
+                      merge 
+                      fmap 
+                      (rid (IsEquivalence.refl eq∼))
+                      (lid (IsEquivalence.refl eq∼)) 
+                      (associative (IsEquivalence.refl eq∼))
 
 
 module Strong (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquivalence (_∼_ {A})) where
@@ -141,14 +141,14 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquiv
               sym = sym (IsEquivalence.sym eq∼) tt ; 
               trans = trans (IsEquivalence.trans eq∼) }
 
-    monoidalPartiality : MonoidalFunctor _⊥
-    monoidalPartiality = makeMonoidalFunctor 
-                          _≅⊥_ 
-                          eq≅⊥
-                          unit 
-                          merge 
-                          fmap 
-                          (rid (IsEquivalence.refl eq∼))
-                          (lid (IsEquivalence.refl eq∼)) 
-                          (associative (IsEquivalence.refl eq∼))
+    delayMonoidal : MonoidalFunctor _⊥
+    delayMonoidal = makeMonoidalFunctor 
+                      _≅⊥_ 
+                      eq≅⊥
+                      unit 
+                      merge 
+                      fmap 
+                      (rid (IsEquivalence.refl eq∼))
+                      (lid (IsEquivalence.refl eq∼)) 
+                      (associative (IsEquivalence.refl eq∼))
 

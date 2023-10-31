@@ -120,14 +120,14 @@ module Weak (_∼_ : ∀ {A} → A → A → Set)
 
     delayMonoidal : MonoidalFunctor _⊥
     delayMonoidal = makeMonoidalFunctor 
-                          _≈⊥_ 
-                          eq≈⊥
-                          unit 
-                          merge 
-                          fmap 
-                          (rid (IsEquivalence.refl eq∼))
-                          (lid (IsEquivalence.refl eq∼)) 
-                          (associative (IsEquivalence.refl eq∼))
+                      _≈⊥_ 
+                      eq≈⊥
+                      unit 
+                      merge 
+                      fmap 
+                      (rid (IsEquivalence.refl eq∼))
+                      (lid (IsEquivalence.refl eq∼)) 
+                      (associative (IsEquivalence.refl eq∼))
 \end{code}
 %</instance>
 
