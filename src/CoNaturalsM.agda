@@ -111,6 +111,7 @@ partial≳ = record { isPreorder = record { isEquivalence = eq≈
 
 ------------------------------------------------------------------------
 -- Addition
+
 sum : Coℕ → Coℕ → Coℕ
 sum zero n          = n
 sum (suc m) zero    = suc m
@@ -157,6 +158,7 @@ sum-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ (suc 
 
 ------------------------------------------------------------------------
 -- Maximum
+
 max : Coℕ → Coℕ → Coℕ
 max zero n          = n
 max (suc m) zero    = suc m
@@ -204,6 +206,7 @@ max-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ refl�
 
 
 -- Addition is grater than maximum 
+
 sum≳max : {m n : Coℕ} → sum m n ≳ max m n
 sum≳max {zero}  {zero}  = zero
 sum≳max {zero}  {suc n} = refl≳ refl≈

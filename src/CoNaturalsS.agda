@@ -34,6 +34,32 @@ mutual
 open Conat′ public
 
 ------------------------------------------------------------------------
+-- Some operations
+
+-- The largest conatural number.
+
+infinity : ∀ {i} → Conat i
+infinity = suc λ { .force → infinity }
+
+mutual
+
+  -- Turns natural numbers into conatural numbers.
+
+  ⌜_⌝ : ∀ {i} → ℕ → Conat i
+  ⌜ zero  ⌝ = zero
+  ⌜ suc n ⌝ = suc ⌜ n ⌝′
+
+  ⌜_⌝′ : ∀ {i} → ℕ → Conat′ i
+  force ⌜ n ⌝′ = ⌜ n ⌝
+
+-- Truncated predecessor.
+
+pred : ∀ {i} {j : Size< i} → Conat i → Conat j
+pred zero    = zero
+pred (suc n) = force n
+
+
+------------------------------------------------------------------------
 -- Bisimilarity
 
 -- Bisimilarity is only defined for fully defined conatural numbers
@@ -69,30 +95,85 @@ transitive-∼ zero    zero    = zero
 transitive-∼ (suc p) (suc q) =
   suc λ { .force → transitive-∼ (force p) (force q) }
 
+
 ------------------------------------------------------------------------
--- Some operations
+-- Ordering
 
--- The largest conatural number.
-
-infinity : ∀ {i} → Conat i
-infinity = suc λ { .force → infinity }
+-- [ ∞ ] m ≤ n means that m is less than or equal to n.
 
 mutual
 
-  -- Turns natural numbers into conatural numbers.
+  infix 4 [_]_≤_ [_]_≤′_
 
-  ⌜_⌝ : ∀ {i} → ℕ → Conat i
-  ⌜ zero  ⌝ = zero
-  ⌜ suc n ⌝ = suc ⌜ n ⌝′
+  data [_]_≤_ (i : Size) : Conat ∞ → Conat ∞ → Set where
+    zero : ∀ {n} → [ i ] zero ≤ n
+    suc  : ∀ {m n} → [ i ] force m ≤′ force n → [ i ] suc m ≤ suc n
 
-  ⌜_⌝′ : ∀ {i} → ℕ → Conat′ i
-  force ⌜ n ⌝′ = ⌜ n ⌝
+  record [_]_≤′_ (i : Size) (m n : Conat ∞) : Set where
+    coinductive
+    field
+      force : {j : Size< i} → [ j ] m ≤ n
 
--- Truncated predecessor.
+open [_]_≤′_ public
 
-pred : ∀ {i} {j : Size< i} → Conat i → Conat j
-pred zero    = zero
-pred (suc n) = force n
+-- Every conatural number is less than or equal to infinity.
+
+infix 4 _≤infinity
+
+_≤infinity : ∀ {i} n → [ i ] n ≤ infinity
+zero  ≤infinity = zero
+suc n ≤infinity = suc λ { .force → force n ≤infinity }
+
+-- No natural number is greater than or equal to infinity.
+
+¬_ : Set → Set
+¬ X = X → ⊥
+
+infinity≰⌜⌝ : ∀ n → ¬ ([ ∞ ] infinity ≤ ⌜ n ⌝)
+infinity≰⌜⌝ zero    ()
+infinity≰⌜⌝ (suc n) (suc p) = infinity≰⌜⌝ n (force p)
+
+-- The ordering relation is a partial order (with respect to
+-- bisimilarity).
+
+reflexive-≤ : ∀ {i} n → [ i ] n ≤ n
+reflexive-≤ zero    = zero
+reflexive-≤ (suc n) = suc λ { .force → reflexive-≤ (force n) }
+
+transitive-≤ : ∀ {i m n o} → [ i ] m ≤ n → [ i ] n ≤ o → [ i ] m ≤ o
+transitive-≤ zero    _       = zero
+transitive-≤ (suc p) (suc q) =
+  suc λ { .force → transitive-≤ (force p) (force q) }
+
+antisymmetric-≤ : ∀ {i m n} → [ i ] m ≤ n → [ i ] n ≤ m → [ i ] m ∼ n
+antisymmetric-≤ zero    zero    = zero
+antisymmetric-≤ (suc p) (suc q) =
+  suc λ { .force → antisymmetric-≤ (force p) (force q) }
+
+-- Bisimilarity is contained in the ordering relation.
+
+∼→≤ : ∀ {i m n} → [ i ] m ∼ n → [ i ] m ≤ n
+∼→≤ zero    = zero
+∼→≤ (suc p) = suc λ { .force → ∼→≤ (force p) }
+
+
+-- The successor of a number is greater than or equal to the number.
+
+≤suc : ∀ {i n} → [ i ] force n ≤ suc n
+≤suc = helper _ refl
+  where
+  helper : ∀ {i} m {n} → m ≡ force n → [ i ] m ≤ suc n
+  helper zero    _    = zero
+  helper (suc m) 1+m≡ = suc λ { .force {j = j} →
+                          subst ([ j ] _ ≤_) 1+m≡ ≤suc }
+
+-- If a number is less than or equal to another, then it is also less
+-- than or equal to the other's successor.
+
+≤-step : ∀ {m n i} → [ i ] m ≤′ force n → [ i ] m ≤ suc n
+≤-step {zero}      _ = zero
+≤-step {suc m} {n} p = suc λ { .force → transitive-≤ ≤suc (force p) }
+
 
 -- Addition.
 
@@ -153,97 +234,6 @@ _+-cong_ :
   [ i ] m₁ ∼ m₂ → [ i ] n₁ ∼ n₂ → [ i ] m₁ + n₁ ∼ m₂ + n₂
 zero  +-cong q = q
 suc p +-cong q = suc λ { .force → force p +-cong q }
-
-
-------------------------------------------------------------------------
--- Ordering
-
--- [ ∞ ] m ≤ n means that m is less than or equal to n.
-
-mutual
-
-  infix 4 [_]_≤_ [_]_≤′_
-
-  data [_]_≤_ (i : Size) : Conat ∞ → Conat ∞ → Set where
-    zero : ∀ {n} → [ i ] zero ≤ n
-    suc  : ∀ {m n} → [ i ] force m ≤′ force n → [ i ] suc m ≤ suc n
-
-  record [_]_≤′_ (i : Size) (m n : Conat ∞) : Set where
-    coinductive
-    field
-      force : {j : Size< i} → [ j ] m ≤ n
-
-open [_]_≤′_ public
-
--- [ ∞ ] m < n means that m is less than n (if n is finite).
-
-infix 4 [_]_<_
-
-[_]_<_ : Size → Conat′ ∞ → Conat ∞ → Set
-[ i ] m < n = [ i ] suc m ≤ n
-
--- Every conatural number is less than or equal to infinity.
-
-infix 4 _≤infinity
-
-_≤infinity : ∀ {i} n → [ i ] n ≤ infinity
-zero  ≤infinity = zero
-suc n ≤infinity = suc λ { .force → force n ≤infinity }
-
--- No natural number is greater than or equal to infinity.
-
-¬_ : Set → Set
-¬ X = X → ⊥
-
-infinity≰⌜⌝ : ∀ n → ¬ ([ ∞ ] infinity ≤ ⌜ n ⌝)
-infinity≰⌜⌝ zero    ()
-infinity≰⌜⌝ (suc n) (suc p) = infinity≰⌜⌝ n (force p)
-
--- No number is less than zero.
-
-≮0 : ∀ {n i} → ¬ ([ i ] n < zero)
-≮0 ()
-
--- The ordering relation is a partial order (with respect to
--- bisimilarity).
-
-reflexive-≤ : ∀ {i} n → [ i ] n ≤ n
-reflexive-≤ zero    = zero
-reflexive-≤ (suc n) = suc λ { .force → reflexive-≤ (force n) }
-
-transitive-≤ : ∀ {i m n o} → [ i ] m ≤ n → [ i ] n ≤ o → [ i ] m ≤ o
-transitive-≤ zero    _       = zero
-transitive-≤ (suc p) (suc q) =
-  suc λ { .force → transitive-≤ (force p) (force q) }
-
-antisymmetric-≤ : ∀ {i m n} → [ i ] m ≤ n → [ i ] n ≤ m → [ i ] m ∼ n
-antisymmetric-≤ zero    zero    = zero
-antisymmetric-≤ (suc p) (suc q) =
-  suc λ { .force → antisymmetric-≤ (force p) (force q) }
-
--- Bisimilarity is contained in the ordering relation.
-
-∼→≤ : ∀ {i m n} → [ i ] m ∼ n → [ i ] m ≤ n
-∼→≤ zero    = zero
-∼→≤ (suc p) = suc λ { .force → ∼→≤ (force p) }
-
-
--- The successor of a number is greater than or equal to the number.
-
-≤suc : ∀ {i n} → [ i ] force n ≤ suc n
-≤suc = helper _ refl
-  where
-  helper : ∀ {i} m {n} → m ≡ force n → [ i ] m ≤ suc n
-  helper zero    _    = zero
-  helper (suc m) 1+m≡ = suc λ { .force {j = j} →
-                          subst ([ j ] _ ≤_) 1+m≡ ≤suc }
-
--- If a number is less than or equal to another, then it is also less
--- than or equal to the other's successor.
-
-≤-step : ∀ {m n i} → [ i ] m ≤′ force n → [ i ] m ≤ suc n
-≤-step {zero}      _ = zero
-≤-step {suc m} {n} p = suc λ { .force → transitive-≤ ≤suc (force p) }
 
 -- If you add something to a number, then you get something that is
 -- greater than or equal to what you started with.
@@ -334,6 +324,7 @@ pred-max zero n = reflexive-∼ (pred n)
 pred-max (suc m) n = reflexive-∼ (max (force m) (pred n))
 
 -- Max is associative
+
 max-assoc : ∀ {i} n m o → [ i ] max (max n m) o ∼ max n (max m o)
 max-assoc zero m o = reflexive-∼ (max m o)
 max-assoc (suc n) m o = suc λ { .force → transitive-∼ (max-assoc (force n) (pred m) (pred o)) (reflexive-∼ (force n) max-cong pred-max m o) }
