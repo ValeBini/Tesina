@@ -2,7 +2,7 @@ module Instances.Monad where
 
 open import Codata.Musical.Notation
 open import Relation.Binary as B hiding (Rel)
-open import Partiality
+open import Delay
 open import Agda.Builtin.Unit
 
 private
@@ -46,8 +46,8 @@ module Weak (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquival
 
   open import Structures.Monad
 
-  partiality : Monad _⊥
-  partiality = makeMonad 
+  delayMonad : Monad _⊥
+  delayMonad = makeMonad 
                 _≈⊥_ 
                 eq≈⊥
                 now 
@@ -91,8 +91,8 @@ module Strong (_∼_ : ∀ {A} → A → A → Set) (eq∼ : ∀ {A} → IsEquiv
             trans = trans (IsEquivalence.trans eq∼) }
 
 
-  partiality : Monad _⊥
-  partiality = makeMonad 
+  delayMonad : Monad _⊥
+  delayMonad = makeMonad 
                 _≅⊥_ 
                 eq≅⊥
                 now 

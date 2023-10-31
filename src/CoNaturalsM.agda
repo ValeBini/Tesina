@@ -1,26 +1,30 @@
-module Conaturals2 where
+module CoNaturalsM where
 
 open import Codata.Musical.Notation
 open import Relation.Binary.PropositionalEquality 
 open import Relation.Binary.Structures
 
+------------------------------------------------------------------------
+-- The type
+
 data Coℕ : Set where
    zero : Coℕ
    suc  : ∞ Coℕ → Coℕ
+
+-- The largest conatural number.
 
 inf : Coℕ
 inf = suc (♯ inf)
 
 
+------------------------------------------------------------------------
+-- Bisimilarity
+
 data _≈_ : Coℕ → Coℕ → Set where
   zero : zero ≈ zero
   suc  : ∀ {m n} → ∞ (♭ m ≈ ♭ n) → suc m ≈ suc n
 
-data _≳_ : Coℕ → Coℕ → Set where
-  zero  : zero ≳ zero
-  suc   : ∀ {m n} → ∞ (♭ m ≳ ♭ n) → suc m ≳ suc n
-  sucˡ  : ∀ {m n} → (♭ m) ≳ n → suc m ≳ n
-
+-- Bisimilarity is an equivalence relation.
 
 refl≈ : {n : Coℕ} → n ≈ n 
 refl≈ {zero}  = zero
@@ -38,6 +42,18 @@ eq≈ : IsEquivalence _≈_
 eq≈ = record { refl = refl≈ 
              ; sym = sym≈ 
              ; trans = trans≈ }
+
+
+------------------------------------------------------------------------
+-- Ordering
+
+data _≳_ : Coℕ → Coℕ → Set where
+  zero  : zero ≳ zero
+  suc   : ∀ {m n} → ∞ (♭ m ≳ ♭ n) → suc m ≳ suc n
+  sucˡ  : ∀ {m n} → (♭ m) ≳ n → suc m ≳ n
+
+-- The ordering relation is a partial order (with respect to
+-- bisimilarity).
 
 refl≳ : {n m : Coℕ} → n ≈ m → n ≳ m
 refl≳ zero    = zero
@@ -84,34 +100,21 @@ partial≳ = record { isPreorder = record { isEquivalence = eq≈
                                         ; trans = trans≳ } 
                   ; antisym = antisym≳ }
 
-{-}
-{-# NON_TERMINATING #-}
-≳zero : (n : Coℕ) → n ≳ zero
-≳zero zero = zero
-≳zero (suc n) = sucˡ (≳zero (♭ n))
--} 
+
+-- The ordering relation is reflexive with respect to
+-- propositional equality.
 
 ≡⇒≳ : {n₁ n₂ : Coℕ} → n₁ ≡ n₂ → n₁ ≳ n₂
 ≡⇒≳ {zero}   {zero}    n≡   = zero
 ≡⇒≳ {suc n₁} {suc .n₁} refl = refl≳ refl≈
 
-max : Coℕ → Coℕ → Coℕ
-max zero n          = n
-max (suc m) zero    = suc m
-max (suc m) (suc n) = suc (♯ (max (♭ m) (♭ n)))
 
+------------------------------------------------------------------------
+-- Addition
 sum : Coℕ → Coℕ → Coℕ
 sum zero n          = n
 sum (suc m) zero    = suc m
 sum (suc m) (suc n) = suc (♯ (suc (♯ (sum (♭ m) (♭ n)))))
-
-maxzero₁ : {n : Coℕ} → n ≳ max n zero
-maxzero₁ {zero}  = zero
-maxzero₁ {suc n} = refl≳ refl≈
-
-maxzero₂ : {n : Coℕ} → max n zero ≳ n 
-maxzero₂ {zero}  = zero
-maxzero₂ {suc n} = refl≳ refl≈
 
 sumzero₁ : {m : Coℕ} → m ≳ sum m zero
 sumzero₁ {zero}  = zero
@@ -121,56 +124,17 @@ sumzero₂ : {m : Coℕ} → sum m zero ≳ m
 sumzero₂ {zero}  = zero
 sumzero₂ {suc x} = refl≳ refl≈
 
-sum≳max : {m n : Coℕ} → sum m n ≳ max m n
-sum≳max {zero}  {zero}  = zero
-sum≳max {zero}  {suc n} = refl≳ refl≈
-sum≳max {suc m} {zero}  = refl≳ refl≈
-sum≳max {suc m} {suc n} = suc (♯ (sucˡ (sum≳max {♭ m} {♭ n})))
-
 sym-sum : {m n : Coℕ} → sum m n ≳ sum n m
 sym-sum {zero}  {zero}  = zero
 sym-sum {zero}  {suc n} = refl≳ refl≈
 sym-sum {suc m} {zero}  = refl≳ refl≈
 sym-sum {suc m} {suc n} = suc (♯ suc (♯ (sym-sum {♭ m} {♭ n})))
 
-sym-max : {m n : Coℕ} → max m n ≳ max n m 
-sym-max {zero}  {zero}  = zero
-sym-max {zero}  {suc n} = refl≳ refl≈
-sym-max {suc m} {zero}  = refl≳ refl≈
-sym-max {suc m} {suc n} = suc (♯ sym-max {♭ m} {♭ n}) 
-
-max-ext : {m₁ m₂ n₁ n₂ : Coℕ} → m₁ ≡ m₂ → n₁ ≡ n₂ → max m₁ n₁ ≳ max m₂ n₂
-max-ext {zero}   {zero}    {n₁}     {n₂}      m≡   n≡   = ≡⇒≳ n≡
-max-ext {suc m₁} {suc .m₁} {zero}   {zero}    refl n≡   = refl≳ refl≈
-max-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ refl≳ refl≈)
-
 sum-ext : {m₁ m₂ n₁ n₂ : Coℕ} → m₁ ≡ m₂ → n₁ ≡ n₂ → sum m₁ n₁ ≳ sum m₂ n₂
 sum-ext {zero}   {zero}    {n₁}     {n₂}      m≡   n≡   = ≡⇒≳ n≡
 sum-ext {suc m₁} {suc .m₁} {zero}   {zero}    refl n≡   = refl≳ refl≈
 sum-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ (suc (♯ refl≳ refl≈)))
 
-{-}
-≳max₂ : {m n : Coℕ} → max m n ≳ n
-≳max₂ {zero}  {zero}  = zero
-≳max₂ {zero}  {suc n} = refl≳ refl≈
-≳max₂ {suc m} {zero}  = -- ≳zero (suc m)
-≳max₂ {suc m} {suc n} = suc (♯ ≳max₂)
--}
-{-}
-≳sum₁ : {m n : Coℕ} → sum m n ≳ m
-≳sum₁ {zero}  {zero}  = zero
-≳sum₁ {zero}  {suc n} = -- ≳zero (suc n)
-≳sum₁ {suc m} {zero}  = refl≳ refl≈
-≳sum₁ {suc m} {suc n} = suc (♯ (sucˡ ≳sum₁))
--}
-{-}
-≳sum₂ : {m n : Coℕ} → sum m n ≳ n
-≳sum₂ {zero}  {n} = refl≳ refl≈
-≳sum₂ {suc m} {zero}  =  -- ≳zero (suc m)
-≳sum₂ {suc m} {suc n} = suc (♯ (sucˡ ≳sum₂))
--} 
-
--- {-# NON_TERMINATING #-}
 ≳sumzero : {m₁ m₂ n : Coℕ} → m₁ ≳ m₂ → n ≳ zero → sum m₁ n ≳ sum m₂ zero 
 ≳sumzero {.zero}    {.zero}    {.zero}    zero     zero     = zero
 ≳sumzero {.zero}    {.zero}    {.(suc _)} zero     (sucˡ q) = sucˡ q
@@ -189,6 +153,33 @@ sum-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ (suc 
 ≳sum {suc m}    {zero}     {suc n}    {.(suc _)} (sucˡ ≳m) (suc x)   = suc (♯ (sucˡ (trans≳ (trans≳ (sym-sum {♭ m} {♭ n}) (≳sumzero (♭ x) ≳m)) sumzero₂))) -- suc (♯ (sucˡ (trans≳ (≳sum refl≳ refl≈ (♭ x)) ≳sum₂)))
 ≳sum {.(suc _)} {suc x₁}   {.(suc _)} {.(suc _)} (sucˡ ≳m) (suc x)   = suc (♯ (suc (♯ (≳sum (trans≳ ≳m ≳suc) (♭ x)))))
 ≳sum {.(suc _)} {m₂}       {.(suc _)} {n₂}       (sucˡ ≳m) (sucˡ ≳n) = sucˡ (sucˡ (≳sum ≳m ≳n))
+
+
+------------------------------------------------------------------------
+-- Maximum
+max : Coℕ → Coℕ → Coℕ
+max zero n          = n
+max (suc m) zero    = suc m
+max (suc m) (suc n) = suc (♯ (max (♭ m) (♭ n)))
+
+maxzero₁ : {n : Coℕ} → n ≳ max n zero
+maxzero₁ {zero}  = zero
+maxzero₁ {suc n} = refl≳ refl≈
+
+maxzero₂ : {n : Coℕ} → max n zero ≳ n 
+maxzero₂ {zero}  = zero
+maxzero₂ {suc n} = refl≳ refl≈
+
+sym-max : {m n : Coℕ} → max m n ≳ max n m 
+sym-max {zero}  {zero}  = zero
+sym-max {zero}  {suc n} = refl≳ refl≈
+sym-max {suc m} {zero}  = refl≳ refl≈
+sym-max {suc m} {suc n} = suc (♯ sym-max {♭ m} {♭ n}) 
+
+max-ext : {m₁ m₂ n₁ n₂ : Coℕ} → m₁ ≡ m₂ → n₁ ≡ n₂ → max m₁ n₁ ≳ max m₂ n₂
+max-ext {zero}   {zero}    {n₁}     {n₂}      m≡   n≡   = ≡⇒≳ n≡
+max-ext {suc m₁} {suc .m₁} {zero}   {zero}    refl n≡   = refl≳ refl≈
+max-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ refl≳ refl≈)
 
 ≳maxzero : {m₁ m₂ n : Coℕ} → m₁ ≳ m₂ → n ≳ zero → max m₁ n ≳ max m₂ zero 
 ≳maxzero {.zero}    {.zero}    {.zero}    zero     zero     = zero
@@ -211,14 +202,39 @@ sum-ext {suc m₁} {suc .m₁} {suc n₁} {suc .n₁} refl refl = suc (♯ (suc 
 ≳max {.(suc _)} {suc x₁}   {.(suc _)} {.(suc _)} (sucˡ p) (suc x)  = suc (♯ (≳max (sucʳ⁻¹ p) (♭ x)))
 ≳max {.(suc _)} {m₂}       {.(suc _)} {n₂}       (sucˡ p) (sucˡ q) = sucˡ (≳max p q) 
 
-{-}
-{-# NON_TERMINATING #-}
-max-suc : {m : ∞ Coℕ} {n : Coℕ} → max (suc m) n ≳ max (♭ m) n
-max-suc {m} {zero}  = trans≳ (sucˡ refl≳ refl≈) max-zero
-max-suc {m} {suc n} with ♭ m    | inspect ♭ m
-...                    | zero   | x      = suc (♯ ≳max₂)
-...                    | suc m₁ | [ eq ] = suc (♯ (trans≳ (max-ext eq refl) (max-suc {m₁} {♭ n})))
+
+-- Addition is grater than maximum 
+sum≳max : {m n : Coℕ} → sum m n ≳ max m n
+sum≳max {zero}  {zero}  = zero
+sum≳max {zero}  {suc n} = refl≳ refl≈
+sum≳max {suc m} {zero}  = refl≳ refl≈
+sum≳max {suc m} {suc n} = suc (♯ (sucˡ (sum≳max {♭ m} {♭ n})))
+
+
+{-# NON_TERMINATING #-} -- turns off termination checking
+≳zero : (n : Coℕ) → n ≳ zero
+≳zero zero = zero
+≳zero (suc n) = sucˡ (≳zero (♭ n))
+
+{-} Lemas using ≳zero that does not terminate
+≳max₂ : {m n : Coℕ} → max m n ≳ n
+≳max₂ {zero}  {zero}  = zero
+≳max₂ {zero}  {suc n} = refl≳ refl≈
+≳max₂ {suc m} {zero}  = ≳zero (suc m)
+≳max₂ {suc m} {suc n} = suc (♯ ≳max₂)
+
+≳sum₁ : {m n : Coℕ} → sum m n ≳ m
+≳sum₁ {zero}  {zero}  = zero
+≳sum₁ {zero}  {suc n} = ≳zero (suc n)
+≳sum₁ {suc m} {zero}  = refl≳ refl≈
+≳sum₁ {suc m} {suc n} = suc (♯ (sucˡ ≳sum₁))
+
+≳sum₂ : {m n : Coℕ} → sum m n ≳ n
+≳sum₂ {zero}  {n}     = refl≳ refl≈
+≳sum₂ {suc m} {zero}  = ≳zero (suc m)
+≳sum₂ {suc m} {suc n} = suc (♯ (sucˡ ≳sum₂))
 -}
+
 
 suc-max : {m : Coℕ} {n : ∞ Coℕ} → suc (♯ (max m (♭ n))) ≳ max m (suc n)
 suc-max {zero}  {n} = suc (♯ refl≳ refl≈)
@@ -240,6 +256,7 @@ lema₁ {suc b} {suc c} {suc d} with ♭ c    | inspect ♭ c
 ...                              | zero   | [ eq ] = suc (♯ (trans≳ (suc (♯ (suc (♯ (≳sum (refl≳ {♭ b} refl≈) (trans≳ (≳max (≡⇒≳ eq) (refl≳ {♭ d} refl≈)) (refl≳ refl≈))))))) (≳max (≡⇒≳ (sym eq)) (refl≳ refl≈))))
 ...                              | suc c₁ | [ eq ] = suc (♯ (trans≳ (suc (♯ {! lema₁ {?} {?} {?}  !})) (≳max (≡⇒≳ (sym eq)) (refl≳ refl≈))))
 
+{-# NON_TERMINATING #-} -- turns off termination checking
 interchange : (a b c d : Coℕ) → (sum (max a b) (max c d)) ≳ (max (sum a c) (sum b d))
 interchange zero    zero    zero    zero    = zero
 interchange zero    zero    zero    (suc d) = refl≳ refl≈

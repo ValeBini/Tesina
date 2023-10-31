@@ -10,8 +10,8 @@ module Structures.Monoid where
       eqₘ     : IsEquivalence _≅ₘ_
       zeroₘ   : M
       _+ₘ_    : M → M → M
-      idl    : (x : M) → (zeroₘ +ₘ x) ≅ₘ x
-      idr    : (x : M) → (x +ₘ zeroₘ) ≅ₘ x
-      assoc  : (x : M) (y : M) (z : M) → (x +ₘ (y +ₘ z)) ≅ₘ ((x +ₘ y) +ₘ z)
+      idl     : (x : M) → (zeroₘ +ₘ x) ≅ₘ x
+      idr     : (x : M) → (x +ₘ zeroₘ) ≅ₘ x
+      assoc   : (x : M) (y : M) (z : M) → (x +ₘ (y +ₘ z)) ≅ₘ ((x +ₘ y) +ₘ z)
 
   open Monoid public

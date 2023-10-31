@@ -46,8 +46,6 @@ record ConcurrentMonad (M : Set → Set) : Set₁ where
                   → (merge (a ≫= f) (b ≫= g)) 
                               ≲ₘ ((merge a b) ≫= (λ { (a , b) → (merge (f a) (g b)) }))
 
-
-
 open ConcurrentMonad public
 \end{code}
 %</monconc>

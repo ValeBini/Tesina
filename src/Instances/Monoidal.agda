@@ -9,7 +9,7 @@ open import Relation.Binary as B hiding (Rel)
 open import Data.Unit
 open import Relation.Binary.PropositionalEquality using (_≡_) renaming (refl to prefl)
 
-open import Partiality
+open import Delay
 
 private
     variable

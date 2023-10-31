@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness #-}
 
-module Partiality where 
+module Delay where 
 
 open import Data.Bool.Base using (Bool; false; true)
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -32,7 +32,7 @@ never = later (♯ never)
 --------------------------------------------------------------------
 -- Kinds
 
--- The partiality monad comes with two forms of equality (weak and
+-- The delay monad comes with two forms of equality (weak and
 -- strong) and one ordering. Strong equality is stronger than the
 -- ordering, which is stronger than weak equality.
 
@@ -149,21 +149,6 @@ module _ {A : Set} {_∼_ : A → A → Set} where
   ⇒≈ {other geq}  = ≳⇒
   ⇒≈ {other weak} = id
 
-  -- The relations agree for non-terminating computations.
-
-  never⇒never : ∀ {k₁ k₂} {x : A ⊥} →
-                Rel k₁ x never → Rel k₂ x never
-  never⇒never (later  x∼never) = later (♯ never⇒never (♭ x∼never))
-  never⇒never (laterʳ x≈never) =          never⇒never    x≈never
-  never⇒never (laterˡ x∼never) = later (♯ never⇒never    x∼never)
-
-  -- The "other" relations agree when the right-hand side is a value.
-
-  now⇒now : ∀ {k₁ k₂} {x} {y : A} →
-            Rel (other k₁) x (now y) → Rel (other k₂) x (now y)
-  now⇒now (now x∼y)      = now x∼y
-  now⇒now (laterˡ x∼now) = laterˡ (now⇒now x∼now)
-
 ------------------------------------------------------------------------
 -- Later can be dropped
 
@@ -230,99 +215,12 @@ module _ {A : Set} {_∼_ : A → A → Set} where
 
     open Trans public using (trans)
 
-  -- All the relations are preorders.
+    -- The order is a partial order, with strong equality as the
+    -- underlying equality.
 
-  preorder : IsPreorder _≡_ _∼_ → Kind → Preorder _ _ _
-  preorder pre k = record
-    { Carrier    = A ⊥
-    ; _≈_        = _≡_
-    ; _∼_        = Rel k
-    ; isPreorder = record
-      { isEquivalence = P.isEquivalence
-      ; reflexive     = refl′
-      ; trans         = Equivalence.trans (IsPreorder.trans pre)
-      }
-    }
-    where
-    refl′ : ∀ {k} {x y : A ⊥} → x ≡ y → Rel k x y
-    refl′ P.refl = Equivalence.refl (IsPreorder.refl pre)
-
-  private
-    preorder′ : IsEquivalence _∼_ → Kind → Preorder _ _ _
-    preorder′ equiv =
-      preorder (SetoidProperties.isPreorder (record { isEquivalence = equiv }))
-
-  -- The two equalities are equivalence relations.
-
-  setoid : IsEquivalence _∼_ →
-           (k : Kind) {eq : Equality k} → Setoid _ _
-  setoid equiv k {eq} = record
-    { Carrier       = A ⊥
-    ; _≈_           = Rel k
-    ; isEquivalence = record
-      { refl  = Pre.refl
-      ; sym   = Equivalence.sym (IsEquivalence.sym equiv) eq
-      ; trans = Pre.trans
-      }
-    } where module Pre = Preorder (preorder′ equiv k)
-
-  -- The order is a partial order, with strong equality as the
-  -- underlying equality.
-
-  antisym : {x y : A ⊥} → x ≳ y → x ≲ y → x ≅ y
-  antisym (now    x∼y)  (now    _)    = now x∼y
-  antisym (later  x≳y)  (later  x≲y)  = later (♯ antisym        (♭ x≳y)         (♭ x≲y))
-  antisym (later  x≳y)  (laterˡ x≲ly) = later (♯ antisym        (♭ x≳y)  (laterʳ⁻¹ x≲ly))
-  antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
-  antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
-
-  ≳-poset : IsEquivalence _∼_ → Poset _ _ _
-  ≳-poset equiv = record
-    { Carrier        = A ⊥
-    ; _≈_            = _≅_
-    ; _≤_            = _≳_
-    ; isPartialOrder = record
-      { antisym    = antisym
-      ; isPreorder = record
-        { isEquivalence = S.isEquivalence
-        ; reflexive     = ≅⇒
-        ; trans         = Pre.trans
-        }
-      }
-    }
-    where
-    module S   = Setoid (setoid equiv strong)
-    module Pre = Preorder (preorder′ equiv (other geq))
-
-
--- -- Equational reasoning.
-
---   module Reasoning (isEquivalence : IsEquivalence _∼_) where
-
---     private
---       module Pre {k}  = Preorder (preorder′ isEquivalence k)
---       module S {k eq} = Setoid (setoid isEquivalence k {eq})
-
---     infix  3 _∎
---     infixr 2 _≡⟨_⟩_ _≅⟨_⟩_ _≳⟨_⟩_ _≈⟨_⟩_
-
---     _≡⟨_⟩_ : ∀ {k} x {y z : A ⊥} → x ≡ y → Rel k y z → Rel k x z
---     _ ≡⟨ P.refl ⟩ y∼z = y∼z
-
---     _≅⟨_⟩_ : ∀ {k} x {y z : A ⊥} → x ≅ y → Rel k y z → Rel k x z
---     _ ≅⟨ x≅y ⟩ y∼z = Pre.trans (≅⇒ x≅y) y∼z
-
---     _≳⟨_⟩_ : ∀ {k} x {y z : A ⊥} →
---              x ≳ y → Rel (other k) y z → Rel (other k) x z
---     _ ≳⟨ x≳y ⟩ y∼z = Pre.trans (≳⇒ x≳y) y∼z
-
---     _≈⟨_⟩_ : ∀ x {y z : A ⊥} → x ≈ y → y ≈ z → x ≈ z
---     _ ≈⟨ x≈y ⟩ y≈z = Pre.trans x≈y y≈z
-
---     sym : ∀ {k} {eq : Equality k} {x y : A ⊥} →
---           Rel k x y → Rel k y x
---     sym {eq = eq} = S.sym {eq = eq}
-
---     _∎ : ∀ {k} (x : A ⊥) → Rel k x x
---     x ∎ = Pre.refl
-
+    antisym : {x y : A ⊥} → x ≳ y → x ≲ y → x ≅ y
+    antisym (now    x∼y)  (now    _)    = now x∼y
+    antisym (later  x≳y)  (later  x≲y)  = later (♯ antisym        (♭ x≳y)         (♭ x≲y))
+    antisym (later  x≳y)  (laterˡ x≲ly) = later (♯ antisym        (♭ x≳y)  (laterʳ⁻¹ x≲ly))
+    antisym (laterˡ x≳ly) (later  x≲y)  = later (♯ antisym (laterʳ⁻¹ x≳ly)        (♭ x≲y))
+    antisym (laterˡ x≳ly) (laterˡ x≲ly) = later (♯ antisym (laterʳ⁻¹ x≳ly) (laterʳ⁻¹ x≲ly))
