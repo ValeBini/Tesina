@@ -1,3 +1,6 @@
+{-# OPTIONS --allow-unsolved-metas #-}
+
+
 module CoNaturalsM where
 
 open import Codata.Musical.Notation

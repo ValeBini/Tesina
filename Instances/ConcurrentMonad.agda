@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --allow-unsolved-metas #-}
 
 module Instances.ConcurrentMonad where
 

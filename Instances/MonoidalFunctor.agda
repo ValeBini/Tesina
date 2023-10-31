@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness #-}
 
-module Instances.Monoidal where
+module Instances.MonoidalFunctor where
 
 open import Data.Product as Prod
 open import Codata.Musical.Notation
