@@ -2,7 +2,7 @@
 
 Agda es un lenguaje de programación funcional desarrollado inicialmente por Ulf Norell en la Universidad de Chalmers como parte de su tesis doctoral \cite{norell:thesis} que se caracteriza por tener tipos dependientes. A diferencia de otros lenguajes donde hay una separación clara entre el mundo de los tipos y el de los valores, en un lenguaje con tipos dependientes estos universos están más entremezclados. Los tipos pueden contener valores arbitrarios (lo que los hace \textit{depender} de ellos) y pueden aparecer también como argumentos o resultados de funciones.
 
-El hecho de que los tipos puedan contener valores, permite que se puedan escribir propiedades de ciertos valores como tipos. Los elementos de estos tipos son pruebas de que la propiedad que representan es verdadera. Esto hace que los lenguajes con tipos dependientes puedan ser utilizados como una lógica. Esta fue la idea principal de la teoría de tipos desarrollada por Martin Löf, en la cual está basado el desarrollo de Agda. Una característica importante de esta teoría es su enfoque constructivista, en el cual para demostrar la existencia de un objeto debemos construirlo.
+El hecho de que los tipos puedan contener valores permite que se puedan escribir propiedades de ciertos valores como tipos. Los habitantes de estos tipos son pruebas de que la propiedad que representan es verdadera. Esto hace que los lenguajes con tipos dependientes puedan ser utilizados como una lógica. Esta fue la idea principal de la teoría de tipos desarrollada por Martin Löf, en la cual está basado el desarrollo de Agda. Una característica importante de esta teoría es su enfoque constructivista, en el cual para demostrar la existencia de un objeto debemos construirlo.
 
 Para poder utilizar a Agda como una lógica se necesita que sea consistente, y es por eso que se requiere que todos los programas sean totales, es decir que no tienen permitido fallar o no terminar. En consecuencia, Agda incluye mecanismos que comprueban la terminación de los programas.
 
@@ -46,7 +46,7 @@ Los tipos de datos pueden estar parametrizados por otros tipos de datos. El tipo
 
 \ExecuteMetaData[latex/Agda.tex]{lists}
 
-En este ejemplo el tipo \AgdaDatatype{List} está parametrizado por el tipo \AgdaArgument{A}, el cual define el tipo de dato que tendrán los elementos de las listas. \AgdaDatatype{List} \AgdaArgument{$\mathbb{N}$} es el tipo de las listas de números naturales. 
+En este ejemplo el tipo \AgdaDatatype{List} está parametrizado por el tipo \AgdaBound{A}, el cual define el tipo de dato que tendrán los elementos de las listas. \AgdaDatatype{List} \AgdaDatatype{$\mathbb{N}$} es el tipo de las listas de números naturales. 
 
 
 \subsection{Patrones con puntos}\label{tipos:puntos}
@@ -55,12 +55,12 @@ En algunos casos, al definir una función por \textit{pattern matching}, ciertos
 
 \ExecuteMetaData[latex/Agda.tex]{square}
 
-El tipo \AgdaDatatype{Square} \AgdaArgument{n} representa una propiedad sobre el número \AgdaArgument{n}, la cual dice
-dicho número es un cuadrado perfecto. Un habitante de tal tipo es una prueba de que el número \AgdaArgument{n} efectivamente es un cuadrado perfecto. Si se quisiera definir entonces una función \AgdaFunction{root} que tome un natural y una prueba de que dicho natural es un cuadrado perfecto, y devuelva su raíz cuadrada, podría realizarse de la siguiente manera:
+El tipo \AgdaDatatype{Square} \AgdaBound{n} representa una propiedad sobre el número \AgdaBound{n}, la cual dice
+dicho número es un cuadrado perfecto. Un habitante de tal tipo es una prueba de que el número \AgdaBound{n} efectivamente es un cuadrado perfecto. Si se quisiera definir entonces una función \AgdaFunction{root} que tome un natural y una prueba de que dicho natural es un cuadrado perfecto, y devuelva su raíz cuadrada, podría realizarse de la siguiente manera:
 
 \ExecuteMetaData[latex/Agda.tex]{root}
 
-Se puede observar que al \textit{matchear} el argumento de tipo \AgdaDatatype{Square} \AgdaArgument{n} con el constructor \AgdaFunction{sq} aplicado a un natural \AgdaArgument{m}, \AgdaArgument{n} se ve forzado a ser igual a \AgdaArgument{m} \AgdaFunction{*} \AgdaArgument{m}.
+Se puede observar que al \textit{matchear} el argumento de tipo \AgdaDatatype{Square} \AgdaBound{n} con el constructor \AgdaInductiveConstructor{sq} aplicado a un natural \AgdaBound{m}, \AgdaBound{n} se ve forzado a ser igual a \AgdaBound{m} \AgdaFunction{*} \AgdaBound{m}.
 
 
 \subsection{Patrones absurdos}\label{tipos:absurdos}
@@ -69,41 +69,41 @@ Otro tipo de patrón especial es el patrón absurdo. Usar un patrón absurdo en 
 
 \ExecuteMetaData[latex/Agda.tex]{even}
 
-El tipo \AgdaDatatype{Even} \AgdaArgument{n} representa, al igual que \AgdaDatatype{Square} \AgdaArgument{n}, una propiedad sobre \AgdaArgument{n}. En este caso la propiedad afirma que \AgdaArgument{n} es un número par. Un habitante de este tipo es una prueba de que dicha proposición se cumple. 
+El tipo \AgdaDatatype{Even} \AgdaBound{n} representa, al igual que \AgdaDatatype{Square} \AgdaBound{n}, una propiedad sobre \AgdaBound{n}. En este caso la propiedad afirma que \AgdaBound{n} es un número par. Un habitante de este tipo es una prueba de que dicha proposición se cumple. 
 
 Si se quisiera definir una función que, dado un número y una prueba de que es par, devuelva el resultado de dividirlo por dos, podría realizarse de la siguiente manera:
 
 \ExecuteMetaData[latex/Agda.tex]{half}
 
-Se puede ver que en el caso del \AgdaNumber{1}, no existe una prueba de que ese número sea par, y por lo tanto no debemos dar una definición para ese caso. Requerir la pureba de paridad nos asegura que no hay riesgo de intentar dividir por dos un número impar. 
+Se puede ver que en el caso del número \AgdaNumber{1} no existe una prueba de que ese número sea par. Por lo tanto, no debemos dar una definición para ese caso. Requerir la pureba de paridad asegura que no hay riesgo de intentar dividir por dos un número impar. 
 
 \subsection{El constructor \texttt{with}}\label{tipos:with}
 
 A veces no alcanza con hacer \textit{pattern matching} sobre los argumentos de una función, sino que se necesita analizar por casos el resultado de alguna computación intermedia. Para esto se utiliza el constructor \AgdaKeyword{with}. 
 
-Si se tiene una expresión \AgdaArgument{e} en la definición de una función \AgdaFunction{f}, se puede abstraer \AgdaFunction{f} sobre el valor de \AgdaArgument{e}. Al hacer esto se agrega a \AgdaFunction{f} un argumento extra, sobre el cual se puede hacer \textit{pattern matching} al igual que con cualquier otro argumento. 
+Si se tiene una expresión \AgdaBound{e} en la definición de una función \AgdaFunction{f}, se puede abstraer \AgdaFunction{f} sobre el valor de \AgdaBound{e}. Al hacer esto se agrega a \AgdaFunction{f} un argumento extra, sobre el cual se puede hacer \textit{pattern matching} al igual que con cualquier otro argumento. 
 
 Para proveer un ejemplo de uso del constructor \AgdaKeyword{with}, se definirá a continuación la relación de orden \AgdaFunction{\_<\_} sobre los números naturales.
 
 \ExecuteMetaData[latex/Agda.tex]{less}
 
-Si se quisiera definir entonces, utilizando esta función, una función \AgdaFunction{min} que calcule el mínimo entre dos números naturales \AgdaArgument{x} e \AgdaArgument{y}, se debería analizar cuál es el resultado de calcular \AgdaArgument{x} \AgdaFunction{<} \AgdaArgument{y}. Esto se escribe haciendo uso del constructor \AgdaKeyword{with} como sigue:
+Si se quisiera definir entonces, utilizando esta función, una función \AgdaFunction{min} que calcule el mínimo entre dos números naturales \AgdaBound{x} e \AgdaBound{y}, se debería analizar cuál es el resultado de calcular \AgdaBound{x} \AgdaFunction{<} \AgdaBound{y}. Esto se escribe haciendo uso del constructor \AgdaKeyword{with} como sigue:
 
 \ExecuteMetaData[latex/Agda.tex]{min}
 
-El argumento extra que se agrega está separado por una barra vertical y corresponde al valor de la expresión \AgdaArgument{x} \AgdaFunction{<} \AgdaArgument{y}. Se puede realizar esta abstracción sobre varias expresiones a la vez, separándolas entre ellas mediante barras verticales. Las abstracciones \AgdaKeyword{with} también pueden anidarse. En el lado izquierdo de las ecuaciones, los argumentos abstraídos con \AgdaKeyword{with} deben estar separados también con barras verticales. 
+El argumento extra que se agrega está separado por una barra vertical y corresponde al valor de la expresión \AgdaBound{x} \AgdaFunction{<} \AgdaBound{y}. Se puede realizar esta abstracción sobre varias expresiones a la vez, separándolas entre ellas mediante barras verticales. Las abstracciones \AgdaKeyword{with} también pueden anidarse. En el lado izquierdo de las ecuaciones, los argumentos abstraídos con \AgdaKeyword{with} deben estar separados también con barras verticales. 
 
-En este caso, el valor que tome \AgdaArgument{x} \AgdaFunction{<} \AgdaArgument{y} no cambia nada la información que se tiene sobre los argumentos \AgdaArgument{x} e \AgdaArgument{y}, por lo que volver a escribirlos no es necesario, puede reemplazarse la parte izquierda por tres puntos como se muestra a continuación:
+En este caso, el valor que tome \AgdaBound{x} \AgdaFunction{<} \AgdaBound{y} no cambia nada la información que se tiene sobre los argumentos \AgdaBound{x} e \AgdaBound{y}, por lo que volver a escribirlos no es necesario, puede reemplazarse la parte izquierda por tres puntos como se muestra a continuación:
 
 \ExecuteMetaData[latex/Agda.tex]{min2} 
 
 \section{Tipos dependientes}\label{agda:dependent}
 
-Como se mencionó anteriormente, una de las principales características de Agda es que tiene tipos dependientes. El tipo dependiente más básico de todos son las funciones dependientes, en las cuales el tipo del resultado depende del valor del argumento. En Agda se escribe \AgdaSymbol{(}\AgdaArgument{x} \AgdaSymbol{:} \AgdaDatatype{A}\AgdaSymbol{)} \AgdaSymbol{$\rightarrow$} \AgdaDatatype{B} para indicar el tipo de una función que toma un argumento \AgdaArgument{x} de tipo \AgdaDatatype{A} y devuelve un resultado de tipo \AgdaDatatype{B}, donde \AgdaArgument{x} puede aparecer en \AgdaDatatype{B}. Un caso especial de esto es cuando \AgdaArgument{x} es un tipo en sí mismo. Se podría definir, por ejemplo:
+Como se mencionó anteriormente, una de las principales características de Agda es que tiene tipos dependientes. El tipo dependiente más básico de todos son las funciones dependientes, en las cuales el tipo del resultado depende del valor del argumento. En Agda se escribe (\AgdaBound{x} $:$ \AgdaDatatype{A}) $\rightarrow$ \AgdaDatatype{B} para indicar el tipo de una función que toma un argumento \AgdaBound{x} de tipo \AgdaDatatype{A} y devuelve un resultado de tipo \AgdaDatatype{B}, donde \AgdaBound{x} puede aparecer en \AgdaDatatype{B}. Un caso especial de esto se da cuando \AgdaBound{x} es un tipo en sí mismo. Se podría definir, por ejemplo:
 
 \ExecuteMetaData[latex/Agda.tex]{id}
 
-\AgdaFunction{identity} es una función dependiente que toma como argumento un tipo \AgdaDatatype{A} y un elemento de \AgdaDatatype{A} y retorna dicho elemento. De esta manera se codifican las funciones polimórficas en Agda. 
+\AgdaFunction{identity} es una función dependiente que toma como argumento un tipo \AgdaBound{A} y un elemento de tipo \AgdaBound{A} y retorna dicho elemento. De esta manera se codifican las funciones polimórficas en Agda. 
 
 A continuación se muestra un ejemplo de una función dependiente menos trivial, la cual toma una función dependiente y la aplica a cierto argumento:
 
@@ -119,7 +119,7 @@ Como se puede observar, el tipo del segundo elemento es \AgdaBound{B} y depende 
 
 Los tipos dependientes sirven, entre otras cosas, para definir funciones polimórficas. En los ejemplos provistos en la sección anterior se da de forma explícita el tipo al cual cierta función polimórfica se debe aplicar. Usualmente esto es diferente. En general se espera que el tipo sobre el cual se va a aplicar una función polimórfica sea inferido por el \textit{type checker}. Para solucionar este problema, Agda utiliza un mecanismo de \textit{argumentos implícitos}. 
 
-Para declarar un argumento implícito de una función, se utilizan llaves en lugar de paréntesis. \AgdaSymbol{\{}\AgdaArgument{x} \AgdaSymbol{:} \AgdaDatatype{A}\AgdaSymbol{\}} \AgdaSymbol{$\rightarrow$} \AgdaDatatype{B} significa lo mismo que \AgdaSymbol{(}\AgdaArgument{x} \AgdaSymbol{:} \AgdaDatatype{A}\AgdaSymbol{)} \AgdaSymbol{$\rightarrow$} \AgdaDatatype{B}, excepto que cuando se utiliza una función de este tipo el verificador de tipos intenta inferir el argumento por su cuenta. 
+Para declarar un argumento implícito de una función, se utilizan llaves en lugar de paréntesis. \{\AgdaBound{x} $:$ \AgdaDatatype{A}\} $\rightarrow$ \AgdaDatatype{B} significa lo mismo que (\AgdaBound{x} $:$ \AgdaDatatype{A}) $\rightarrow$ \AgdaDatatype{B}, excepto que cuando se utiliza una función de este tipo el verificador de tipos intenta inferir el argumento por su cuenta. 
 
 Con esta nueva sintaxis puede definirse una nueva versión de la función identidad, donde no es necesario explicitar el tipo argumento:
 
@@ -127,7 +127,7 @@ Con esta nueva sintaxis puede definirse una nueva versión de la función identi
 
 Se puede observar que el tipo argumento es implícito tanto cuando la función se aplica como cuando es definida. No hay restricciones sobre cuáles o cuántos argumentos pueden ser implícitos, así como tampoco hay garantías de que estos puedan ser efectivamente inferidos por el \textit{type checker}. 
 
-Para dar explícitamente un argumento implícito se usan también llaves. \AgdaFunction{f} \AgdaSymbol{\{}\AgdaArgument{v}\AgdaSymbol{\}} asigna \AgdaArgument{v} al primer argumento implícito de \AgdaFunction{f}. Si se requiere explicitar un argumento que no es el primero, se escribe \AgdaFunction{f} \AgdaSymbol{\{}\AgdaArgument{x} \AgdaSymbol{=} \AgdaArgument{v}\AgdaSymbol{\}}, lo cual asigna \AgdaArgument{v} al argumento implícito llamado \AgdaArgument{x}. El nombre de un argumento implícito se obtiene de la declaración del tipo de la función. 
+Para dar explícitamente un argumento implícito se usan también llaves. \AgdaFunction{f} \{\AgdaBound{v}\} asigna \AgdaBound{v} al primer argumento implícito de \AgdaFunction{f}. Si se requiere explicitar un argumento que no es el primero, se escribe \AgdaFunction{f} \{\AgdaBound{x} \AgdaSymbol{=} \AgdaBound{v}\}, lo cual asigna \AgdaBound{v} al argumento implícito llamado \AgdaBound{x}. El nombre de un argumento implícito se obtiene de la declaración del tipo de la función. 
 
 Si se desea, por el contrario, que el verificador de tipos infiera un término que debería darse explícitamente, se puede reemplazar por un guión bajo. Por ejemplo:
 
@@ -135,21 +135,21 @@ Si se desea, por el contrario, que el verificador de tipos infiera un término q
 
 \section{Familias de tipos de datos}\label{agda:family}
 
-Se definió en el apartado \ref{tipos:parametrized} el tipo de las listas de tipo arbitrario parametrizado por \AgdaArgument{A}. Estas listas pueden tener cualquier largo, tanto una lista vacía como una lista con un millón de elementos son de tipo \AgdaDatatype{List} \AgdaArgument{A}. En ciertos casos es útil que el tipo restrinja el largo que tiene la lista, y es así como surgen las listas de largo definido, llamadas comúnmente vectores, que se definen como sigue:
+Se definió en el apartado \ref{tipos:parametrized} el tipo de las listas de tipo arbitrario parametrizado por \AgdaBound{A}. Estas listas pueden tener cualquier largo, tanto una lista vacía como una lista con un millón de elementos son de tipo \AgdaDatatype{List} \AgdaBound{A}. En ciertos casos es útil que el tipo restrinja el largo que tiene la lista, y es así como surgen las listas de largo definido, llamadas comúnmente vectores, que se definen como sigue:
 
 \ExecuteMetaData[latex/Agda.tex]{vec}
 
-El tipo de \AgdaDatatype{Vec} \AgdaArgument{A} es \AgdaDatatype{$\mathbb{N}$} \AgdaSymbol{$\rightarrow$} \AgdaPrimitiveType{Set}. Esto significa que \AgdaDatatype{Vec} \AgdaArgument{A} es una familia de tipos indexada por los números naturales. Por lo tanto, para cada \AgdaArgument{n} natural, \AgdaDatatype{Vec} \AgdaArgument{A n} es un tipo. Los constructores pueden construir elementos de cualquier tipo dentro de la familia. Hay una diferencia sustancial entre parámetros e índices de un tipo de dato. Se dice que \AgdaDatatype{Vec} está parametrizado por un tipo \AgdaArgument{A} e indexado sobre los números naturales. 
+El tipo de \AgdaDatatype{Vec} \AgdaBound{A} es \AgdaDatatype{$\mathbb{N}$} $\rightarrow$ \AgdaPrimitiveType{Set}. Esto significa que \AgdaDatatype{Vec} \AgdaBound{A} es una familia de tipos indexada por los números naturales. Por lo tanto, para cada \AgdaBound{n} natural, \AgdaDatatype{Vec} \AgdaBound{A n} es un tipo. Los constructores pueden construir elementos de cualquier tipo dentro de la familia. Hay una diferencia sustancial entre parámetros e índices de un tipo de dato. Se dice que \AgdaDatatype{Vec} está parametrizado por un tipo \AgdaBound{A} e indexado sobre los números naturales. 
 
-En el tipo del constructor \AgdaFunction{\_::\_} se puede observar un ejemplo de una función dependiente. El primer argumento del constructor es un número natural \AgdaArgument{n} implícito, el cual es el largo de la cola. Es seguro poner \AgdaArgument{n} como argumento implícito ya que el verificador de tipos siempre podrá inferirlo en base al tipo del tercer argumento. 
+En el tipo del constructor \AgdaInductiveConstructor{\_::\_} se puede observar un ejemplo de una función dependiente. El primer argumento del constructor es un número natural \AgdaBound{n} implícito, el cual es el largo de la cola. Es seguro poner \AgdaBound{n} como argumento implícito ya que el verificador de tipos siempre podrá inferirlo en base al tipo del tercer argumento. 
 
 Lo que tienen de interesante las familias de tipos es lo que sucede cuando se usa \textit{pattern matching} sobre sus elementos. Si se quisiera definir una función que devuelva la cabeza de una lista no vacía, el tipo \AgdaDatatype{Vec} permite expresar el tipo de las listas no vacías, lo cual hace posible definir la función \AgdaFunction{head} de manera segura como se muestra a continuación: 
 
 \ExecuteMetaData[latex/Agda.tex]{head}
 
-La definición es aceptada por el verificador de tipos ya que, aunque no se da un caso para la lista vacía, es exhaustiva. Esto es gracias a que un elemento del tipo \mbox{\AgdaDatatype{Vec} \AgdaArgument{A} \AgdaSymbol{(}\AgdaFunction{suc} \AgdaArgument{n}\AgdaSymbol{)}} sólo puede ser construído por el constructor \AgdaFunction{\_::\_}, y resulta útil ya que la función \AgdaFunction{head} no está correctamente definida para el caso de la lista vacía.  
+La definición es aceptada por el verificador de tipos ya que, aunque no se da un caso para la lista vacía, es exhaustiva. Esto es gracias a que un elemento del tipo \mbox{\AgdaDatatype{Vec} \AgdaBound{A} (\AgdaFunction{suc} \AgdaBound{n})} sólo puede ser construído por el constructor \AgdaInductiveConstructor{\_::\_}, y resulta útil ya que la función \AgdaFunction{head} no está correctamente definida para el caso de la lista vacía.  
 
-En algunos casos puede ser necesario dar un único tipo que englobe a todas las listas de todos los largos posibles. Esto puede expresarse mediante la unión disjunta de los vectores de cada posible largo. Expresar la unión disjunta de familias de tipos de datos es un uso muy común de los $\Sigma$\textit{-types}. Escribir \AgdaDatatype{$\Sigma'$ $\mathbb{N}$} \AgdaSymbol{(}\AgdaDatatype{Vec} \AgdaBound{A}\AgdaSymbol{)} (o lo que es equivalente, \AgdaDatatype{$\Sigma'$ $\mathbb{N}$} \AgdaSymbol{($\lambda$} \AgdaBound{n} \AgdaSymbol{$\rightarrow$} \AgdaDatatype{Vec} \AgdaBound{A n}\AgdaSymbol{)}) es conceptualmente lo mismo que escribir \AgdaDatatype{List} \AgdaBound{A}. 
+En algunos casos puede ser necesario dar un único tipo que englobe a todas las listas de todos los largos posibles. Esto puede expresarse mediante la unión disjunta de los vectores de cada posible largo. Expresar la unión disjunta de familias de tipos de datos es un uso muy común de los $\Sigma$\textit{-types}. Escribir \AgdaDatatype{$\Sigma'$ $\mathbb{N}$} (\AgdaDatatype{Vec} \AgdaBound{A}) (o lo que es equivalente, \AgdaDatatype{$\Sigma'$ $\mathbb{N}$} ($\lambda$ \AgdaBound{n} $\rightarrow$ \AgdaDatatype{Vec} \AgdaBound{A n})) es conceptualmente lo mismo que escribir \AgdaDatatype{List} \AgdaBound{A}. 
 
 Un ejemplo en el cual es necesaria la unión disjunta de todos los vectores es para definir la función \AgdaFunction{filterVec} que, dado un vector de cierto largo \AgdaBound{n} y un predicado, filtra todos los elementos del vector que cumplen la condición dada. En este caso no es posible saber de antemano qué largo tendrá el vector resultante, puesto que se desconoce cuántos elementos del vector original cumplirán la condición. Es por esto que se define como sigue:
 
@@ -157,7 +157,7 @@ Un ejemplo en el cual es necesaria la unión disjunta de todos los vectores es p
 
 \section{Sistema de módulos}\label{agda:modules}
 
-El objetivo del sistema de módulos de Agda es manejar el espacio de nombres. Un programa se estructura en diversos archivos, cada uno de los cuales tiene un módulo \textit{top-level}, dentro del cual van todas las definiciones. El nombre del módulo principal de un archivo debe coincidir con el nombre de dicho archivo. Si se tiene, por ejemplo, un archivo llamado \texttt{Agda.agda}, al comienzo del archivo se debería encontrar la siguiente línea:
+El objetivo del sistema de módulos de Agda es manejar el espacio de nombres. Un programa se estructura en diversos archivos, cada uno de los cuales tiene un módulo \textit{top-level} dentro del cual van todas las definiciones. El nombre del módulo principal de un archivo debe coincidir con el nombre de dicho archivo. Si se tiene, por ejemplo, un archivo llamado \texttt{Agda.agda}, al comienzo del archivo se debería encontrar la siguiente línea:
 
 \ExecuteMetaData[latex/Agda.tex]{module} 
 
@@ -180,7 +180,7 @@ La extensión de los módulos (excepto el módulo principal) se determina por in
 \ExecuteMetaData[latex/Agda.tex]{two2}
 
 
-Al abrir un módulo, se puede controlar qué definiciones se muestran y cuáles no, así como también cambiar el nombre de algunas de ellas. Para esto se utilizan las palabras clave \AgdaKeyword{using} (para restringir cuáles definiciones traer), \AgdaKeyword{hiding} (para esconder ciertas definiciones) y \AgdaKeyword{renaming} (para cambiarles el nombre). Si se quisiera abrir el módulo \AgdaModule{Numbers} ocultando la función \AgdaFunction{suc₂} y cambiando los nombres del tipo y los constructores, se debería escribir:
+Al abrir un módulo se puede controlar qué definiciones se muestran y cuáles no, así como también cambiar el nombre de algunas de ellas. Para esto se utilizan las palabras clave \AgdaKeyword{using} (para restringir cuáles definiciones traer), \AgdaKeyword{hiding} (para esconder ciertas definiciones) y \AgdaKeyword{renaming} (para cambiarles el nombre). Si se quisiera abrir el módulo \AgdaModule{Numbers} ocultando la función \AgdaFunction{suc₂} y cambiando los nombres del tipo y los constructores, se debería escribir:
 
 \ExecuteMetaData[latex/Agda.tex]{hidingrenaming}
 
@@ -230,7 +230,7 @@ Un tipo \AgdaKeyword{record} se define de forma similar a un tipo \AgdaKeyword{d
 
 \ExecuteMetaData[latex/Agda.tex]{point}
 
-Esto declara el registro \AgdaRecord{Point} con dos campos naturales \AgdaArgument{x} e \AgdaArgument{y}. Para construir un elemento de \AgdaRecord{Point} se escribe:
+Esto declara el registro \AgdaRecord{Point} con dos campos naturales \AgdaField{x} e \AgdaField{y}. Para construir un elemento de \AgdaRecord{Point} se escribe:
 
 \ExecuteMetaData[latex/Agda.tex]{mkpoint}
 

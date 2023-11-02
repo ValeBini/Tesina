@@ -50,6 +50,7 @@ suc n * m = m + n * m
 %<*lists>
 \begin{code}
 infixr 1 _∷_
+
 data List (A : Set) : Set where
     []  : List A
     _∷_ : A → List A → List A
@@ -83,7 +84,7 @@ data Even : ℕ → Set where
 half : (n : ℕ) → Even n → ℕ
 half zero even-zero = zero
 half (suc zero) ()
-half (suc (suc n)) (even-plus2 e) = half n e
+half (suc (suc n)) (even-plus2 e) = suc (half n e)
 \end{code}
 %</half>
 
@@ -100,8 +101,8 @@ _<_ (suc x) (suc y) = x < y
 \begin{code}
 min : ℕ → ℕ → ℕ 
 min x y with x < y 
-min x y | true = x 
-min x y | false = y
+min x y           | true = x 
+min x y           | false = y
 \end{code}
 %</min>
 
@@ -109,8 +110,8 @@ min x y | false = y
 \begin{code}
 min₂  : ℕ → ℕ → ℕ 
 min₂  x y with x < y 
-... | true = x 
-... | false = y
+...               | true = x 
+...               | false = y
 \end{code}
 %</min2>
 
