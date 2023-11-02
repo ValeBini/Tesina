@@ -66,14 +66,14 @@ Un objeto $\mathbf{1} \in \text{\bf ob} \ \mathscr{C}$ se dice \textbf{terminal}
 En \textbf{Set}, $\emptyset$ es el único objeto inicial y los conjuntos de un elemento $\{x\}$ son los objetos terminales.
 \end{ejemplo}
 
-En la categoría \textbf{Set}, se sabe que el producto cartesiano entre dos objetos (conjuntos) $A \times B$ es el conjunto de los pares $(a,b)$ tales que $a \in A$ y $b \in B$. Para definir el concepto de producto cartesiano entre dos objetos $A$ y $B$ de una categoría cualquiera, es necesario caracterizar a $A \times B$ sin hacer referencia a sus elementos. 
+En la categoría \textbf{Set} se sabe que el producto cartesiano entre dos objetos (conjuntos) $A \times B$ es el conjunto de los pares $(a,b)$ tales que $a \in A$ y $b \in B$. Para definir el concepto de producto cartesiano entre dos objetos $A$ y $B$ de una categoría cualquiera, es necesario caracterizar a $A \times B$ sin hacer referencia a sus elementos. 
 
 \begin{definition}[Producto]
 El \textbf{producto} de dos objetos $A$ y $B$ en una categoría $\mathscr{C}$ es una terna $(A \times B, \pi_A, \pi_B)$ donde:
 \begin{itemize}[label=$\blacktriangleright$]
 	\item $\pi_A \in Hom(A \times B, A)$,
 	\item $\pi_B \in Hom(A \times B, B)$
-	\item y para todo objeto $C$ y para todo par de morfismos $f : C \rightarrow A$, $g : C \rightarrow B$, existe un único mofismo $\langle f, g \rangle : C \rightarrow A \times B$ tal que:
+	\item y para todo objeto $C$ y todo par de morfismos $f : C \rightarrow A$, $g : C \rightarrow B$, existe un único mofismo $\langle f, g \rangle : C \rightarrow A \times B$ tal que:
 	\begin{itemize}[label=$\bullet$]
 		\item $f = \pi_A \circ \langle f, g \rangle$
 		\item $g = \pi_B \circ \langle f, g \rangle$
@@ -90,7 +90,7 @@ El \textbf{coproducto} de dos objetos $A, B$ de una categoría $\mathscr{C}$ es 
 \begin{itemize}[label=$\blacktriangleright$]
 	\item $\iota_A \in Hom(A, A + B)$,
 	\item $\iota_B \in Hom(B, A + B)$
-	\item y para todo objeto $C$ y para todo par de morfismos $f : A \rightarrow C$, $g : B \rightarrow C$ existe un único morfismo $[f,g] : A + B \rightarrow C$ tal que se cumplen las siguientes ecuaciones:
+	\item y para todo objeto $C$ y todo par de morfismos $f : A \rightarrow C$, $g : B \rightarrow C$ existe un único morfismo $[f,g] : A + B \rightarrow C$ tal que se cumplen las siguientes ecuaciones:
 	\begin{itemize}[label=$\bullet$]
 		\item $f = [f,g] \circ \iota_A$
 		\item $g = [f,g] \circ \iota_B$
@@ -129,7 +129,7 @@ Sean $\mathit{F}, \mathit{G} : \mathscr{C} \rightarrow \mathscr{D}$ dos funtores
 \end{equation*}
 \end{definition}
 
-Para cerrar la sección, se introducirá la noción de monoide, Los monoides son un tipo de estructura algebraica abstracta introducida por primera vez por Arthur Cayley.
+Para cerrar la sección, se introducirá la noción de monoide. Los monoides son un tipo de estructura algebraica abstracta introducida por primera vez por Arthur Cayley.
 
 \begin{definition}[Monoide]\label{def:monoid}
 Un \textbf{monoide} es un conjunto $M$ dotado de una operación asociativa $M \times M \rightarrow M$, $(m,n) \rightarrow mn$ tal que existe un elemento neutro:
@@ -353,7 +353,7 @@ En esta estructura no hay reducción de la operación $*$ a una intercalación d
 
 \subsection{Generalización a nivel de funtores y mónadas}\label{mc:lifting}
 
-Para elevar la teoría descripta en la sección anterior al nivel de funtores, se modela el operador de secuenciación $;$ como la multiplicación monádica y su elemento neutro $\mathtt{skip}$ como la unidad monádica. Sólo faltan tres elementos: la operación de mezcla $*$, su elemento neutro $\mathtt{nothing}$ y el orden $\sqsubseteq$. La operación de mezcla se modela como una familia de transformaciones naturales $m_{A,B} : \mathit{T} A \times \mathit{T} B \rightarrow \mathit{T} (A \times B)$. Como se necesita que $*$ sea un monoide conmutativo, se requiere que $\mathit{T}$ tenga una estructura de funtor monoidal simétrica, incluyendo un morfismo unidad $e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ que representa $\mathtt{skip}$. 
+Para elevar la teoría descripta en la sección anterior al nivel de funtores, se modela el operador de secuenciación $;$ como la multiplicación monádica y su elemento neutro $\mathtt{skip}$ como la unidad monádica. Sólo faltan tres elementos: la operación de mezcla $*$, su elemento neutro $\mathtt{nothing}$ y el orden $\sqsubseteq$. La operación de mezcla se modela como una familia de transformaciones naturales $m_{A,B} : \mathit{T} A \times \mathit{T} B \rightarrow \mathit{T} (A \times B)$. Como se necesita que $*$ sea un monoide conmutativo, se requiere que $\mathit{T}$ tenga una estructura de funtor monoidal simétrica, incluyendo un morfismo unidad $e : \mathbf{1} \rightarrow \mathit{T} \mathbf{1}$ que representa a $\mathtt{skip}$. 
 
 En cuanto al orden, lo que se necesita es un orden sobre computaciones que mida el grado de secuencialidad en ellas. Esto es una estructura de orden $\sqsubseteq_I$ sobre $\mathit{T} I$ para cada conjunto $I$, sujeto a algún tipo de compatibilidad con el resto de la estructura que modela computaciones. Se define a continuación la noción de funtor ordenado, la cual establece una condición de compatibilidad de un funtor con un orden parcial, siguiendo la idea de Hughes y Jacobs \cite{hughes:2004}:
 
@@ -410,7 +410,7 @@ Como en el caso de los monoides, hay dos estructuras de bimonoide ordenado sobre
 Sea $(A,\sqsubseteq,*,\mathtt{nothing},;,\mathtt{skip})$ un bimonoide ordenado. Este puede convertirse en una mónada monoidal ordenada con funtor soporte $\mathit{T}_A \ X = A \times X$, operaciones y orden. Más aún, si $\mathtt{nothing} = \mathtt{skip}$ (es decir que es un monoide concurrente), entonces $e = \eta_{\mathbf{1}}$ (es decir que es una mónada concurrente).
 \end{lema}
 
-Este resultado será utilizado más adelante en este trabajo para dar una representación alternativa de la mónada delay. 
+Este resultado será utilizado más adelante en este trabajo para dar una mónada alternativa a la mónada \textit{delay}. 
 
 El ejemplo del Modelo de Trazas puede ser generalizado a una mónada concurrente parametrizando el conjunto sobre el cual se toman las trazas. 
 
