@@ -223,7 +223,7 @@
 \>[4]\AgdaComment{-- comm : ∀ \{A B : Set\} → (a : M A) (b : M B) }\<%
 \\
 %
-\>[4]\AgdaComment{--          → merge a b ≅ₘ fmap swap (merge b a)}\<%
+\>[4]\AgdaComment{--          → merge a b ≅ₘ fmap (λ \{(a , b) → (b , a)\}) (merge b a)}\<%
 \\
 \>[0]\<%
 \\
