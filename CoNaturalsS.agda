@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Conatural numbers, taken mostly from Danielsson, updating it to
 -- use the stdlib, and implement interchange and auxiliary lemmata:
--- https://www.cse.chalmers.se/~nad/publications/danielsson-definitional-interpreters-complexity/Conat.html
+-- https://www.cse.chalmers.se/~nad/publications/danielsson-definitional-interpreters-complexity.zip
 ------------------------------------------------------------------------
 
 {-# OPTIONS --without-K --sized-types #-}
