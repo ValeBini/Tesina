@@ -21,6 +21,6 @@ module Structures.MonoidalFunctor where
               → (fmap (λ {((a , b) , c) → (a , (b , c))}) (merge (merge a b) c)) 
                                                           ≅ₘ (merge a (merge b c))
       -- comm : ∀ {A B : Set} → (a : M A) (b : M B) 
-      --          → merge a b ≅ₘ fmap swap (merge b a)
+      --          → merge a b ≅ₘ fmap (λ {(a , b) → (b , a)}) (merge b a)
       
   open MonoidalFunctor public
