@@ -181,8 +181,9 @@ sym-max {suc m}  {suc n}  = suc (♯ sym-max {♭ m} {♭ n})
 ≳sum (sucˡ ≳m)  zero       = trans≳ (trans≳ ≳suc ≳m) sumzero₁
 ≳sum {n₂ = zero}   (suc x) (sucˡ ≳n) = suc (♯ (sucˡ (trans≳ (≳sumzero (♭ x) ≳n) sumzero₂))) 
 ≳sum {n₂ = suc n}  (suc x) (sucˡ ≳n) = suc (♯ suc (♯ ≳sum (♭ x) (trans≳ ≳n ≳suc)))
-≳sum {suc m} {zero} {suc n} (sucˡ ≳m) (suc x) = suc (♯ (sucˡ (trans≳ (trans≳ (sym-sum {♭ m} {♭ n}) 
-                                                (≳sumzero (♭ x) ≳m)) sumzero₂))) 
+≳sum {suc m} {zero} {suc n} (sucˡ ≳m) (suc x) = 
+     suc (♯ (sucˡ (trans≳ (trans≳ (sym-sum {♭ m} {♭ n}) 
+                       (≳sumzero (♭ x) ≳m)) sumzero₂))) 
 ≳sum {m₂ = suc m} (sucˡ ≳m) (suc x) = suc (♯ (suc (♯ (≳sum (trans≳ ≳m ≳suc) (♭ x)))))
 \end{code}
 %</sumcong>
@@ -207,8 +208,9 @@ sym-max {suc m}  {suc n}  = suc (♯ sym-max {♭ m} {♭ n})
 ≳max (sucˡ p)  (sucˡ q)  = sucˡ (≳max p q) 
 ≳max {n₂ = zero}   (suc x) (sucˡ q) = suc (♯ (trans≳ (≳maxzero (♭ x) q) maxzero₂))
 ≳max {n₂ = suc n}  (suc x) (sucˡ q) = suc (♯ (≳max (♭ x) (sucʳ⁻¹ q)))
-≳max {suc m} {zero} {suc n} (sucˡ p) (suc x)  = suc (♯ trans≳ (trans≳ (sym-max {♭ m} {♭ n}) 
-                                                (≳maxzero (♭ x) p)) maxzero₂)
+≳max {suc m} {zero} {suc n} (sucˡ p) (suc x)  = 
+     suc (♯ trans≳ (trans≳ (sym-max {♭ m} {♭ n}) 
+                   (≳maxzero (♭ x) p)) maxzero₂)
 ≳max {m₂ = suc m} (sucˡ p) (suc x)  = suc (♯ (≳max (sucʳ⁻¹ p) (♭ x)))
 \end{code}
 %</maxcong>

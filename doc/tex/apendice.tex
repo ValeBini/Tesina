@@ -20,10 +20,10 @@ Los siguientes lemas se utilizan en la sección \ref{casodelay:conat:ichange} pa
 Los lemas \AgdaFunction{maxzero$_1$}, \AgdaFunction{maxzero$_2$}, \AgdaFunction{sumzero$_1$} y \AgdaFunction{sumzero$_2$} prueban que \AgdaInductiveConstructor{zero} es neutro a derecha de \AgdaFunction{max} y \AgdaFunction{sum} probando las dos desigualdades (ya que en los demás lemas se necesitaba de esta manera):
 \ExecuteMetaData[latex/ConaturalsM.tex]{zerolemas}
 
-\AgdaFunction{sym-sum} y \AgdaFunction{sym-max} prueban que ambas operaciones son simétricas:
+\AgdaFunction{sym-sum} y \AgdaFunction{sym-max} prueban que ambas operaciones son conmutativas (para la desigualdad):
 \ExecuteMetaData[latex/ConaturalsM.tex]{syms}
 
-\AgdaFunction{$\gtrsim$sum} prueba que la suma es compatible con la relación de orden, para ello se prueba también \AgdaFunction{$\gtrsim$sumzero} que prueba lo mismo para el caso en que el argumento \AgdaBound{n$_2$} es \AgdaInductiveConstructor{zero}:
+\AgdaFunction{$\gtrsim$sum} prueba que la suma es compatible con la relación de orden, para ello se prueba también \AgdaFunction{$\gtrsim$sumzero} que prueba lo mismo para el caso en el que el argumento \AgdaBound{n$_2$} es \AgdaInductiveConstructor{zero}:
 \ExecuteMetaData[latex/ConaturalsM.tex]{sumcong}
 
 Análogamente, \AgdaFunction{$\gtrsim$max} prueba que \AgdaFunction{max} es compatible con la relación de orden, utilizando \AgdaFunction{$\gtrsim$maxzero} para el caso en que \AgdaBound{n$_2$} $=$ \AgdaInductiveConstructor{zero}:
@@ -33,7 +33,7 @@ Análogamente, \AgdaFunction{$\gtrsim$max} prueba que \AgdaFunction{max} es comp
 
 Los lemas que se presentan a continuación se utlizan en la sección \ref{casodelay:sized:concurrent} para probar que los números conaturales bajo la representación que utiliza \textit{sized types} forman un monoide concurrente.
 
-El primer lema representa la conmutatividad de la suma. Para probar tal propiedad se requiere un lema extra que postula que sumar $1$ a la suma \AgdaBound{m} \AgdaFunction{+} \AgdaField{force} \AgdaBound{n} es igual a realizar la suma \hbox{\AgdaBound{m} \AgdaFunction{+} \AgdaInductiveConstructor{suc} \AgdaBound{m}}, lo cual es similar a definir la suma al revés en el sentido de ir reduciendo el conúmero de la derecha en lugar del de la izquierda. Este lema se prueba junto con otro que permite cambiar el constructor \AgdaInductiveConstructor{suc} de lado en la suma de manera mutuamente recursiva.
+El primer lema representa la conmutatividad de la suma. Para probar tal propiedad se requiere un lema extra que postula que sumar $1$ a la suma \AgdaBound{m} \AgdaFunction{+} \AgdaField{force} \AgdaBound{n} es igual a realizar la suma \hbox{\AgdaBound{m} \AgdaFunction{+} \AgdaInductiveConstructor{suc} \AgdaBound{n}}, lo cual es similar a definir la suma al revés en el sentido de ir reduciendo el conúmero de la derecha en lugar del de la izquierda. Este lema se prueba junto con otro que permite cambiar el constructor \AgdaInductiveConstructor{suc} de lado en la suma de manera mutuamente recursiva.
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{commsuma}
 
 El lema \AgdaFunction{\_+-cong\_} representa la propiedad que indica que si se tienen dos pares de conúmeros bisemejantes \AgdaBound{m$_1$} \AgdaFunction{$\sim$} \AgdaBound{m$_2$} y \AgdaBound{n$_1$} \AgdaFunction{$\sim$} \AgdaBound{n$_2$}, la suma de los dos primeros es bisemejante a la suma de los dos segundos.
@@ -51,7 +51,7 @@ Por último, el lema \AgdaFunction{max$\leq$+} prueba que el máximo de dos con�
 \section{Los conaturales con \textit{sized types}: ley de intercambio}\label{apendice:interchange}
 
 \begin{AgdaAlign}
-El tipo de la función \AgdaFunction{interchange} postula que, dados cuatro conúmeros \AgdaBound{a}, \AgdaBound{b}, \AgdaBound{c} y \AgdaBound{d}, el máximo de las sumas (\AgdaBound{a} \AgdaFunction{+} \AgdaBound{b}) y (\AgdaBound{c} \AgdaFunction{+} \AgdaBound{d}) es menor o igual a la suma de los máximos (\AgdaFunction{max} \AgdaBound{a} \AgdaBound{c}) y \hbox{(\AgdaFunction{max} \AgdaBound{b} \AgdaBound{d})}. Intuitivamente tiene sentido ya que en el primer caso se toma la suma que sea más grande pero, en el segundo, se toman los máximos sumandos para cada lado de la suma, permitiendo combinar el primer sumando más grande con el mayor segundo sumando aunque estos estén en distintas sumas en el lado izquierdo de la desigualdad. Este razonamiento fue el que llevó a elegir la orientación de la desigualdad en la formalización tanto de los monoides concurrentes como las mónadas concurrentes. 
+El tipo de la función \AgdaFunction{interchange} postula que, dados cuatro conúmeros \AgdaBound{a}, \AgdaBound{b}, \AgdaBound{c} y \AgdaBound{d}, el máximo de las sumas (\AgdaBound{a} \AgdaFunction{+} \AgdaBound{b}) y (\AgdaBound{c} \AgdaFunction{+} \AgdaBound{d}) es menor o igual a la suma de los máximos (\AgdaFunction{max} \AgdaBound{a} \AgdaBound{c}) y \hbox{(\AgdaFunction{max} \AgdaBound{b} \AgdaBound{d})}. 
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{itipo}
 
 \begin{itemize}
@@ -123,7 +123,7 @@ Primero se utiliza el lema \AgdaFunction{$\leq$suc} para probar que \AgdaFunctio
 Al quitar el constructor \AgdaInductiveConstructor{suc} de ambos lados, queda por probar simplemente que, para un \AgdaBound{k} menor a \AgdaBound{j}, \hbox{\AgdaFunction{[} \AgdaBound{k} \AgdaFunction{]} (\AgdaField{force} \AgdaBound{b}) \AgdaFunction{$\leq$} \AgdaFunction{max} (\AgdaField{force} \AgdaBound{b}) \AgdaInductiveConstructor{zero}}. Esto se obtiene utilizando el lema \AgdaFunction{max-right-identity} (dado vuelta con \AgdaFunction{symmetric-$\sim$} y convertido en desigualdad por \AgdaFunction{$\sim\rightarrow\leq$}).
 
 \begin{itemize}
-\item En el cuarto caso se conserva que \AgdaBound{a} $=$ \AgdaInductiveConstructor{zero} y el segundo y el tercer argumento son sucesores de un conúmero: (\AgdaInductiveConstructor{suc} \AgdaBound{b}) y  (\AgdaInductiveConstructor{suc} \AgdaBound{c}). El último, que antes era \AgdaInductiveConstructor{zero} ahora es también un sucesor: (\AgdaInductiveConstructor{suc} \AgdaBound{d}).
+\item En el cuarto caso se conserva que \AgdaBound{a} $=$ \AgdaInductiveConstructor{zero} y el segundo y el tercer argumento son sucesores de un conúmero: (\AgdaInductiveConstructor{suc} \AgdaBound{b}) y  (\AgdaInductiveConstructor{suc} \AgdaBound{c}). El último, que antes era \AgdaInductiveConstructor{zero}, ahora es también un sucesor: (\AgdaInductiveConstructor{suc} \AgdaBound{d}).
 \end{itemize}
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{icaso4}
 
