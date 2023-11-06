@@ -60,7 +60,7 @@ El tipo de la función \AgdaFunction{interchange} postula que, dados cuatro con�
 \end{itemize}
 \ExecuteMetaData[latex/Instances/ConcurrentMonoid.tex]{icaso1}
 
-Por definición se tiene que \AgdaInductiveConstructor{zero} \AgdaFunction{+} \AgdaBound{b} $=$ \AgdaBound{b} y \AgdaInductiveConstructor{zero} \AgdaFunction{+} \AgdaBound{d} $=$ \AgdaBound{d}. Luego el lado izquierdo se reduce a \AgdaFunction{max} \AgdaBound{b} \AgdaBound{d}. Por otro lado, \AgdaFunction{max} \AgdaInductiveConstructor{zero} \AgdaInductiveConstructor{zero} $=$ \AgdaInductiveConstructor{zero} y, por lo tanto, \AgdaFunction{max} \AgdaInductiveConstructor{zero} \AgdaInductiveConstructor{zero} \AgdaFunction{+} \AgdaFunction{max} \AgdaBound{b d} $=$ \AgdaFunction{max} \AgdaBound{b d}. Como el resultado a ambos lados es el mismo, el primer caso se prueba de forma trivial utilizando la reflexividad de la bisemejanza.
+Por definición se tiene que \AgdaInductiveConstructor{zero} \AgdaFunction{+} \AgdaBound{b} $=$ \AgdaBound{b} y \AgdaInductiveConstructor{zero} \AgdaFunction{+} \AgdaBound{d} $=$ \AgdaBound{d}. Luego el lado izquierdo se reduce a \AgdaFunction{max} \AgdaBound{b} \AgdaBound{d}. Por otro lado, \AgdaFunction{max} \AgdaInductiveConstructor{zero} \AgdaInductiveConstructor{zero} $=$ \AgdaInductiveConstructor{zero} y, por lo tanto, \AgdaFunction{max} \AgdaInductiveConstructor{zero} \AgdaInductiveConstructor{zero} \AgdaFunction{+} \AgdaFunction{max} \AgdaBound{b d} $=$ \AgdaFunction{max} \AgdaBound{b d}. Como el resultado a ambos lados es el mismo, el primer caso se prueba de forma trivial utilizando la reflexividad de la desigualdad.
 
 \begin{itemize}
 \item El segundo caso es el primero de varios en los que se considera que \AgdaBound{a} $=$ \AgdaInductiveConstructor{zero} y el tercer argumento es (\AgdaInductiveConstructor{suc} \AgdaBound{c}). En este en particular se considerará que \AgdaBound{b} también es \AgdaInductiveConstructor{zero} mientras que el último es un \AgdaBound{d} cualquiera. 
@@ -94,7 +94,7 @@ Quitando de ambos la construcción \AgdaInductiveConstructor{suc} $\lambda$ \{ .
 \end{center}
 donde \AgdaBound{j} es menor a \AgdaBound{i}.
 
-El primer paso de la prueba se realiza a partir del término (\AgdaFunction{reflexive-$\sim$} (\AgdaField{force} \AgdaBound{b}) \AgdaFunction{max-cong} \AgdaFunction{+-right-identity} (\AgdaField{force} \AgdaBound{c})) que prueba que 
+El primer paso de la prueba se realiza a partir del término (\AgdaFunction{reflexive-$\sim$} (\AgdaField{force} \AgdaBound{b}) \AgdaFunction{max-cong} \AgdaFunction{+-right-identity} (\AgdaField{force} \AgdaBound{c})) que prueba que:
 \begin{center}
 \AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]} \AgdaFunction{max} (\AgdaField{force} \AgdaBound{b}) (\AgdaField{force} \AgdaBound{c} \AgdaFunction{+} \AgdaInductiveConstructor{zero}) \AgdaFunction{$\sim$} \AgdaFunction{max} (\AgdaField{force} \AgdaBound{b}) (\AgdaField{force} \AgdaBound{c}) 
 \end{center}
@@ -110,7 +110,7 @@ Utilizando la conmutatividad de la suma, que puede convertirse en desigualdad al
 \AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]}  (\AgdaField{force} \AgdaBound{b}) \AgdaFunction{+} (\AgdaField{force} \AgdaBound{c}) \AgdaFunction{$\leq$}  (\AgdaField{force} \AgdaBound{c}) \AgdaFunction{+} (\AgdaField{force} \AgdaBound{b})
 \end{center}
 
-En el último paso se utiliza el lema \AgdaFunction{+-mono} para resolver la prueba sumando a sumando. De un lado se pasa como argumento la prueba \hbox{(\AgdaFunction{reflexive-$\leq$} (\AgdaField{force} \AgdaBound{c}))} para que el lado izquierdo de la suma quede igual. El segundo lado es el más interesante. El objetivo es ver que: 
+En el último paso se utiliza el lema \AgdaFunction{+-mono} para resolver la prueba sumando a sumando. De un lado se pasa como argumento la prueba \hbox{(\AgdaFunction{reflexive-$\leq$} (\AgdaField{force} \AgdaBound{c}))} que prueba que (\AgdaField{force} \AgdaBound{c}) es menor o igual a sí mismo, ya que el primer sumando a cada lado es el mismo. El segundo lado es el más interesante. El objetivo es ver que: 
 \begin{center}
 \AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]}  (\AgdaField{force} \AgdaBound{b}) \AgdaFunction{$\leq$} (\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ \AgdaFunction{max} (\AgdaField{force} \AgdaBound{b}) \AgdaInductiveConstructor{zero} \})
 \end{center}
@@ -313,13 +313,13 @@ Cuando se analiza el lado derecho, por otro lado, se obtiene:
 (\AgdaFunction{max} (\AgdaInductiveConstructor{suc} \AgdaBound{a}) (\AgdaInductiveConstructor{suc} \AgdaBound{c})) \AgdaFunction{+} (\AgdaFunction{max} \AgdaBound{b d}) \\
 (\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ \AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaFunction{pred} (\AgdaInductiveConstructor{suc} \AgdaBound{c})) \}) \AgdaFunction{+} (\AgdaFunction{max} \AgdaBound{b d}) $=$\\
 (\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ \AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c}) \}) \AgdaFunction{+} (\AgdaFunction{max} \AgdaBound{b d}) $=$\\
-\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ (\AgdaField{force} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ \AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c}) \}) (\AgdaFunction{max} \AgdaBound{b d}) \} $=$ \\
-\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ (\AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c})) (\AgdaFunction{max} \AgdaBound{b d}) \} $=$ \\
+\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ (\AgdaField{force} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ \AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c}) \}) \AgdaFunction{+} (\AgdaFunction{max} \AgdaBound{b d}) \} $=$ \\
+\AgdaInductiveConstructor{suc} $\lambda$ \{ .\AgdaField{force} $\rightarrow$ (\AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c})) \AgdaFunction{+} (\AgdaFunction{max} \AgdaBound{b d}) \} $=$ \\
 \end{flushright}
 
 Quitando de ambos términos el constructor \AgdaInductiveConstructor{suc}, se obtiene que el objetivo a demostrar es, para un \AgdaBound{j} menor a \AgdaBound{i}:
 \begin{center}
-\AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]} \AgdaFunction{max} (\AgdaField{force} \AgdaBound{a} \AgdaFunction{+} \AgdaBound{b}) (\AgdaField{force} \AgdaBound{c} \AgdaFunction{+} \AgdaBound{d}) \AgdaFunction{$\leq$} (\AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c})) (\AgdaFunction{max} \AgdaBound{b d})
+\AgdaFunction{[} \AgdaBound{j} \AgdaFunction{]} \AgdaFunction{max} (\AgdaField{force} \AgdaBound{a} \AgdaFunction{+} \AgdaBound{b}) (\AgdaField{force} \AgdaBound{c} \AgdaFunction{+} \AgdaBound{d}) \AgdaFunction{$\leq$} (\AgdaFunction{max} (\AgdaField{force} \AgdaBound{a}) (\AgdaField{force} \AgdaBound{c})) \AgdaFunction{+} (\AgdaFunction{max} \AgdaBound{b d})
 \end{center}
 
 Esta desigualdad es, exactamente, el resultado que se obtiene al realizar la siguiente llamada co-recursiva: \hbox{\AgdaFunction{interchange} (\AgdaField{force} \AgdaBound{a}) \AgdaBound{b} (\AgdaField{force} \AgdaBound{c}) \AgdaBound{d}}. 
